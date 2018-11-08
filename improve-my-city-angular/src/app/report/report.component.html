@@ -1,0 +1,23 @@
+<h2>REPORTS</h2>
+<div class="container">
+  <div class="row">
+    <div class="col-4" *ngFor="let report of reports">
+      <div class="card p-3" style="width: 18rem;">
+        <img class="card-img-top text-center" src="{{ report.foto }}" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title text-center">{{ report.titolo }}</h5>
+          ID: {{ report.id }}
+          <p class="card-text">
+            {{ report.descrizione }}<br />
+            by {{ report.utente }}
+          </p>
+          <div class="text-center">
+            <button *ngIf="report.status == accettato" type="button" class="btn btn-success">Accettato</button>
+            <button *ngIf="report.status == rifiutato" type="button" class="btn btn-danger">Rifiutato</button>
+            <button *ngIf="report.status == attesa" type="button" class="btn btn-secondary">In attesa</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

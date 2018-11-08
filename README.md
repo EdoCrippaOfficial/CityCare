@@ -6,5 +6,6 @@ TODOOOOO
     - Implementare la ricezione dal DB
     - Swipe update
     
---> JS
-    - Paolo
+--> Web
+    - Sezione Contatti e About?
+    - Uso Firebase invece di mock data

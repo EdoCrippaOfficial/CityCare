@@ -1,0 +1,35 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+improve-my-comune/dist
+improve-my-comune/tmp
+improve-my-comune/out-tsc
+
+# dependencies
+improve-my-comune/node_modules
+
+# IDEs and editors
+improve-my-comune/.idea
+improve-my-comune/.project
+improve-my-comune/.classpath
+improve-my-comune/.c9/
+improve-my-comune/*.launch
+improve-my-comune/.settings/
+improve-my-comune/*.sublime-workspace
+
+# misc
+improve-my-comune/.sass-cache
+improve-my-comune/connect.lock
+improve-my-comune/coverage
+improve-my-comune/libpeerconnection.log
+improve-my-comune/npm-debug.log
+improve-my-comune/yarn-error.log
+improve-my-comune/testem.log
+improve-my-comune/typings
+
+# System Files
+improve-my-comune/.DS_Store
+improve-my-comune/Thumbs.db
+
+*.bk
+*.un~
