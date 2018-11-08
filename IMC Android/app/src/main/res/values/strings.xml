@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="app_name">Improve My City</string>
+
+    <string name="menu_new">New report</string>
+    <string name="menu_all">All reports</string>
+
+    <string name="new_report_title">Insert a title</string>
+    <string name="new_report_description">Insert a description</string>
+    <string name="new_report_send">Send</string>
+    <string name="new_report_uploading">Sending in progress…</string>
+
+</resources>

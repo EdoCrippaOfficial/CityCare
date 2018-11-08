@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "1048633976197",
+    "firebase_url": "https://improvemycity-ab42e.firebaseio.com",
+    "project_id": "improvemycity-ab42e",
+    "storage_bucket": "improvemycity-ab42e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048633976197:android:22804c69764e2803",
+        "android_client_info": {
+          "package_name": "inc.elevati.imycity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1048633976197-i8lu91sgikle6sf6sr1mblrq9m276bfi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "inc.elevati.imycity",
+            "certificate_hash": "e1905185a3d967bc1dda4b869b02e23fb0878699"
+          }
+        },
+        {
+          "client_id": "1048633976197-f3qhs0cdtnhdgrak14gouofhe34u67q1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "inc.elevati.imycity",
+            "certificate_hash": "d936a33cde114ffa2ad56281005e1c8ce88de935"
+          }
+        },
+        {
+          "client_id": "1048633976197-81t77rikl8j2siiut5et254i7udkgg12.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "inc.elevati.imycity",
+            "certificate_hash": "877bdec2d98438688926fa243550a374a82c6eab"
+          }
+        },
+        {
+          "client_id": "1048633976197-c3q86en8ulnuk96ium376cpktcpik3oq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB17WQX41DYAYt4ldimJHhEYk3jeHHHPIo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048633976197-c3q86en8ulnuk96ium376cpktcpik3oq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
