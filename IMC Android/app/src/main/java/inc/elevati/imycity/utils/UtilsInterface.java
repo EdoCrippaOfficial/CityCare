@@ -2,6 +2,7 @@ package inc.elevati.imycity.utils;
 
 import android.graphics.Bitmap;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 
 public interface UtilsInterface {
@@ -20,6 +21,10 @@ public interface UtilsInterface {
     }
 
     interface StorageSender{
-        void send(Bitmap image, String title, String description, String fileName, StorageReference storageReference);
+        void send(Bitmap image, String fileName, StorageReference storageReference);
+    }
+
+    interface DatabaseSender{
+        void send(String title, String description, String fileName, DatabaseReference databaseReference);
     }
 }

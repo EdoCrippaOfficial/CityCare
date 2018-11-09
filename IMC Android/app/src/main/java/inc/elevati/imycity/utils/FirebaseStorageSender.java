@@ -20,7 +20,7 @@ public class FirebaseStorageSender implements UtilsInterface.StorageSender {
     }
 
     @Override
-    public void send(Bitmap image, String title, String description, final String fileName, StorageReference storageReference) {
+    public void send(Bitmap image, final String fileName, StorageReference storageReference) {
         Compressor compressor = new Compressor(image);
         byte[] bitmapData = compressor.getCompressedByteData();
         StorageReference ref = storageReference.child("images/" + fileName);
