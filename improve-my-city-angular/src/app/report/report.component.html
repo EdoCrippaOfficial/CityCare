@@ -1,12 +1,13 @@
 <h2>REPORTS</h2>
 <div class="container">
   <div class="row">
-    <div class="col-4" *ngFor="let report of reports">
+    <div class="col-4" *ngFor="let report of reportsObservable | async">
       <div class="card p-3" style="width: 18rem;">
         <img class="card-img-top text-center" src="{{ report.foto }}" alt="Card image cap">
         <div class="card-body">
           <h5 class="card-title text-center">{{ report.titolo }}</h5>
-          ID: {{ report.id }}
+          ID: {{ report.id }}<br />
+          Data: {{ report.data | date : "dd/MM/yyyy" }}
           <p class="card-text">
             {{ report.descrizione }}<br />
             by {{ report.utente }}
