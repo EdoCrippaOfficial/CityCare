@@ -9,6 +9,6 @@ import { FooterComponent } from './footer/footer.component';
   imports: [
     CommonModule
   ],
-  exports: [LayoutComponent]
+  exports: [LayoutComponent] //to use it in app
 })
 export class UiModule { }

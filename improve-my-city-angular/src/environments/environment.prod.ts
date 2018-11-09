@@ -1,3 +1,11 @@
 export const environment = {
-  production: true
+  production: true,
+  firebase: {
+    apiKey: "AIzaSyCDjhZxwNVpdXLqGn1yMRCXlyJw_u5oJpY",
+    authDomain: "improvemycity-ab42e.firebaseapp.com",
+    databaseURL: "https://improvemycity-ab42e.firebaseio.com",
+    projectId: "improvemycity-ab42e",
+    storageBucket: "improvemycity-ab42e.appspot.com",
+    messagingSenderId: "1048633976197"
+  }
 };

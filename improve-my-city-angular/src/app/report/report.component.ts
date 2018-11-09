@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Report } from '../report';
+import { AngularFireDatabase } from '@angular/fire/database';
+import { Observable } from 'rxjs'; //async stuff
+
 import { Status } from '../status';
-import { REPORTS } from '../mock-report';
+//import { REPORTS } from '../mock-report';
 
 @Component({
   selector: 'app-report',
@@ -9,14 +11,20 @@ import { REPORTS } from '../mock-report';
   styleUrls: ['./report.component.css']
 })
 export class ReportComponent implements OnInit {
-  reports = REPORTS;
+  //reports = REPORTS;
   accettato = Status.accettato;
   rifiutato = Status.rifiutato;
   attesa = Status.attesa;
 
-  constructor() { }
+  reportsObservable: Observable<any[]>;
+  constructor(private db: AngularFireDatabase) { }
 
   ngOnInit() {
+    this.reportsObservable = this.getReports('/Posts');
+  }
+
+  getReports(path): Observable<any[]> {
+    return this.db.list(path).valueChanges();
   }
 
 }

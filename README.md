@@ -8,4 +8,3 @@ TODOOOOO
     
 --> Web
     - Sezione Contatti e About?
-    - Uso Firebase invece di mock data
