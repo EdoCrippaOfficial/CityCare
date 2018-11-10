@@ -1,63 +1,35 @@
 package inc.elevati.imycity.main;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.util.Log;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
 
-import inc.elevati.imycity.utils.Compressor;
-import inc.elevati.imycity.utils.FirebaseDatabaseSender;
-import inc.elevati.imycity.utils.FirebaseStorageSender;
+import inc.elevati.imycity.utils.FirestoreSender;
+import inc.elevati.imycity.utils.StorageSender;
 
 public class NewReportPresenter implements MainContracts.NewReportPresenter {
 
-    //Firebase
     private MainContracts.NewReportView view;
-    private StorageReference storageReference;
-    private DatabaseReference databaseReference;
-
-    String fileName;
 
     NewReportPresenter(MainContracts.NewReportView view) {
         this.view = view;
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
     }
 
     @Override
     public void handleSendReport(Bitmap image, String title, String description) {
+        String uuid = UUID.randomUUID().toString();
 
-        //Invio della foto allo storage fatta!
+        // Store image (normal and thumbnail) in Firebase Storage
+        StorageSender fss = new StorageSender(this);
+        fss.send(image, uuid);
 
-        //TODO
-        //Salvare nome nel database
-
-
-        fileName = UUID.randomUUID().toString();
-
-        FirebaseStorageSender fss = new FirebaseStorageSender(this);
-        fss.send(image, fileName, storageReference);
-
-        FirebaseDatabaseSender fds = new FirebaseDatabaseSender();
-        fds.send(title, description, fileName, databaseReference);
+        // Store report data (included image name) in Firebase Firestore
+        FirestoreSender fds = new FirestoreSender();
+        fds.send(title, description, uuid);
 
     }
 
-    public void dismissViewDialog(){
+    public void dismissViewDialog() {
         view.dismissProgressDialog();
     }
 

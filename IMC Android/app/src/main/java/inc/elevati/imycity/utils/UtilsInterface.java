@@ -2,9 +2,6 @@ package inc.elevati.imycity.utils;
 
 import android.graphics.Bitmap;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.StorageReference;
-
 public interface UtilsInterface {
 
     /**
@@ -12,19 +9,24 @@ public interface UtilsInterface {
      *  the selected image before sending it to
      *  Firebase Storage.
      */
-    interface ImageCompressor{
+    interface ImageCompressor {
         /**
          * Get the byteStream from the compression
+         * @param px the image maximum size
          * @return byte array ready to be sent
          */
-        byte[] getCompressedByteData();
+        byte[] getCompressedByteData(int px);
     }
 
-    interface StorageSender{
-        void send(Bitmap image, String fileName, StorageReference storageReference);
+    interface StorageSender {
+        void send(Bitmap image, String fileName);
     }
 
-    interface DatabaseSender{
-        void send(String title, String description, String fileName, DatabaseReference databaseReference);
+    interface DatabaseSender {
+        void send(String title, String description, String imageName);
+    }
+
+    interface DatabaseReader {
+        void readAllReports();
     }
 }
