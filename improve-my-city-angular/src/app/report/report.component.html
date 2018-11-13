@@ -1,16 +1,40 @@
 <h2>REPORTS</h2>
 <div class="container">
+  <!--modal-->
+  <ng-template #modal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">{{ reportDetail.title }}</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <img class="img-fluid text-center" src="{{ reportDetail.image }}" alt="Card image cap">
+      <!--ID: {{ reportDetail.id }}<br />-->
+      Data: {{ reportDetail.timestamp | date : "dd/MM/yyyy" }}
+      <p class="card-text">
+        {{ reportDetail.description }}<br />
+        <!--by {{ reportDetail.utente }}-->
+      </p>
+      <div class="text-center">
+        <button *ngIf="reportDetail.status == accettato" type="button" class="btn btn-success">Accettato</button>
+        <button *ngIf="reportDetail.status == rifiutato" type="button" class="btn btn-danger">Rifiutato</button>
+        <button *ngIf="reportDetail.status == attesa" type="button" class="btn btn-secondary">In attesa</button>
+      </div>
+    </div>
+  </ng-template>
+  <!--body-->
   <div class="row">
     <div class="col-4" *ngFor="let report of reportsObservable | async">
-      <div class="card p-3" style="width: 18rem;">
-        <img class="card-img-top text-center" src="{{ report.foto }}" alt="Card image cap">
+      <div class="card p-3 mt-2 mb-2" style="width: 18rem; position: relative;" (click)="showModal(modal, report)">
+        <img class="card-img-top img-responsive text-center" [src]="getImageURL(report)" alt="Card image cap">
         <div class="card-body">
-          <h5 class="card-title text-center">{{ report.titolo }}</h5>
-          ID: {{ report.id }}<br />
-          Data: {{ report.data | date : "dd/MM/yyyy" }}
-          <p class="card-text">
-            {{ report.descrizione }}<br />
-            by {{ report.utente }}
+          <h5 class="card-title text-center">{{ (report.title.length > 20) ? (report.title | slice:0:20)+'...' : (report.title) }}</h5>
+          <!--ID: {{ report.id }}<br />-->
+          Data: {{ report.timestamp | date : "dd/MM/yyyy" }}
+          <p class="card-text not-full-text">
+            {{ (report.description.length > 30) ? (report.description | slice:0:30)+'...' : (report.description) }}<br />
+            <!--by {{ report.utente }}-->
           </p>
           <div class="text-center">
             <button *ngIf="report.status == accettato" type="button" class="btn btn-success">Accettato</button>
