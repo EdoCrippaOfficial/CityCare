@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main;
+package inc.elevati.imycity.main.new_report_fragment;
 
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModel;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.main.MainContracts;
 
 import static android.app.Activity.RESULT_OK;
 

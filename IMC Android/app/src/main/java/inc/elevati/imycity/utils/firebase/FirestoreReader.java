@@ -1,4 +1,4 @@
-package inc.elevati.imycity.utils;
+package inc.elevati.imycity.utils.firebase;
 
 import android.support.annotation.NonNull;
 
@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.UtilsInterface;
 
 public class FirestoreReader implements UtilsInterface.DatabaseReader {
 

@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main;
+package inc.elevati.imycity.main.all_report_fragment;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -6,7 +6,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import inc.elevati.imycity.utils.FirestoreReader;
+import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.firebase.FirestoreReader;
 import inc.elevati.imycity.utils.Report;
 
 class AllReportsPresenter implements MainContracts.AllReportsPresenter {

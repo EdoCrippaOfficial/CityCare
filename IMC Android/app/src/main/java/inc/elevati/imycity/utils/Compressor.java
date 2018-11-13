@@ -4,11 +4,11 @@ import android.graphics.Bitmap;
 
 import java.io.ByteArrayOutputStream;
 
-class Compressor implements UtilsInterface.ImageCompressor {
+public class Compressor implements UtilsInterface.ImageCompressor {
 
     private Bitmap image;
 
-    Compressor(Bitmap image) {
+    public Compressor(Bitmap image) {
         this.image = image;
     }
 

@@ -1,5 +1,6 @@
 package inc.elevati.imycity.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -13,9 +14,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.main.all_report_fragment.AllReportsFragment;
+import inc.elevati.imycity.main.new_report_fragment.NewReportFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager pager;
     private DrawerLayout menuDrawer;
     private NavigationView menuNavigator;
+
+    ImageView iv_sort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
-            actionbar.setHomeAsUpIndicator(R.drawable.menu_icon);
+            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
 
         // Menu
@@ -61,26 +72,46 @@ public class MainActivity extends AppCompatActivity {
         // View pager for fragments
         pager = findViewById(R.id.view_pager);
         pager.setAdapter(new FragmentAdapter(getSupportFragmentManager()));
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                if (i == 0){    //pagina 0: all --> visibile
+                    TranslateAnimation animate = new TranslateAnimation(200,0,0,0);
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    iv_sort.startAnimation(animate);
+                    iv_sort.setEnabled(true);
+                }
+
+                else{           //altre pagine  --> invisibile
+                    TranslateAnimation animate = new TranslateAnimation(0,300,0,0);
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    iv_sort.startAnimation(animate);
+                    iv_sort.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+        });
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(pager);
     }
 
     public void scrollToPage(final MainContracts.MenuPages page) {
         pager.setCurrentItem(page.position, true);
-        // TODO: not working
-        switch (page) {
-            case PAGE_NEW:
-                menuNavigator.setCheckedItem(R.id.menu_all);
-                break;
-            case PAGE_ALL:
-                menuNavigator.setCheckedItem(R.id.menu_new);
-                break;
-        }
+
     }
 
     @Override
     public void onBackPressed() {
-        // If menu_icon is open then we only close it
+        // If ic_menu is open then we only close it
         if (menuDrawer.isDrawerOpen(GravityCompat.START)) {
             menuDrawer.closeDrawer(GravityCompat.START, true);
             return;
@@ -96,8 +127,27 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 menuDrawer.openDrawer(GravityCompat.START);
                 return true;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem sort_menu = menu.findItem(R.id.sort);
+        // Do animation start
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        iv_sort= (ImageView)inflater.inflate(R.layout.iv_sort, null);
+        iv_sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "SELECT SORTING METHOD", Toast.LENGTH_LONG).show();
+            }
+        });
+        sort_menu.setActionView(iv_sort);
+        return true;
     }
 
 

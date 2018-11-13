@@ -15,7 +15,7 @@ import inc.elevati.imycity.utils.Report;
 public interface MainContracts {
 
     /**
-     *  This enum lists all menu_icon pages and it's used in
+     *  This enum lists all ic_menu pages and it's used in
      *  communication within View and NewReportPresenter
      */
     enum MenuPages {
@@ -68,11 +68,6 @@ public interface MainContracts {
 
     interface AllReportsView {
 
-        /**
-         * Adds the reports contained in the list to the displayed reports list
-         * @param reports the list of reports to be added
-         */
-        void addReports(List<Report> reports);
 
         /**
          * Replaces the displayed reports with the ones in the list

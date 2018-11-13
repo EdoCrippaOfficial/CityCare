@@ -1,12 +1,13 @@
-package inc.elevati.imycity.main;
+package inc.elevati.imycity.main.new_report_fragment;
 
 import android.graphics.Bitmap;
 
 import java.util.UUID;
 
-import inc.elevati.imycity.utils.FirestoreSender;
+import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.firebase.FirestoreSender;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.utils.StorageWriter;
+import inc.elevati.imycity.utils.firebase.StorageWriter;
 
 public class NewReportPresenter implements MainContracts.NewReportPresenter {
 

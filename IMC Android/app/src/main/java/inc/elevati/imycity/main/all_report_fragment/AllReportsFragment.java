@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main;
+package inc.elevati.imycity.main.all_report_fragment;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,11 +10,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
 
@@ -67,10 +66,6 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         return new AllReportsFragment();
     }
 
-    @Override
-    public void addReports(List<Report> reports) {
-        reportsAdapter.addReports(reports);
-    }
 
     @Override
     public void updateReports(List<Report> reports) {

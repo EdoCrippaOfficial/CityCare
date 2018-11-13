@@ -1,4 +1,4 @@
-package inc.elevati.imycity.utils;
+package inc.elevati.imycity.utils.firebase;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
@@ -11,6 +11,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.Compressor;
+import inc.elevati.imycity.utils.Report;
+import inc.elevati.imycity.utils.UtilsInterface;
 
 public class StorageWriter implements UtilsInterface.StorageSender {
 

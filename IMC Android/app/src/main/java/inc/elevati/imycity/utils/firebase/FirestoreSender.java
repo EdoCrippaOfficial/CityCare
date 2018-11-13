@@ -1,4 +1,4 @@
-package inc.elevati.imycity.utils;
+package inc.elevati.imycity.utils.firebase;
 
 import android.support.annotation.NonNull;
 
@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.Report;
+import inc.elevati.imycity.utils.UtilsInterface;
 
 public class FirestoreSender implements UtilsInterface.DatabaseSender {
 
