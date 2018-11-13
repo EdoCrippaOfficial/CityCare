@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,11 +35,15 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView menuNavigator;
 
     ImageView iv_sort;
+    MyPageListrner mpl = new MyPageListrner();
+    MenuItem sort_menu;
+    static int lastPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Action Bar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -72,34 +77,7 @@ public class MainActivity extends AppCompatActivity {
         // View pager for fragments
         pager = findViewById(R.id.view_pager);
         pager.setAdapter(new FragmentAdapter(getSupportFragmentManager()));
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-            }
 
-            @Override
-            public void onPageSelected(int i) {
-                if (i == 0){    //pagina 0: all --> visibile
-                    TranslateAnimation animate = new TranslateAnimation(200,0,0,0);
-                    animate.setDuration(500);
-                    animate.setFillAfter(true);
-                    iv_sort.startAnimation(animate);
-                    iv_sort.setEnabled(true);
-                }
-
-                else{           //altre pagine  --> invisibile
-                    TranslateAnimation animate = new TranslateAnimation(0,300,0,0);
-                    animate.setDuration(500);
-                    animate.setFillAfter(true);
-                    iv_sort.startAnimation(animate);
-                    iv_sort.setEnabled(false);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-            }
-        });
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(pager);
     }
@@ -136,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem sort_menu = menu.findItem(R.id.sort);
+        sort_menu = menu.findItem(R.id.sort);
         // Do animation start
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         iv_sort= (ImageView)inflater.inflate(R.layout.iv_sort, null);
@@ -147,9 +125,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         sort_menu.setActionView(iv_sort);
+        pager.addOnPageChangeListener(mpl);
+        if (!(lastPage == 0)){
+            sort_menu.setVisible(false);
+            iv_sort.setEnabled(false);
+        }
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        pager.removeOnPageChangeListener(mpl);
+        super.onDestroy();
+    }
 
     private class FragmentAdapter extends FragmentPagerAdapter {
 
@@ -182,6 +170,40 @@ public class MainActivity extends AppCompatActivity {
                     return getString(R.string.menu_all);
             }
             return null;
+        }
+    }
+
+    private class MyPageListrner implements ViewPager.OnPageChangeListener {
+
+        @Override
+        public void onPageScrolled(int i, float v, int i1) {
+
+        }
+
+        @Override
+        public void onPageSelected(int i) {
+            if (i == 0){    //pagina 0: all --> visibile
+                sort_menu.setVisible(true);
+                TranslateAnimation animate = new TranslateAnimation(200,0,0,0);
+                animate.setDuration(500);
+                animate.setFillAfter(true);
+                iv_sort.startAnimation(animate);
+                iv_sort.setEnabled(true);
+            }
+
+            else{           //altre pagine  --> invisibile
+                TranslateAnimation animate = new TranslateAnimation(0,300,0,0);
+                animate.setDuration(500);
+                animate.setFillAfter(true);
+                iv_sort.startAnimation(animate);
+                iv_sort.setEnabled(false);
+            }
+            lastPage = i;
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int i) {
+
         }
     }
 }
