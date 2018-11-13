@@ -1,10 +1,10 @@
 package inc.elevati.imycity.main;
 
-import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -24,6 +24,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import inc.elevati.imycity.R;
@@ -77,38 +79,8 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
 
     @Override
     public void showReportDialog(Report report) {
-        Dialog dialog = new Dialog(getContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_report);
-        TextView tv_title = dialog.findViewById(R.id.tv_title);
-        TextView tv_desc = dialog.findViewById(R.id.tv_desc);
-        ImageView iv_image = dialog.findViewById(R.id.iv_image);
-        final ProgressBar pb_loading = dialog.findViewById(R.id.pb_loading);
-        tv_title.setText(report.getTitle());
-        tv_desc.setText(report.getDescription());
-        pb_loading.setVisibility(View.VISIBLE);
-        GlideApp.with(this)
-                .load(presenter.getImageReference(report.getImageName(), "img"))
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        pb_loading.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(iv_image);
-
-        dialog.show();
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int width = metrics.widthPixels;
-        Window window = dialog.getWindow();
-        if (window == null)
-            return;
-        window.setLayout(width * 9/10, window.getAttributes().height);
+        ReportDialog dialog = ReportDialog.newInstance(report);
+        dialog.show(getFragmentManager(), null);
     }
 
     @Override
@@ -119,5 +91,59 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
     @Override
     public void onRefresh() {
         presenter.loadAllReports();
+    }
+
+    public static class ReportDialog extends DialogFragment {
+
+        static ReportDialog newInstance(Report report) {
+            ReportDialog dialog = new ReportDialog();
+            Bundle args = new Bundle();
+            args.putParcelable("report", report);
+            dialog.setArguments(args);
+            return dialog;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setStyle(STYLE_NO_TITLE, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+        }
+
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View v = inflater.inflate(R.layout.dialog_report, container, false);
+            Report report = getArguments().getParcelable("report");
+            TextView tv_title = v.findViewById(R.id.tv_title);
+            TextView tv_desc = v.findViewById(R.id.tv_desc);
+            TextView tv_date = v.findViewById(R.id.tv_date);
+            final ImageView iv_image = v.findViewById(R.id.iv_image);
+            final ProgressBar pb_loading = v.findViewById(R.id.pb_loading);
+            tv_title.setText(report.getTitle());
+            tv_desc.setText(report.getDescription());
+            DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
+            DateFormat dateFormat = android.text.format.DateFormat.getMediumDateFormat(getContext());
+            Date date = new Date(report.getTimestamp());
+            String completeDate = dateFormat.format(date) + ", " + timeFormat.format(date);
+            tv_date.setText(getString(R.string.report_date, completeDate));
+            pb_loading.setVisibility(View.VISIBLE);
+            GlideApp.with(this)
+                    .load(report.getImageReference(Report.ImageType.FULL))
+                    .placeholder(R.drawable.ic_image)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            pb_loading.setVisibility(View.GONE);
+                            iv_image.setImageResource(R.drawable.ic_no_image);
+                            return true;
+                        }
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            pb_loading.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(iv_image);
+            return v;
+        }
     }
 }

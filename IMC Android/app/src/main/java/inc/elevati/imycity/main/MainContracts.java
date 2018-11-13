@@ -3,7 +3,6 @@ package inc.elevati.imycity.main;
 import android.graphics.Bitmap;
 
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -34,14 +33,21 @@ public interface MainContracts {
     interface NewReportPresenter {
 
         /**
-         * Delegates to NewReportPresenter the report sending logic
+         * Starts the report sending transaction
          * @param image the report image
          * @param title the report title
          * @param description the report description
          */
         void handleSendReport(Bitmap image, String title, String description);
 
-        void dismissViewDialog();
+        /**
+         * Called after image has been sent to storage correctly,
+         * it sends the report data to Firestore
+         * @param report the report to be sent
+         */
+        void sendReportData(Report report);
+
+        void dismissViewDialog(boolean error);
     }
 
     interface AllReportsPresenter {
@@ -53,19 +59,11 @@ public interface MainContracts {
         void resetViewRefreshing();
 
         void showReport(Report report);
-
-        /**
-         * Returns the storage reference to the given image
-         * @param imageName the file name
-         * @param type the type required ("image" or "thumb)
-         * @return the storage reference to the given image
-         */
-        StorageReference getImageReference(String imageName, String type);
     }
 
     interface NewReportView {
 
-        void dismissProgressDialog();
+        void dismissProgressDialog(boolean error);
     }
 
     interface AllReportsView {

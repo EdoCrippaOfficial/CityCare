@@ -3,14 +3,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="30dp">
+    android:padding="30dp"
+    android:focusableInTouchMode="true">
 
     <ImageView
         android:id="@+id/iv_new_report"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/dark_grey" />
+        android:background="#BFBFBF"
+        android:src="@drawable/ic_add_image" />
 
     <EditText
         android:id="@+id/et_new_report_title"
@@ -19,14 +21,16 @@
         android:hint="@string/new_report_title"
         android:layout_marginTop="25dp"
         android:textSize="18sp"
-        android:inputType="text"/>
+        android:inputType="textCapSentences"/>
 
     <EditText
         android:id="@+id/et_new_report_desc"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:textSize="14sp"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:inputType="textCapSentences"
         android:hint="@string/new_report_description"/>
 
     <Button

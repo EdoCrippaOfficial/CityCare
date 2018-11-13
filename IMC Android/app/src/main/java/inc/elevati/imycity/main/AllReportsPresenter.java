@@ -2,8 +2,6 @@ package inc.elevati.imycity.main;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ class AllReportsPresenter implements MainContracts.AllReportsPresenter {
     public void displayAllReports(QuerySnapshot results) {
         List<Report> reports = new ArrayList<>();
         for (QueryDocumentSnapshot snap: results) {
-            reports.add(new Report(snap.getString("title"), snap.getString("description"), snap.getString("image")));
+            reports.add(new Report(snap.getString("title"), snap.getString("description"), snap.getString("image"), snap.getLong("timestamp")));
         }
         view.updateReports(reports);
     }
@@ -42,10 +40,5 @@ class AllReportsPresenter implements MainContracts.AllReportsPresenter {
     @Override
     public void showReport(Report report) {
         view.showReportDialog(report);
-    }
-
-    @Override
-    public StorageReference getImageReference(String imageName, String type) {
-        return FirebaseStorage.getInstance().getReference("images/" + imageName + "/" + type);
     }
 }

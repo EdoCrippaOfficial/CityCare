@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout
         android:orientation="vertical"
@@ -15,19 +16,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="24sp"
+            android:textSize="26sp"
+            android:textStyle="bold"
             android:textColor="#000000"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp">
+            android:layout_height="250dp"
+            android:layout_marginTop="15dp">
 
             <ProgressBar
                 android:id="@+id/pb_loading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                style="@style/Widget.AppCompat.ProgressBar"/>
 
             <ImageView
                 android:id="@+id/iv_image"
@@ -39,11 +43,22 @@
         <TextView
             android:id="@+id/tv_desc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textColor="@color/dark_grey"/>
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textStyle="italic"
+            android:textColor="#333333"
+            android:textSize="20sp"/>
 
     </LinearLayout>
 

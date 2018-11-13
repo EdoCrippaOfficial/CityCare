@@ -72,11 +72,14 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         holder.tv_desc.setText(r.getDescription());
         holder.pb_loading.setVisibility(View.VISIBLE);
         GlideApp.with(context)
-                .load(presenter.getImageReference(r.getImageName(), "thumb"))
+                .load(r.getImageReference(Report.ImageType.THUMBNAIL))
+                .placeholder(R.drawable.ic_image)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
+                        holder.pb_loading.setVisibility(View.GONE);
+                        holder.iv_image.setImageResource(R.drawable.ic_no_image);
+                        return true;
                     }
 
                     @Override

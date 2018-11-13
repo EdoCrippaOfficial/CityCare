@@ -19,11 +19,11 @@ public interface UtilsInterface {
     }
 
     interface StorageSender {
-        void send(Bitmap image, String fileName);
+        void send(Bitmap image, Report report);
     }
 
     interface DatabaseSender {
-        void send(String title, String description, String imageName);
+        void send(Report report);
     }
 
     interface DatabaseReader {

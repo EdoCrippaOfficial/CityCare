@@ -7,32 +7,41 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+
+import inc.elevati.imycity.main.MainContracts;
 
 public class FirestoreSender implements UtilsInterface.DatabaseSender {
 
+    private MainContracts.NewReportPresenter presenter;
+
+    public FirestoreSender(MainContracts.NewReportPresenter presenter) {
+        this.presenter = presenter;
+    }
+
     @Override
-    public void send(String title, String description, String imageName) {
+    public void send(final Report report) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
-        Map<String, String> report = new HashMap<>();
-        report.put("title", title);
-        report.put("description", description);
-        report.put("image", imageName);
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", report.getTitle());
+        map.put("description", report.getDescription());
+        map.put("image", report.getImageName());
+        map.put("timestamp", report.getTimestamp());
         dbRef.collection("reports")
-                .add(report)
+                .add(map)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        System.out.println("DocumentSnapshot added with ID: " + documentReference.getId());
+                        presenter.dismissViewDialog(false);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        e.printStackTrace();
+                        // Delete the image uploaded previously on storage
+                        StorageWriter.deleteImage(report.getImageName());
+                        presenter.dismissViewDialog(true);
                     }
                 });
     }
