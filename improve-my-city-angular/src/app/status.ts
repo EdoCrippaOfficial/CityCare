@@ -2,5 +2,6 @@
 export enum Status {
   accettato,
   rifiutato,
+  completato,
   attesa
 }

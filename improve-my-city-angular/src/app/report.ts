@@ -1,12 +1,14 @@
 //Class that represents reports
+import { Observable } from 'rxjs';
 import { Status } from './status';
 
 export class Report {
   id: number;
-  titolo: string;
-  data: Date;
-  descrizione: string;
-  foto: File;
-  utente: string;
+  title: string;
+  timestamp: Date;
+  description: string;
+  reply: string;
+  image: Observable<any>;
+  user: string;
   status: Status;
 }
