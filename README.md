@@ -14,4 +14,4 @@
 - [ ] Implementare tutti i campi db
 
 ### Web
-Sezione Contatti e About?
+- [ ] Errore nel binding asincrono in report-detail

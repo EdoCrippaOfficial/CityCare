@@ -1,0 +1,25 @@
+.modal {
+  text-align: center;
+  margin-top: -30%;
+}
+@media screen and (min-width: 768px) {
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+  }
+}
+.modal-dialog {
+  display: block;
+  text-align: left;
+  vertical-align: middle;
+}
+.modal-body p {
+    word-wrap: break-word;
+}
+.modal-title {
+  display:block;
+  width:85%;
+  word-wrap:break-word;
+}

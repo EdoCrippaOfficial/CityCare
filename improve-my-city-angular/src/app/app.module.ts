@@ -15,11 +15,15 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
+import { ReportDetailComponent } from './report-detail/report-detail.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ReportComponent
+    ReportComponent,
+    ReportDetailComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
