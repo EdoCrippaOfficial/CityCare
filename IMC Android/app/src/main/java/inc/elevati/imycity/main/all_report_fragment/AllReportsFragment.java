@@ -21,6 +21,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -111,7 +112,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
             TextView tv_title = v.findViewById(R.id.tv_title);
             TextView tv_desc = v.findViewById(R.id.tv_desc);
             TextView tv_date = v.findViewById(R.id.tv_date);
-            final ImageView iv_image = v.findViewById(R.id.iv_image);
+            final PhotoView iv_image = v.findViewById(R.id.iv_image);
             final ProgressBar pb_loading = v.findViewById(R.id.pb_loading);
             tv_title.setText(report.getTitle());
             tv_desc.setText(report.getDescription());
