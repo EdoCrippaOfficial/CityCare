@@ -18,6 +18,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import inc.elevati.imycity.R;
@@ -73,7 +75,7 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         holder.tv_desc.setText(r.getDescription());
         holder.pb_loading.setVisibility(View.VISIBLE);
         GlideApp.with(context)
-                .load(r.getImageReference(Report.ImageType.THUMBNAIL))
+                .load(r.getImageReference(Report.IMAGE_THUMBNAIL))
                 .placeholder(R.drawable.ic_image)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -102,14 +104,35 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         return position;
     }
 
-    void addReports(List<Report> reports) {
-        this.reports.addAll(reports);
+    void sortReports(int order) {
+        switch (order) {
+            case AllReportsFragment.REPORT_SORT_DATE_NEWEST:
+                Collections.sort(reports, new Comparator<Report>() {
+                    @Override
+                    public int compare(Report r1, Report r2) {
+                        return Long.compare(r2.getTimestamp(), r1.getTimestamp());
+                    }
+                });
+                break;
+            case AllReportsFragment.REPORT_SORT_DATE_OLDEST:
+                Collections.sort(reports, new Comparator<Report>() {
+                    @Override
+                    public int compare(Report r1, Report r2) {
+                        return Long.compare(r1.getTimestamp(), r2.getTimestamp());
+                    }
+                });
+                break;
+            case AllReportsFragment.REPORT_SORT_STARS_MORE:
+                break;
+            case AllReportsFragment.REPORT_SORT_STARS_LESS:
+                break;
+        }
         notifyDataSetChanged();
     }
 
-    void updateReports(List<Report> reports) {
+    void updateReports(List<Report> reports, int order) {
         this.reports.clear();
         this.reports.addAll(reports);
-        notifyDataSetChanged();
+        sortReports(order);
     }
 }

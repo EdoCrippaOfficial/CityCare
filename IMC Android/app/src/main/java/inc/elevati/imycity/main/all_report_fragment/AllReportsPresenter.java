@@ -28,7 +28,11 @@ class AllReportsPresenter implements MainContracts.AllReportsPresenter {
     public void displayAllReports(QuerySnapshot results) {
         List<Report> reports = new ArrayList<>();
         for (QueryDocumentSnapshot snap: results) {
-            reports.add(new Report(snap.getString("title"), snap.getString("description"), snap.getString("image"), snap.getLong("timestamp")));
+            String title = snap.getString("title");
+            String description = snap.getString("description");
+            String image = snap.getString("image");
+            long timestamp = snap.getLong("timestamp");
+            reports.add(new Report(title, description, image, timestamp));
         }
         view.updateReports(reports);
     }

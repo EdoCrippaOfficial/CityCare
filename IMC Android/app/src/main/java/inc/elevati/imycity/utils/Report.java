@@ -8,17 +8,8 @@ import com.google.firebase.storage.StorageReference;
 
 public class Report implements Parcelable {
 
-    public enum ImageType {
-
-        FULL("/img"), THUMBNAIL("/thumb");
-
-        String path;
-
-        ImageType(String path) {
-            this.path = path;
-        }
-    }
-
+    public static final String IMAGE_FULL = "/img";
+    public static final String IMAGE_THUMBNAIL = "/thumb";
     private String title, description, imageName;
     private long timestamp;
 
@@ -36,8 +27,8 @@ public class Report implements Parcelable {
         this.timestamp = in.readLong();
     }
 
-    public StorageReference getImageReference(ImageType type) {
-        return FirebaseStorage.getInstance().getReference("images/" + imageName + type.path);
+    public StorageReference getImageReference(String type) {
+        return FirebaseStorage.getInstance().getReference("images/" + imageName + type);
     }
 
     public String getTitle() {

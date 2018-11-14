@@ -1,5 +1,8 @@
 package inc.elevati.imycity.main.all_report_fragment;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,10 +14,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.DataSource;
@@ -34,6 +40,11 @@ import inc.elevati.imycity.utils.Report;
 
 public class AllReportsFragment extends Fragment implements MainContracts.AllReportsView, SwipeRefreshLayout.OnRefreshListener {
 
+    final static int REPORT_SORT_DATE_NEWEST = 1;
+    final static int REPORT_SORT_DATE_OLDEST = 2;
+    final static int REPORT_SORT_STARS_MORE = 3;
+    final static int REPORT_SORT_STARS_LESS = 4;
+    private static int sort_criteria;
     private AllReportsAdapter reportsAdapter;
     private MainContracts.AllReportsPresenter presenter;
     private SwipeRefreshLayout refresher;
@@ -42,6 +53,13 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_all, container, false);
+        setHasOptionsMenu(true);
+
+        // Shared preferences for report sorting criteria
+        if (savedInstanceState == null) {
+            SharedPreferences sharedPreferences = getContext().getSharedPreferences("IMC", Context.MODE_PRIVATE);
+            sort_criteria = sharedPreferences.getInt("sort", REPORT_SORT_DATE_NEWEST);
+        }
 
         // Swipe refresh
         refresher = v.findViewById(R.id.refresher);
@@ -67,10 +85,9 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         return new AllReportsFragment();
     }
 
-
     @Override
     public void updateReports(List<Report> reports) {
-        reportsAdapter.updateReports(reports);
+        reportsAdapter.updateReports(reports, sort_criteria);
     }
 
     @Override
@@ -87,6 +104,82 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
     @Override
     public void onRefresh() {
         presenter.loadAllReports();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Get the menu inflated in MainActivity to set a click listener on sort button
+        MenuItem sortButton = menu.findItem(R.id.bn_sort);
+        sortButton.getActionView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Dialog that prompts user the sort criteria selection
+                final Dialog dialog = new Dialog(getContext(), android.R.style.Theme_Material_Light_Dialog);
+                dialog.setContentView(R.layout.dialog_sort);
+                dialog.setTitle(R.string.sort_report_title);
+
+                // Set the button selected by default (based on previous choice)
+                RadioGroup radioGroup = dialog.findViewById(R.id.radio_sort);
+                int idChecked = R.id.bn_newest;
+                switch (sort_criteria) {
+                    case AllReportsFragment.REPORT_SORT_DATE_NEWEST:
+                        idChecked = R.id.bn_newest;
+                        break;
+                    case AllReportsFragment.REPORT_SORT_DATE_OLDEST:
+                        idChecked = R.id.bn_oldest;
+                        break;
+                    case AllReportsFragment.REPORT_SORT_STARS_MORE:
+                        idChecked = R.id.bn_more_stars;
+                        break;
+                    case AllReportsFragment.REPORT_SORT_STARS_LESS:
+                        idChecked = R.id.bn_less_stars;
+                        break;
+                }
+                radioGroup.check(idChecked);
+
+                // Listeners for dialog buttons
+                dialog.findViewById(R.id.bn_newest).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        if (sort_criteria != REPORT_SORT_DATE_NEWEST) changeSortCriteria(REPORT_SORT_DATE_NEWEST);
+                    }
+                });
+                dialog.findViewById(R.id.bn_oldest).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        if (sort_criteria != REPORT_SORT_DATE_OLDEST) changeSortCriteria(REPORT_SORT_DATE_OLDEST);
+                    }
+                });
+                dialog.findViewById(R.id.bn_more_stars).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        if (sort_criteria != REPORT_SORT_STARS_MORE) changeSortCriteria(REPORT_SORT_STARS_MORE);
+                    }
+                });
+                dialog.findViewById(R.id.bn_less_stars).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        if (sort_criteria != REPORT_SORT_STARS_LESS) changeSortCriteria(REPORT_SORT_STARS_LESS);
+                    }
+                });
+                dialog.show();
+            }
+        });
+    }
+
+    /**
+     * Tells the adapter the sort criteria for the reports and then saves it in SharedPreferences
+     * @param sortCriteria the sort criteria chosen
+     */
+    private void changeSortCriteria(int sortCriteria) {
+        sort_criteria = sortCriteria;
+        reportsAdapter.sortReports(sortCriteria);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("IMC", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt("sort", sortCriteria).apply();
     }
 
     public static class ReportDialog extends DialogFragment {
@@ -123,7 +216,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
             tv_date.setText(getString(R.string.report_date, completeDate));
             pb_loading.setVisibility(View.VISIBLE);
             GlideApp.with(this)
-                    .load(report.getImageReference(Report.ImageType.FULL))
+                    .load(report.getImageReference(Report.IMAGE_FULL))
                     .placeholder(R.drawable.ic_image)
                     .listener(new RequestListener<Drawable>() {
                         @Override

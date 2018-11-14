@@ -1,6 +1,5 @@
 package inc.elevati.imycity.main;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,14 +13,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.all_report_fragment.AllReportsFragment;
@@ -29,21 +24,17 @@ import inc.elevati.imycity.main.new_report_fragment.NewReportFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static int PAGE_ALL = 0;
+    private final static int PAGE_NEW = 1;
     private final static int NUM_FRAGMENTS = 2;
     private ViewPager pager;
     private DrawerLayout menuDrawer;
     private NavigationView menuNavigator;
 
-    ImageView iv_sort;
-    MyPageListrner mpl = new MyPageListrner();
-    MenuItem sort_menu;
-    static int lastPage = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         // Action Bar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -64,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
                 menuDrawer.closeDrawers();
                 switch (menuItem.getItemId()) {
                     case R.id.menu_all:
-                        scrollToPage(MainContracts.MenuPages.PAGE_ALL);
+                        scrollToPage(PAGE_ALL);
                         break;
                     case R.id.menu_new:
-                        scrollToPage(MainContracts.MenuPages.PAGE_NEW);
+                        scrollToPage(PAGE_NEW);
                         break;
                 }
                 return true;
@@ -82,9 +73,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(pager);
     }
 
-    public void scrollToPage(final MainContracts.MenuPages page) {
-        pager.setCurrentItem(page.position, true);
-
+    public void scrollToPage(int page) {
+        pager.setCurrentItem(page, true);
     }
 
     @Override
@@ -95,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         // If we're on main fragment the app closes, else returns to main fragment
-        if (pager.getCurrentItem() == 0) super.onBackPressed();
-        else scrollToPage(MainContracts.MenuPages.PAGE_ALL);
+        if (pager.getCurrentItem() == PAGE_ALL) super.onBackPressed();
+        else scrollToPage(PAGE_ALL);
     }
 
     @Override
@@ -105,38 +95,56 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 menuDrawer.openDrawer(GravityCompat.START);
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        sort_menu = menu.findItem(R.id.sort);
-        // Do animation start
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        iv_sort= (ImageView)inflater.inflate(R.layout.iv_sort, null);
-        iv_sort.setOnClickListener(new View.OnClickListener() {
+        getMenuInflater().inflate(R.menu.menu_bar, menu);
+        final MenuItem sortButton = menu.findItem(R.id.bn_sort);
+
+        // ImageView to be inflated to sortButton
+        ImageView imageSort = (ImageView) getLayoutInflater().inflate(R.layout.button_sort, null);
+        sortButton.setActionView(imageSort);
+
+        // Page change listener to know if the button should be shown
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrolled(int i, float v, int i1) { }
+
             @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "SELECT SORTING METHOD", Toast.LENGTH_LONG).show();
+            public void onPageSelected(int i) {
+                // The button should be shown only if we're in PAGE_ALL fragment
+                if (i == PAGE_ALL) {
+                    sortButton.setVisible(true);
+                    TranslateAnimation animate = new TranslateAnimation(200, 0, 0, 0);
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    sortButton.getActionView().startAnimation(animate);
+                    sortButton.getActionView().setEnabled(true);
+                } else {
+                    // Here sortButton is still visible, but it hides with the animation
+                    TranslateAnimation animate = new TranslateAnimation(0, 300, 0, 0);
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    sortButton.getActionView().startAnimation(animate);
+                    sortButton.getActionView().setEnabled(false);
+                }
             }
+
+            @Override
+            public void onPageScrollStateChanged(int i) { }
         });
-        sort_menu.setActionView(iv_sort);
-        pager.addOnPageChangeListener(mpl);
-        if (!(lastPage == 0)){
-            sort_menu.setVisible(false);
-            iv_sort.setEnabled(false);
-        }
+
+        // Hide the button if we're not in PAGE_ALL (happens when activity is restarted after orientation change)
+        if (pager.getCurrentItem() != PAGE_ALL) sortButton.setVisible(false);
         return true;
     }
 
     @Override
     protected void onDestroy() {
-        pager.removeOnPageChangeListener(mpl);
         super.onDestroy();
+        pager.clearOnPageChangeListeners();
     }
 
     private class FragmentAdapter extends FragmentPagerAdapter {
@@ -170,40 +178,6 @@ public class MainActivity extends AppCompatActivity {
                     return getString(R.string.menu_all);
             }
             return null;
-        }
-    }
-
-    private class MyPageListrner implements ViewPager.OnPageChangeListener {
-
-        @Override
-        public void onPageScrolled(int i, float v, int i1) {
-
-        }
-
-        @Override
-        public void onPageSelected(int i) {
-            if (i == 0){    //pagina 0: all --> visibile
-                sort_menu.setVisible(true);
-                TranslateAnimation animate = new TranslateAnimation(200,0,0,0);
-                animate.setDuration(500);
-                animate.setFillAfter(true);
-                iv_sort.startAnimation(animate);
-                iv_sort.setEnabled(true);
-            }
-
-            else{           //altre pagine  --> invisibile
-                TranslateAnimation animate = new TranslateAnimation(0,300,0,0);
-                animate.setDuration(500);
-                animate.setFillAfter(true);
-                iv_sort.startAnimation(animate);
-                iv_sort.setEnabled(false);
-            }
-            lastPage = i;
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int i) {
-
         }
     }
 }

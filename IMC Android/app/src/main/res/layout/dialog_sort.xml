@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/radio_sort"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <RadioButton
+        android:id="@+id/bn_newest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sort_report_newest"
+        android:textSize="22sp"/>
+
+    <RadioButton
+        android:id="@+id/bn_oldest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sort_report_oldest"
+        android:textSize="22sp"/>
+
+    <RadioButton
+        android:id="@+id/bn_more_stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sort_report_most"
+        android:enabled="false"
+        android:textSize="22sp"/>
+
+    <RadioButton
+        android:id="@+id/bn_less_stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sort_report_least"
+        android:enabled="false"
+        android:textSize="22sp"/>
+
+</RadioGroup>

@@ -14,22 +14,6 @@ import inc.elevati.imycity.utils.Report;
  */
 public interface MainContracts {
 
-    /**
-     *  This enum lists all ic_menu pages and it's used in
-     *  communication within View and NewReportPresenter
-     */
-    enum MenuPages {
-
-        PAGE_ALL(0), PAGE_NEW(1);
-
-        int position;
-
-        MenuPages(int position) {
-            this.position = position;
-        }
-    }
-
-
     interface NewReportPresenter {
 
         /**

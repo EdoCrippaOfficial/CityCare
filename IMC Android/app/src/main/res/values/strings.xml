@@ -20,4 +20,12 @@
 
     <string name="report_date">Created on: %s</string>
 
+    <string name="sort_report_title">Order reports by:</string>
+    <string name="sort_report_newest">Date created (newest)</string>
+    <string name="sort_report_oldest">Date created (oldest)</string>
+    <string name="sort_report_most">Most popular</string>
+    <string name="sort_report_least">Least popular</string>
+
+    <string name="content_desc_sort">Sort by…</string>
+
 </resources>
