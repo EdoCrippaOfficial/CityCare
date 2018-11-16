@@ -12,29 +12,46 @@ import java.util.Map;
 
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.utils.UtilsInterface;
+import inc.elevati.imycity.utils.UtilsContracts;
 
-public class FirestoreSender implements UtilsInterface.DatabaseSender {
+/**
+ * Class that implements the database writing
+ */
+public class FirestoreSender implements UtilsContracts.DatabaseSender {
 
+    /**
+     * The recipient presenter
+     */
     private MainContracts.NewReportPresenter presenter;
 
     public FirestoreSender(MainContracts.NewReportPresenter presenter) {
         this.presenter = presenter;
     }
 
+    /**
+     * Method called to send a report to database
+     * @param report the report to be sent
+     */
     @Override
     public void send(final Report report) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         Map<String, Object> map = new HashMap<>();
+        map.put("id", report.getId());
         map.put("title", report.getTitle());
         map.put("description", report.getDescription());
         map.put("image", report.getImageName());
         map.put("timestamp", report.getTimestamp());
-        dbRef.collection("reports")
-                .add(map)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        map.put("user_id", report.getUserId());
+        map.put("operator_id", "");
+        map.put("n_stars", 0);
+        map.put("reply", "");
+        map.put("status", Report.STATUS_WAITING);
+        map.put("position", report.getLatitude() + "," + report.getLongitude());
+        dbRef.collection("reports").document(report.getId())
+                .set(map)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void aVoid) {
                         presenter.dismissViewDialog(false);
                     }
                 })

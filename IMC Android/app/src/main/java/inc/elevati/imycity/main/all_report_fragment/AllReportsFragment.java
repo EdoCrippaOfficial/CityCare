@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -38,17 +42,49 @@ import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
 
+/**
+ * This fragment shows all reports from the database
+ */
 public class AllReportsFragment extends Fragment implements MainContracts.AllReportsView, SwipeRefreshLayout.OnRefreshListener {
 
+    /**
+     * This constants define the possible report sorting criteria
+     */
     final static int REPORT_SORT_DATE_NEWEST = 1;
     final static int REPORT_SORT_DATE_OLDEST = 2;
     final static int REPORT_SORT_STARS_MORE = 3;
     final static int REPORT_SORT_STARS_LESS = 4;
+
+    /**
+     * The sorting criteria chosen
+     */
     private static int sort_criteria;
+
+    /**
+     * The reports adapter
+     */
     private AllReportsAdapter reportsAdapter;
+
+    /**
+     * Presenter that handles non-graphic requests
+     */
     private MainContracts.AllReportsPresenter presenter;
+
+    /**
+     * Object used to refresh the list
+     */
     private SwipeRefreshLayout refresher;
 
+    /**
+     * Method called when the View associated to this fragment is created (the first time this
+     * fragment is shown, at orientation changes, at activity re-creations...); Here the layout
+     * is inflated and all Views owned by this fragment are initialized. In addition
+     * SharedPreferences are read to retrieve the preferred report sorting criteria
+     * @param inflater the layout inflater
+     * @param container this fragment parent view
+     * @param savedInstanceState a Bundle containing saved data to be restored
+     * @return the View initialized and inflated
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,42 +117,76 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         return v;
     }
 
+    /**
+     * Static method that returns an instance of this fragment
+     * @return a NewReportFragment instance
+     */
     public static AllReportsFragment newInstance() {
         return new AllReportsFragment();
     }
 
+    /**
+     * Method called to update the report list displayed in RecyclerView
+     * @param reports the list of reports to be displayed
+     */
     @Override
     public void updateReports(List<Report> reports) {
         reportsAdapter.updateReports(reports, sort_criteria);
     }
 
+    /**
+     * Called when user clicks on a report in the list, it opens a
+     * fullscreen dialog containing all the report information
+     * @param report the clicked report
+     */
     @Override
     public void showReportDialog(Report report) {
         ReportDialog dialog = ReportDialog.newInstance(report);
         dialog.show(getFragmentManager(), null);
     }
 
+    /**
+     * Method called to hide the View shown when refreshing
+     */
     @Override
     public void resetRefreshing() {
         refresher.setRefreshing(false);
     }
 
+    /**
+     * Called when user swipe down on screen to refresh list
+     */
     @Override
     public void onRefresh() {
         presenter.loadAllReports();
     }
 
+    /**
+     * Method called when action bar is created. In this fragment the sort button is
+     * retrieved and then is moved on the screen with an animation, and a listener
+     * is attached to it to allow user to change the report sort criteria
+     * @param menu the menu Object
+     * @param inflater the layout inflater
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Get the menu inflated in MainActivity to set a click listener on sort button
+        // Animate sort button inside the screen and set a ClickListener on it
+        inflater.inflate(R.menu.menu_bar, menu);
         MenuItem sortButton = menu.findItem(R.id.bn_sort);
+        ImageView imageSort = (ImageView) getLayoutInflater().inflate(R.layout.button_sort, null);
+        sortButton.setActionView(imageSort);
+        sortButton.setVisible(true);
+        TranslateAnimation animate = new TranslateAnimation(200, 0, 0, 0);
+        animate.setDuration(450);
+        animate.setFillAfter(true);
+        sortButton.getActionView().startAnimation(animate);
         sortButton.getActionView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Dialog that prompts user the sort criteria selection
-                final Dialog dialog = new Dialog(getContext(), android.R.style.Theme_Material_Light_Dialog);
-                dialog.setContentView(R.layout.dialog_sort);
+                final AppCompatDialog dialog = new AppCompatDialog(getContext());
                 dialog.setTitle(R.string.sort_report_title);
+                dialog.setContentView(R.layout.dialog_sort);
 
                 // Set the button selected by default (based on previous choice)
                 RadioGroup radioGroup = dialog.findViewById(R.id.radio_sort);
@@ -182,8 +252,17 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         sharedPreferences.edit().putInt("sort", sortCriteria).apply();
     }
 
+    /**
+     * In this class it is defined the style of the dialog shown when user clicks on a report
+     */
     public static class ReportDialog extends DialogFragment {
 
+        /**
+         * Static method that returns an instance of ReportDialog
+         * with the specified report as an argument
+         * @param report the report to be shown
+         * @return a ReportDialog instance
+         */
         static ReportDialog newInstance(Report report) {
             ReportDialog dialog = new ReportDialog();
             Bundle args = new Bundle();
@@ -198,9 +277,19 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
             setStyle(STYLE_NO_TITLE, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         }
 
+        /**
+         * Called when the dialog View is created, here all Views are
+         * initialized and the report data is adapted to user interface
+         * @param inflater the layout inflater
+         * @param container this dialog parent
+         * @param savedInstanceState a Bundle containing saved data to be restored
+         * @return the created View
+         */
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View v = inflater.inflate(R.layout.dialog_report, container, false);
+
+            // Report retrieving from arguments
             Report report = getArguments().getParcelable("report");
             TextView tv_title = v.findViewById(R.id.tv_title);
             TextView tv_desc = v.findViewById(R.id.tv_desc);
@@ -209,12 +298,16 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
             final ProgressBar pb_loading = v.findViewById(R.id.pb_loading);
             tv_title.setText(report.getTitle());
             tv_desc.setText(report.getDescription());
+
+            // Time formatting: Created on: date, hour
             DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
             DateFormat dateFormat = android.text.format.DateFormat.getMediumDateFormat(getContext());
             Date date = new Date(report.getTimestamp());
             String completeDate = dateFormat.format(date) + ", " + timeFormat.format(date);
             tv_date.setText(getString(R.string.report_date, completeDate));
             pb_loading.setVisibility(View.VISIBLE);
+
+            // Image loading from storage with Glide
             GlideApp.with(this)
                     .load(report.getImageReference(Report.IMAGE_FULL))
                     .placeholder(R.drawable.ic_image)

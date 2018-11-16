@@ -26,27 +26,51 @@ public interface MainContracts {
 
         /**
          * Called after image has been sent to storage correctly,
-         * it sends the report data to Firestore
+         * it sends the report data to database
          * @param report the report to be sent
          */
         void sendReportData(Report report);
 
+        /**
+         * Called by the app kernel to notify that report sending has completed
+         * @param error false if the operation has complete successfully, true otherwise
+         */
         void dismissViewDialog(boolean error);
     }
 
     interface AllReportsPresenter {
 
+        /**
+         * Method called to retrieve all reports from database
+        */
         void loadAllReports();
 
+        /**
+         * Method called to forward data retrieved from database to View
+         * @param results the data retrieved
+         */
         void displayAllReports(QuerySnapshot results);
 
+        /**
+         * Method called by app kernel that tells View to hide the refreshing image
+         */
         void resetViewRefreshing();
 
+        /**
+         * Method called when user click on a report in the list
+         * @param report the report to be shown
+         */
         void showReport(Report report);
     }
 
     interface NewReportView {
 
+        /**
+         * Dismisses the progress dialog after a report sending
+         * @param error should be true if the operation didn't complete
+         *              If false the fragments fields (ImageView and EditText
+         *              for title and description) are cleared
+         */
         void dismissProgressDialog(boolean error);
     }
 
@@ -59,8 +83,16 @@ public interface MainContracts {
          */
         void updateReports(List<Report> reports);
 
+        /**
+         * Method called to hide the View shown when refreshing
+         */
         void resetRefreshing();
 
+        /**
+         * Called when user clicks on a report in the list, it opens a
+         * fullscreen dialog containing all the report information
+         * @param report the clicked report
+         */
         void showReportDialog(Report report);
     }
 }

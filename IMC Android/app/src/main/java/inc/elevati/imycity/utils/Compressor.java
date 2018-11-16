@@ -4,14 +4,25 @@ import android.graphics.Bitmap;
 
 import java.io.ByteArrayOutputStream;
 
-public class Compressor implements UtilsInterface.ImageCompressor {
+/**
+ * Class that compresses images to reduce their size
+ */
+public class Compressor implements UtilsContracts.ImageCompressor {
 
+    /**
+     * The image to compress
+     */
     private Bitmap image;
 
     public Compressor(Bitmap image) {
         this.image = image;
     }
 
+    /**
+     * Image compressing method
+     * @param px the image maximum size
+     * @return the byte array of compressed image
+     */
     @Override
     public byte[] getCompressedByteData(int px) {
         float height = image.getHeight();
@@ -25,8 +36,8 @@ public class Compressor implements UtilsInterface.ImageCompressor {
             nWidth = (int) (width * (px / height));
         }
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(image, nWidth, nHeight, true);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
-        return baos.toByteArray();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 75, stream);
+        return stream.toByteArray();
     }
 }

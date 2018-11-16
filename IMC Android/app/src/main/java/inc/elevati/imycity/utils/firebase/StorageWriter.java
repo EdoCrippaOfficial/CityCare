@@ -2,7 +2,6 @@ package inc.elevati.imycity.utils.firebase;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -13,22 +12,36 @@ import com.google.firebase.storage.UploadTask;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.Compressor;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.utils.UtilsInterface;
+import inc.elevati.imycity.utils.UtilsContracts;
 
-public class StorageWriter implements UtilsInterface.StorageSender {
+/**
+ * Class that implements the storage writing
+ */
+public class StorageWriter implements UtilsContracts.StorageSender {
 
+    /**
+     * The recipient presenter
+     */
     private MainContracts.NewReportPresenter presenter;
 
     public StorageWriter(MainContracts.NewReportPresenter presenter){
         this.presenter = presenter;
     }
 
+    /**
+     * Method called to send image to storage
+     * @param image the image to be sent
+     * @param report the report that owns the image
+     */
     @Override
     public void send(Bitmap image, final Report report) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        // Image compressing, normal and thumbnail
         Compressor compressor = new Compressor(image);
         final byte[] imageData = compressor.getCompressedByteData(1280);
         final byte[] thumbData = compressor.getCompressedByteData(160);
+
+        // Images storage sending
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         final StorageReference ref = storageReference.child("images/" + report.getImageName());
         ref.child("img").putBytes(imageData)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -61,7 +74,7 @@ public class StorageWriter implements UtilsInterface.StorageSender {
     }
 
     /**
-     * Called when sending report data to Firestore has failed
+     * Called when sending report data to database has failed
      * @param imageName the image to be removed from the storage
      */
     static void deleteImage(String imageName) {

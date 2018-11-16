@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:gravity="center"
+    android:background="@drawable/report_list_background"
     android:padding="5dp">
 
     <RelativeLayout
@@ -53,7 +54,7 @@
             android:textSize="18sp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:textColor="@color/dark_grey"/>
+            android:textColor="@color/black"/>
 
     </LinearLayout>
 

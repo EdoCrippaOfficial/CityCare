@@ -13,24 +13,48 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.all_report_fragment.AllReportsFragment;
 import inc.elevati.imycity.main.new_report_fragment.NewReportFragment;
 
+/**
+ * The main activity that contains all the fragments
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Constants used to identify the shown fragment
+     */
     private final static int PAGE_ALL = 0;
     private final static int PAGE_NEW = 1;
+
+    /**
+     * Total number of fragments
+     */
     private final static int NUM_FRAGMENTS = 2;
+
+    /**
+     * The object that organizes fragments in pages
+     */
     private ViewPager pager;
+
+    /**
+     * Main menu drawer
+     */
     private DrawerLayout menuDrawer;
+
+    /**
+     * Main menu navigator
+     */
     private NavigationView menuNavigator;
 
+    /**
+     * Called when app starts and after orientation changes or activity re-creations,
+     * here all the activity components are initialized and layout is shown
+     * @param savedInstanceState a Bundle containing saved data to be restored
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,10 +97,18 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(pager);
     }
 
-    public void scrollToPage(int page) {
+    /**
+     * Called when a menu item is clicked, changes the current visible fragment
+     * @param page the fragment to switch to
+     */
+    private void scrollToPage(int page) {
         pager.setCurrentItem(page, true);
     }
 
+    /**
+     * Called when users click back button on device, if AllReportsFragment is shown
+     * the app closes, otherwise AllReportsFragment is shown / menu is closed
+     */
     @Override
     public void onBackPressed() {
         // If ic_menu is open then we only close it
@@ -89,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
         else scrollToPage(PAGE_ALL);
     }
 
+    /**
+     * Called when a menu item is clicked
+     * @param item the item clicked
+     * @return true if the click has been processed, false otherwise
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -96,57 +133,22 @@ public class MainActivity extends AppCompatActivity {
                 menuDrawer.openDrawer(GravityCompat.START);
                 return true;
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_bar, menu);
-        final MenuItem sortButton = menu.findItem(R.id.bn_sort);
-
-        // ImageView to be inflated to sortButton
-        ImageView imageSort = (ImageView) getLayoutInflater().inflate(R.layout.button_sort, null);
-        sortButton.setActionView(imageSort);
-
-        // Page change listener to know if the button should be shown
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrolled(int i, float v, int i1) { }
-
-            @Override
-            public void onPageSelected(int i) {
-                // The button should be shown only if we're in PAGE_ALL fragment
-                if (i == PAGE_ALL) {
-                    sortButton.setVisible(true);
-                    TranslateAnimation animate = new TranslateAnimation(200, 0, 0, 0);
-                    animate.setDuration(500);
-                    animate.setFillAfter(true);
-                    sortButton.getActionView().startAnimation(animate);
-                    sortButton.getActionView().setEnabled(true);
-                } else {
-                    // Here sortButton is still visible, but it hides with the animation
-                    TranslateAnimation animate = new TranslateAnimation(0, 300, 0, 0);
-                    animate.setDuration(500);
-                    animate.setFillAfter(true);
-                    sortButton.getActionView().startAnimation(animate);
-                    sortButton.getActionView().setEnabled(false);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) { }
-        });
-
-        // Hide the button if we're not in PAGE_ALL (happens when activity is restarted after orientation change)
-        if (pager.getCurrentItem() != PAGE_ALL) sortButton.setVisible(false);
         return true;
     }
 
+    /**
+     * Called when activity is destroyed, all onPageChangeListeners
+     * are removed from ViewPager
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         pager.clearOnPageChangeListeners();
     }
 
+    /**
+     * Adapter class used by ViewPager to show fragments in pages
+     */
     private class FragmentAdapter extends FragmentPagerAdapter {
 
         private FragmentAdapter(FragmentManager fm) {

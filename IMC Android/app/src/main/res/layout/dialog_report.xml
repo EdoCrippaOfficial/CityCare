@@ -18,7 +18,7 @@
             android:gravity="center"
             android:textSize="26sp"
             android:textStyle="bold"
-            android:textColor="#000000"/>
+            android:textColor="@color/black"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -48,7 +48,7 @@
             android:gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:textSize="22sp"
-            android:textColor="@color/dark_grey"/>
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/tv_date"
@@ -57,7 +57,7 @@
             android:layout_marginTop="5dp"
             android:gravity="center"
             android:textStyle="italic"
-            android:textColor="#333333"
+            android:textColor="@color/light_grey"
             android:textSize="20sp"/>
 
     </LinearLayout>

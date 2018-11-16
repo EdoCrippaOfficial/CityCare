@@ -8,16 +8,25 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import inc.elevati.imycity.main.MainContracts;
-import inc.elevati.imycity.utils.UtilsInterface;
+import inc.elevati.imycity.utils.UtilsContracts;
 
-public class FirestoreReader implements UtilsInterface.DatabaseReader {
+/**
+ * Class that implements the database reading
+ */
+public class FirestoreReader implements UtilsContracts.DatabaseReader {
 
+    /**
+     * The recipient presenter
+     */
     private MainContracts.AllReportsPresenter presenter;
 
     public FirestoreReader(MainContracts.AllReportsPresenter presenter) {
         this.presenter = presenter;
     }
 
+    /**
+     * Method called to asynchronously retrieve all reports in database
+     */
     @Override
     public void readAllReports() {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
@@ -26,11 +35,9 @@ public class FirestoreReader implements UtilsInterface.DatabaseReader {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful())
-                            presenter.displayAllReports(task.getResult());
-                        else
-                            task.getException().printStackTrace();
+                        if (task.isSuccessful()) presenter.displayAllReports(task.getResult());
 
+                        // Hide refresh image
                         presenter.resetViewRefreshing();
                     }
                 });

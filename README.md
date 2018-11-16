@@ -8,11 +8,12 @@
 - [x] Implementare transazione per invio a DB (controllare che sia andato tutto bene cioè sia immagine che dati altrimenti rollback)
 - [x] Sistemare i layout anche per landscape
 - [x] Azzerare i campi di "New report" nel caso la transazione sia ok
-- [X] Aggiungere intent fotocamera
-- [X] Sort
-- [X] Photoview (prova)
-- [ ] Implementare tutti i campi db
-- [ ] Ruotare correttamente le foto
+- [x] Aggiungere intent fotocamera
+- [x] Sort
+- [x] Photoview (prova)
+- [x] Implementare tutti i campi db
+- [x] Ruotare correttamente le foto
+- [ ] TESTING E VERIFICA DEL SOFTWARE
 
 ### Web
 - [ ] Errore nel binding asincrono in report-detail

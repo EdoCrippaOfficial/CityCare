@@ -27,16 +27,44 @@ import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
 
+/**
+ * Adapter class that organizes report data to show it in a RecyclerView hosted in AllReportsFragment
+ */
 class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHolder> {
 
+    /**
+     * The context reference
+     */
     private Fragment context;
+
+    /**
+     * The report list to be shown
+     */
     private List<Report> reports;
+
+    /**
+     * The presenter that allows communication with the view
+     */
     private MainContracts.AllReportsPresenter presenter;
 
+    /**
+     * Class that lists and retrieves View objects from layout
+     */
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
+        /**
+         * The progress bar shown during image loading
+         */
         ProgressBar pb_loading;
+
+        /**
+         * TextViews fot title and description
+         */
         TextView tv_title, tv_desc;
+
+        /**
+         * ImageView for report image
+         */
         ImageView iv_image;
 
         MyViewHolder(@NonNull View itemView) {
@@ -54,10 +82,17 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         this.presenter = presenter;
     }
 
+    /**
+     * Called when a single item holder in RecyclerView is created, here
+     * click listeners is attached to ViewHolder
+     * @param parent the parent View
+     * @param viewType the view type
+     * @return the ViewHolder created
+     */
     @NonNull
     @Override
     public AllReportsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.report_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.report_list_item, parent, false);
         final MyViewHolder viewHolder = new MyViewHolder(v);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,12 +103,19 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         return viewHolder;
     }
 
+    /**
+     * Method called when a report is bound to ViewHolder, here all Views are initialized
+     * @param holder the ViewHolder
+     * @param position the report position in the list
+     */
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         Report r = reports.get(position);
         holder.tv_title.setText(r.getTitle());
         holder.tv_desc.setText(r.getDescription());
         holder.pb_loading.setVisibility(View.VISIBLE);
+
+        // Image loading from storage with Glide
         GlideApp.with(context)
                 .load(r.getImageReference(Report.IMAGE_THUMBNAIL))
                 .placeholder(R.drawable.ic_image)
@@ -104,6 +146,10 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         return position;
     }
 
+    /**
+     * Method called to change the reports order in the list
+     * @param order the requested order, should be one defined in AllReportsFragment
+     */
     void sortReports(int order) {
         switch (order) {
             case AllReportsFragment.REPORT_SORT_DATE_NEWEST:
@@ -130,6 +176,11 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         notifyDataSetChanged();
     }
 
+    /**
+     * Method called to update the reports list
+     * @param reports the new report list
+     * @param order the order used to show reports
+     */
     void updateReports(List<Report> reports, int order) {
         this.reports.clear();
         this.reports.addAll(reports);
