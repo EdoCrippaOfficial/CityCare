@@ -45,16 +45,16 @@ class AllReportsPresenter implements MainContracts.AllReportsPresenter {
             String id = snap.getString("id");
             String title = snap.getString("title");
             String description = snap.getString("description");
-            String image = snap.getString("image");
+            long timestamp = snap.getLong("timestamp");
             String userId = snap.getString("user_id");
-            String reply = snap.getString("reply");
             String operatorId = snap.getString("operator_id");
             long nStars = snap.getLong("n_stars");
+            String reply = snap.getString("reply");
             long status = snap.getLong("status");
             String position = snap.getString("position");
             String[] positionData = position.split(",");
-            long timestamp = snap.getLong("timestamp");
-            Report report = new Report(id, userId, title, description, reply, operatorId, image, timestamp, (int) nStars,
+
+            Report report = new Report(id, userId, title, description, reply, operatorId, timestamp, (int) nStars,
                     Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status);
 
             reports.add(report);

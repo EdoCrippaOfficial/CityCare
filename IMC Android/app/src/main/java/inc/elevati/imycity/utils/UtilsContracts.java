@@ -7,20 +7,6 @@ import android.graphics.Bitmap;
  */
 public interface UtilsContracts {
 
-    /**
-     *  Component used to reduce the size o the selected
-     *  image before sending it to storage.
-     */
-    interface ImageCompressor {
-
-        /**
-         * Called to get the byteStream from the compression
-         * @param px the image maximum size
-         * @return byte array ready to be sent to storage
-         */
-        byte[] getCompressedByteData(int px);
-    }
-
     interface StorageSender {
 
         /**

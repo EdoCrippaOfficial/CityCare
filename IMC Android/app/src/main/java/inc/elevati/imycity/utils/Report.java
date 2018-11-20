@@ -2,7 +2,6 @@ package inc.elevati.imycity.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -16,8 +15,8 @@ public class Report implements Parcelable {
     /**
      * Constants that identify the type of image requested
      */
-    public static final String IMAGE_FULL = "/img";
-    public static final String IMAGE_THUMBNAIL = "/thumb";
+    public static final String IMAGE_FULL = "_img";
+    public static final String IMAGE_THUMBNAIL = "_thumb";
 
     public static final int STATUS_ACCEPTED = 1;
     public static final int STATUS_REFUSED = 2;
@@ -26,7 +25,6 @@ public class Report implements Parcelable {
 
 
     private String id, userId, title, description, reply, operatorId;
-    private String imageName;
 
     /**
      * The report creation time, in milliseconds from January 1 1970, 00:00 UTC
@@ -47,17 +45,18 @@ public class Report implements Parcelable {
 
     /**
      * Public constructor used when new report is created
+     * @param id the report id (that also refers to image in storage)
      * @param title the report title
      * @param description the report description
-     * @param imageName the image name in storage
      * @param timestamp the report creation time, in milliseconds from January 1 1970, 00:00 UTC
      * @param userId the id of the user who created this report
+     * @param latitude the GPS latitude of the report
+     * @param longitude the GPS longitude of the report
      */
-    public Report(String title, String description, String imageName, long timestamp, String userId, long latitude, long longitude) {
-        this.id = imageName;
+    public Report(String id, String title, String description, long timestamp, String userId, long latitude, long longitude) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.imageName = imageName;
         this.timestamp = timestamp;
         this.userId = userId;
         this.latitude = latitude;
@@ -68,28 +67,26 @@ public class Report implements Parcelable {
 
     /**
      * Public constructor used when report is retrieved from database
-     * @param id this report id
+     * @param id the report id (that also refers to image in storage)
      * @param userId the id of the user who created this report
      * @param title the report title
      * @param description the report description
      * @param reply the reply from operator
      * @param operatorId the operator id
-     * @param imageName the image name in storage
      * @param timestamp the report creation time, in milliseconds from January 1 1970, 00:00 UTC
      * @param nStars the number of stars that this report received
      * @param latitude the GPS latitude of the report
      * @param longitude the GPS longitude of the report
      * @param status the report status
      */
-    public Report(String id, String userId, String title, String description, @Nullable String reply, @Nullable String operatorId,
-                  String imageName, long timestamp, int nStars, long latitude, long longitude, int status) {
+    public Report(String id, String userId, String title, String description, String reply, String operatorId,
+                  long timestamp, int nStars, long latitude, long longitude, int status) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.description = description;
         this.reply = reply;
         this.operatorId = operatorId;
-        this.imageName = imageName;
         this.timestamp = timestamp;
         this.nStars = nStars;
         this.latitude = latitude;
@@ -102,10 +99,17 @@ public class Report implements Parcelable {
      * @param in the Parcel object that represents this report
      */
     private Report(Parcel in) {
+        this.id = in.readString();
         this.title = in.readString();
         this.description = in.readString();
-        this.imageName = in.readString();
         this.timestamp = in.readLong();
+        this.userId = in.readString();
+        this.reply = in.readString();
+        this.operatorId = in.readString();
+        this.nStars = in.readInt();
+        this.latitude = in.readLong();
+        this.longitude = in.readLong();
+        this.status = in.readInt();
     }
 
     /**
@@ -114,7 +118,7 @@ public class Report implements Parcelable {
      * @return he storage reference to this report image
      */
     public StorageReference getImageReference(String type) {
-        return FirebaseStorage.getInstance().getReference("images/" + imageName + type);
+        return FirebaseStorage.getInstance().getReference("images/" + id + type);
     }
 
     public String getTitle() {
@@ -123,10 +127,6 @@ public class Report implements Parcelable {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getImageName() {
-        return imageName;
     }
 
     public long getTimestamp() {
@@ -141,12 +141,10 @@ public class Report implements Parcelable {
         return userId;
     }
 
-    @Nullable
     public String getReply() {
         return reply;
     }
 
-    @Nullable
     public String getOperatorId() {
         return operatorId;
     }
@@ -179,10 +177,17 @@ public class Report implements Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeString(imageName);
         dest.writeLong(timestamp);
+        dest.writeString(userId);
+        dest.writeString(reply);
+        dest.writeString(operatorId);
+        dest.writeInt(nStars);
+        dest.writeLong(latitude);
+        dest.writeLong(longitude);
+        dest.writeInt(status);
     }
 
     /**

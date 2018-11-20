@@ -13,13 +13,19 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ImageView
-            android:id="@+id/iv_new_report"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:background="#BFBFBF"
-            android:src="@drawable/ic_add_image" />
+            android:background="@color/light_grey">
+
+            <ImageView
+                android:id="@+id/iv_new_report"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_add_image" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:orientation="vertical"

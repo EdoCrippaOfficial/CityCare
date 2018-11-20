@@ -16,4 +16,9 @@
         <item name="windowNoTitle">false</item>
     </style>
 
+    <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminate">true</item>
+        <item name="android:colorAccent">@color/color_primary</item>
+    </style>
+
 </resources>

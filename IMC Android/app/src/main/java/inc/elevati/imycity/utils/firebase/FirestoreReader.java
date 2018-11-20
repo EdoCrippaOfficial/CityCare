@@ -10,23 +10,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.UtilsContracts;
 
-/**
- * Class that implements the database reading
- */
+/** Class that implements the database reading */
 public class FirestoreReader implements UtilsContracts.DatabaseReader {
 
-    /**
-     * The recipient presenter
-     */
+    /** The recipient presenter */
     private MainContracts.AllReportsPresenter presenter;
 
     public FirestoreReader(MainContracts.AllReportsPresenter presenter) {
         this.presenter = presenter;
     }
 
-    /**
-     * Method called to asynchronously retrieve all reports in database
-     */
+    /** Method called to asynchronously retrieve all reports in database */
     @Override
     public void readAllReports() {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();

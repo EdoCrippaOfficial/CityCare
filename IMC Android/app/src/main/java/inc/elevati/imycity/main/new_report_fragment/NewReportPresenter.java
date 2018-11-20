@@ -32,7 +32,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
     @Override
     public void handleSendReport(Bitmap image, String title, String description) {
         String uuid = UUID.randomUUID().toString();
-        Report report = new Report(title, description, uuid, System.currentTimeMillis(), "", 0, 0);
+        Report report = new Report(uuid, title, description, System.currentTimeMillis(), "", 0, 0);
 
         // Store image (normal and thumbnail) in Firebase Storage
         StorageWriter storageWriter = new StorageWriter(this);

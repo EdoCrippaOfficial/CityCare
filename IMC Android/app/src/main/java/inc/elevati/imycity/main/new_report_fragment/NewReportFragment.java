@@ -21,15 +21,11 @@ import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -62,9 +58,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         Bitmap image;
     }
 
-    /**
-     * Constants used to send intent requests (image pick or camera)
-     */
+    /** Constants used to send intent requests (image pick or camera) */
     private static final int PICK_IMAGE_REQUEST = 71;
     private static final int TAKE_PHOTO_REQUEST = 45;
 
@@ -73,9 +67,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
      */
     private MainContracts.NewReportPresenter presenter;
 
-    /**
-     * Dialog displayed during database and storage sending
-     */
+    /** Dialog displayed during database and storage sending */
     private Dialog progressDialog;
 
     /**
@@ -104,7 +96,6 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_new, container, false);
-        setHasOptionsMenu(true);
         presenter = new NewReportPresenter(this);
         imageView = v.findViewById(R.id.iv_new_report);
         textInputTitle = v.findViewById(R.id.text_input_edit_title);
@@ -156,8 +147,10 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
             public void onClick(View view) {
                 if (imageData.image == null) {
                     Toast.makeText(getContext(), R.string.new_report_no_picture, Toast.LENGTH_SHORT).show();
-                    Animation animation = new AlphaAnimation(1f, 0f);
-                    animation.setDuration(250);
+
+                    // Blink animation of the ImageView (the camera image)
+                    Animation animation = new AlphaAnimation(1f, 0.4f);
+                    animation.setDuration(350);
                     animation.setRepeatCount(2);
                     imageView.startAnimation(animation);
                     return;
@@ -211,9 +204,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         }
     }
 
-    /**
-     * Creates a dialog that asks user where to pick the image (gallery or camera)
-     */
+    /** Creates a dialog that asks user where to pick the image (gallery or camera) */
     private void createImageDialog() {
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_pick);
@@ -234,9 +225,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         dialog.show();
     }
 
-    /**
-     * Starts activity to pick image from gallery
-     */
+    /** Starts activity to pick image from gallery */
     private void pickImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -244,9 +233,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         startActivityForResult(Intent.createChooser(intent, getString(R.string.new_report_select_picture)), PICK_IMAGE_REQUEST);
     }
 
-    /**
-     * Creates a File object to receive photo from camera and then start camera activity
-     */
+    /** Creates a File object to receive photo from camera and then start camera activity */
     private void takePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -348,25 +335,5 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         imageData.cameraPath = image.getAbsolutePath();
         return image;
 
-    }
-
-    /**
-     * Method called when action bar is created. In this fragment the sort button is
-     * retrieved and then is moved off the screen with an animation
-     * @param menu the menu Object
-     * @param inflater the layout inflater
-     */
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Animate the sort button out of the screen
-        inflater.inflate(R.menu.menu_bar, menu);
-        MenuItem sortButton = menu.findItem(R.id.bn_sort);
-        ImageView imageSort = (ImageView) getLayoutInflater().inflate(R.layout.button_sort, null);
-        sortButton.setActionView(imageSort);
-        TranslateAnimation animate = new TranslateAnimation(0, 300, 0, 0);
-        animate.setDuration(450);
-        animate.setFillAfter(true);
-        sortButton.getActionView().startAnimation(animate);
-        sortButton.getActionView().setEnabled(false);
     }
 }

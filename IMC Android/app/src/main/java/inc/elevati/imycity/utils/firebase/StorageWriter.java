@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -36,18 +35,17 @@ public class StorageWriter implements UtilsContracts.StorageSender {
     @Override
     public void send(Bitmap image, final Report report) {
         // Image compressing, normal and thumbnail
-        Compressor compressor = new Compressor(image);
-        final byte[] imageData = compressor.getCompressedByteData(1280);
-        final byte[] thumbData = compressor.getCompressedByteData(160);
+        Compressor compressor = Compressor.getInstance();
+        final byte[] imageData = compressor.getCompressedByteData(image, Compressor.TYPE_FULL);
+        final byte[] thumbData = compressor.getCompressedByteData(image, Compressor.TYPE_THUMBNAIL);
 
         // Images storage sending
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        final StorageReference ref = storageReference.child("images/" + report.getImageName());
-        ref.child("img").putBytes(imageData)
+        final StorageReference imageReference = report.getImageReference(Report.IMAGE_FULL);
+        imageReference.putBytes(imageData)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        ref.child("thumb").putBytes(thumbData)
+                        report.getImageReference(Report.IMAGE_THUMBNAIL).putBytes(thumbData)
                                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -57,8 +55,8 @@ public class StorageWriter implements UtilsContracts.StorageSender {
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        // Delete the file uploaded
-                                        ref.delete();
+                                        // The thumbnail upload has failed, so remove the full image too
+                                        imageReference.delete();
                                         presenter.dismissViewDialog(true);
                                     }
                                 });
@@ -75,11 +73,10 @@ public class StorageWriter implements UtilsContracts.StorageSender {
 
     /**
      * Called when sending report data to database has failed
-     * @param imageName the image to be removed from the storage
+     * @param report the report image to be removed from the storage
      */
-    static void deleteImage(String imageName) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        StorageReference ref = storageReference.child("images/" + imageName);
-        ref.delete();
+    static void deleteImage(Report report) {
+        report.getImageReference(Report.IMAGE_FULL).delete();
+        report.getImageReference(Report.IMAGE_THUMBNAIL).delete();
     }
 }

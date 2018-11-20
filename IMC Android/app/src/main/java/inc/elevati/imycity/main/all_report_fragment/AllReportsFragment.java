@@ -170,16 +170,8 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
      */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Animate sort button inside the screen and set a ClickListener on it
-        inflater.inflate(R.menu.menu_bar, menu);
+        // Set a click listener on button created and animated in from Activity
         MenuItem sortButton = menu.findItem(R.id.bn_sort);
-        ImageView imageSort = (ImageView) getLayoutInflater().inflate(R.layout.button_sort, null);
-        sortButton.setActionView(imageSort);
-        sortButton.setVisible(true);
-        TranslateAnimation animate = new TranslateAnimation(200, 0, 0, 0);
-        animate.setDuration(450);
-        animate.setFillAfter(true);
-        sortButton.getActionView().startAnimation(animate);
         sortButton.getActionView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -287,7 +279,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
          */
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.dialog_report, container, false);
+            View v = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.dialog_report, null);
 
             // Report retrieving from arguments
             Report report = getArguments().getParcelable("report");

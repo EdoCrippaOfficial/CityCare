@@ -42,15 +42,15 @@
 
     </LinearLayout>
 
-    <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:itemIconTint="#00000000"
+        app:itemBackground="@color/transparent"
         app:itemTextColor="@color/menu_colors"
+        app:itemIconTint="@color/menu_colors"
         app:menu="@menu/menu_items"
         app:headerLayout="@layout/menu_header"/>
 

@@ -7,13 +7,19 @@
     android:padding="30dp"
     android:focusableInTouchMode="true">
 
-    <ImageView
-        android:id="@+id/iv_new_report"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#BFBFBF"
-        android:src="@drawable/ic_add_image" />
+        android:background="@color/light_grey">
+
+        <ImageView
+            android:id="@+id/iv_new_report"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_add_image" />
+
+    </FrameLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/text_input_layout_title"

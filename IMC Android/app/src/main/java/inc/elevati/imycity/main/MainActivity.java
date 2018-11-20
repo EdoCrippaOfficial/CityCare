@@ -13,7 +13,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.all_report_fragment.AllReportsFragment;
@@ -93,8 +96,40 @@ public class MainActivity extends AppCompatActivity {
         pager = findViewById(R.id.view_pager);
         pager.setAdapter(new FragmentAdapter(getSupportFragmentManager()));
 
+        // Listener to redraw the menu bar when page is changed and update checked item in left menu
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) { }
+            @Override
+            public void onPageSelected(int i) {
+                invalidateOptionsMenu();
+                updateCheckedMenuItem(i);
+            }
+            @Override
+            public void onPageScrollStateChanged(int i) {}
+        });
+
+        // Update current selected menu item
+        updateCheckedMenuItem(pager.getCurrentItem());
+
+        // Tab layout showing pages below menu bar
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(pager);
+    }
+
+    /**
+     * Method called to update the checked item in left menu
+     * @param page the page currently shown
+     */
+    private void updateCheckedMenuItem(int page) {
+        switch (page) {
+            case PAGE_ALL:
+                menuNavigator.setCheckedItem(R.id.menu_all);
+                break;
+            case PAGE_NEW:
+                menuNavigator.setCheckedItem(R.id.menu_new);
+                break;
+        }
     }
 
     /**
@@ -136,19 +171,41 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Called when activity is destroyed, all onPageChangeListeners
-     * are removed from ViewPager
-     */
+    /** Called when activity is destroyed, all onPageChangeListeners are removed from ViewPager*/
     @Override
     protected void onDestroy() {
         super.onDestroy();
         pager.clearOnPageChangeListeners();
     }
 
-    /**
-     * Adapter class used by ViewPager to show fragments in pages
-     */
+    /** Method called when menu bar is created, here we can inflate and animate menu buttons */
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_bar, menu);
+
+        // Set image on sort button, the listener is set in equivalent Fragment method
+        final MenuItem sortButton = menu.findItem(R.id.bn_sort);
+        ImageView imageSort = (ImageView) getLayoutInflater().inflate(R.layout.button_sort, null);
+        sortButton.setActionView(imageSort);
+
+        // Animate in or out the button depending on which page is showing
+        if (pager.getCurrentItem() == PAGE_ALL) {
+            sortButton.setEnabled(true);
+            TranslateAnimation animate = new TranslateAnimation(200, 0, 0, 0);
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            sortButton.getActionView().startAnimation(animate);
+        } else {
+            sortButton.setEnabled(false);
+            TranslateAnimation animate = new TranslateAnimation(0, 200, 0, 0);
+            animate.setDuration(400);
+            animate.setFillAfter(true);
+            sortButton.getActionView().startAnimation(animate);
+        }
+        return false;
+    }
+
+    /** Adapter class used by ViewPager to show fragments in pages */
     private class FragmentAdapter extends FragmentPagerAdapter {
 
         private FragmentAdapter(FragmentManager fm) {

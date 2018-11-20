@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -39,7 +38,6 @@ public class FirestoreSender implements UtilsContracts.DatabaseSender {
         map.put("id", report.getId());
         map.put("title", report.getTitle());
         map.put("description", report.getDescription());
-        map.put("image", report.getImageName());
         map.put("timestamp", report.getTimestamp());
         map.put("user_id", report.getUserId());
         map.put("operator_id", "");
@@ -59,7 +57,7 @@ public class FirestoreSender implements UtilsContracts.DatabaseSender {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Delete the image uploaded previously on storage
-                        StorageWriter.deleteImage(report.getImageName());
+                        StorageWriter.deleteImage(report);
                         presenter.dismissViewDialog(true);
                     }
                 });

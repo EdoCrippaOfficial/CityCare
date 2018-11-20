@@ -14,14 +14,14 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/ic_camera"
-            android:tint="#BFBFBF"/>
+            android:src="@drawable/ic_camera" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/new_report_take_picture"/>
+            android:text="@string/new_report_take_picture"
+            android:textColor="@color/grey" />
 
     </LinearLayout>
 
@@ -35,14 +35,14 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/ic_image"
-            android:tint="#BFBFBF"/>
+            android:src="@drawable/ic_image" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/new_report_select_picture"/>
+            android:text="@string/new_report_select_picture"
+            android:textColor="@color/grey"/>
 
     </LinearLayout>
 

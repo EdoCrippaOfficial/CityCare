@@ -7,37 +7,67 @@ import java.io.ByteArrayOutputStream;
 /**
  * Class that compresses images to reduce their size
  */
-public class Compressor implements UtilsContracts.ImageCompressor {
+public class Compressor {
+
+    private Compressor(){}
 
     /**
-     * The image to compress
+     * Singleton
      */
-    private Bitmap image;
+    private static Compressor instance;
 
-    public Compressor(Bitmap image) {
-        this.image = image;
+    /**
+     * Private constants that define quality and max size of the two possible image types
+     */
+    private static final int QUALITY_THUMBNAIL = 40;
+    private static final int QUALITY_FULL = 80;
+    private static final int MAX_SIZE_THUMBNAIL = 320;
+    private static final int MAX_SIZE_FULL = 1280;
+
+    /**
+     * Constant representing the THUMBNAIL image type
+     */
+    public static final int TYPE_THUMBNAIL = 1;
+
+    /**
+     * Constant representing the FULL image type
+     */
+    public static final int TYPE_FULL = 2;
+
+
+    public static Compressor getInstance() {
+        if (instance == null) instance = new Compressor();
+        return instance;
     }
 
     /**
      * Image compressing method
-     * @param px the image maximum size
+     * @param image the image to be compressed
+     * @param imageType the image type requested (TYPE_THUMBNAIL or TYPE_FULL)
      * @return the byte array of compressed image
      */
-    @Override
-    public byte[] getCompressedByteData(int px) {
+    public byte[] getCompressedByteData(Bitmap image, int imageType) {
+        int quality, maxSize;
+        if (imageType == TYPE_THUMBNAIL) {
+            quality = QUALITY_THUMBNAIL;
+            maxSize = MAX_SIZE_THUMBNAIL;
+        } else {
+            quality = QUALITY_FULL;
+            maxSize = MAX_SIZE_FULL;
+        }
         float height = image.getHeight();
         float width = image.getWidth();
         int nWidth, nHeight;
         if (width > height) {
-            nWidth = px;
-            nHeight = (int) (height * (px / width));
+            nWidth = maxSize;
+            nHeight = (int) (height * (maxSize / width));
         } else {
-            nHeight = px;
-            nWidth = (int) (width * (px / height));
+            nHeight = maxSize;
+            nWidth = (int) (width * (maxSize / height));
         }
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(image, nWidth, nHeight, true);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(image, nWidth, nHeight, false);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 75, stream);
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         return stream.toByteArray();
     }
 }
