@@ -2,11 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 // Firebase app initialization
-const serviceAccount = require('./../improvemycity-ab42e-firebase-adminsdk-rvx8h-d8888048d6.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://improvemycity-ab42e.firebaseio.com"
-});
+admin.initializeApp();
 
 
 export const helloWorld = functions.https.onRequest((request, response) => {
@@ -48,14 +44,15 @@ export const deleteImages = functions.firestore.document('reports/{reportId}').o
     const id = record.id;
     const path = "/images/" + id;
     const bucket = admin.storage().bucket('improvemycity-ab42e.appspot.com');
-    let file = bucket.file(path + "_img");
-    file.delete()
-        .then(() => {
-            file = bucket.file(path + "_thumb");
-            return file.delete();
-        })
-        .catch(err => {
-            console.error('ERROR:', err);
-        });
-    return 0;
+    const file = bucket.file(path + "_img");
+    return file.delete();
+});
+
+export const deleteThumb = functions.firestore.document('reports/{reportId}').onDelete((snap, context) => {
+    const record = snap.data();
+    const id = record.id;
+    const path = "/images/" + id;
+    const bucket = admin.storage().bucket('improvemycity-ab42e.appspot.com');
+    const file = bucket.file(path + "_thumb");
+    return file.delete();
 });
