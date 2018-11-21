@@ -1,23 +1,25 @@
-<h2>REPORT {{ report.id }}</h2>
-<div class="text-center">
-  <button (click)="goBack()">go back</button>
-</div>
-<div class="container text-center">
-  <img class="img-fluid img-responsive text-center" [src]="report.image | async" alt="Image">
-  <h5 class="card-title text-center">{{ report.title }}</h5>
-  <!--ID: {{ report.id }}<br />-->
-  Data: {{ report.timestamp | date : "dd/MM/yyyy" }}
-  <p class="card-text not-full-text">
-    {{ report.description }}<br />
-    <!--by {{ report.utente }}-->
-  </p>
-  <!--<div class="text-center">
-    <button type="button" class="btn"
-            [class.btn-primary]="report.status === accettato"
-            [class.btn-danger]="report.status === rifiutato"
-            [class.btn-success]="report.status === completato"
-            [class.btn-secondary]="report.status === attesa">
-        {{ report.status }}
-    </button>
-  </div>-->
+<div *ngIf="report">
+  <span class="text-center"><h2>{{ report.title | uppercase }}</h2></span>
+  <div class="text-left">
+    <button (click)="goBack()">go back</button>
+  </div>
+  <div class="container text-center">
+    <img class="img-fluid img-responsive text-center" [src]="report.image | async" alt="Image">
+    <h5 class="card-title text-center">{{ report.title }}</h5>
+    <!--ID: {{ report.id }}<br />-->
+    Data: {{ report.timestamp | date : "dd/MM/yyyy" }}
+    <p class="card-text not-full-text">
+      {{ report.description }}<br />
+      <!--by {{ report.utente }}-->
+    </p>
+    <!--<div class="text-center">
+      <button type="button" class="btn"
+              [class.btn-primary]="report.status === accettato"
+              [class.btn-danger]="report.status === rifiutato"
+              [class.btn-success]="report.status === completato"
+              [class.btn-secondary]="report.status === attesa">
+          {{ report.status }}
+      </button>
+    </div>-->
+  </div>
 </div>

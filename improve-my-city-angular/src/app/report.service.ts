@@ -13,7 +13,7 @@ import { Report } from './report';
 export class ReportService {
   REPORTPATH: string = 'reports';
   IMAGEFOLDER: string = 'images/';
-  IMAGENAME: string = '/img';
+  IMAGENAME: string = '_img';
 
   reports: Report[];
 
@@ -23,19 +23,12 @@ export class ReportService {
   ) { }
 
   getImageURL(report: Report): Observable<string | null> {
-    const storageRef = this.storage.ref(this.IMAGEFOLDER + report.image + this.IMAGENAME);
+    const storageRef = this.storage.ref(this.IMAGEFOLDER + report.id + this.IMAGENAME);
     return storageRef.getDownloadURL();
   }
 
   getReports(): Observable<Report[]> {
-    return this.db.collection<Report>(this.REPORTPATH)
-                .snapshotChanges().pipe(map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data();
-        const id = a.payload.doc.id;
-        return { id, ...data };
-      });
-    }));
+    return this.db.collection<Report>(this.REPORTPATH).valueChanges();
   }
 
   getReport(id): Observable<Report> {
