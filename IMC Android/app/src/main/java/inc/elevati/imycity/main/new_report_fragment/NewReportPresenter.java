@@ -19,7 +19,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
      */
     private MainContracts.NewReportView view;
 
-    NewReportPresenter(MainContracts.NewReportView view) {
+    public NewReportPresenter(MainContracts.NewReportView view) {
         this.view = view;
     }
 

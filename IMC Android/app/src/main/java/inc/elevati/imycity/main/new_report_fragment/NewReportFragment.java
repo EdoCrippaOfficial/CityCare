@@ -55,7 +55,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
      */
     public static class PersistentData extends ViewModel {
         String cameraPath;
-        Bitmap image;
+        public Bitmap image;
     }
 
     /** Constants used to send intent requests (image pick or camera) */
@@ -65,23 +65,28 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     /**
      * This view presenter, called to handle non-graphic requests
      */
-    private MainContracts.NewReportPresenter presenter;
+    public MainContracts.NewReportPresenter presenter;
 
     /** Dialog displayed during database and storage sending */
-    private Dialog progressDialog;
+    public Dialog progressDialog;
 
     /**
      * This fragment views: imageView for the loaded report image
      * and TextInputLayout for title and description
      */
     private ImageView imageView;
-    private TextInputEditText textInputTitle, textInputDesc;
+    public TextInputEditText textInputTitle, textInputDesc;
 
     /**
      * The loaded image data (Bitmap), stored in a PersistentData instance
      * to preserve it during orientation changes and activity re-creation
      */
-    private PersistentData imageData;
+    public PersistentData imageData;
+
+    /**
+     * The dialog used to display the two intent options for selecting an image
+     */
+    public Dialog chooseImagDialog;
 
     /**
      * Method called when the View associated to this fragment is created (the first time this
@@ -183,7 +188,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     }
 
     /**
-     * Dismisses the progress dialog after a report sending
+     * Dismisses the progress chooseImagDialog after a report sending
      * @param error should be true if the operation didn't complete
      *              If false the fragments fields (ImageView and EditText
      *              for title and description) are cleared
@@ -204,25 +209,25 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         }
     }
 
-    /** Creates a dialog that asks user where to pick the image (gallery or camera) */
-    private void createImageDialog() {
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.dialog_pick);
-        dialog.findViewById(R.id.bn_gallery).setOnClickListener(new View.OnClickListener() {
+    /** Creates a chooseImagDialog that asks user where to pick the image (gallery or camera) */
+    public void createImageDialog() {
+        chooseImagDialog = new Dialog(getContext());
+        chooseImagDialog.setContentView(R.layout.dialog_pick);
+        chooseImagDialog.findViewById(R.id.bn_gallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pickImage();
-                dialog.dismiss();
+                chooseImagDialog.dismiss();
             }
         });
-        dialog.findViewById(R.id.bn_camera).setOnClickListener(new View.OnClickListener() {
+        chooseImagDialog.findViewById(R.id.bn_camera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePicture();
-                dialog.dismiss();
+                chooseImagDialog.dismiss();
             }
         });
-        dialog.show();
+        chooseImagDialog.show();
     }
 
     /** Starts activity to pick image from gallery */

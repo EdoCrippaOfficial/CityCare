@@ -136,7 +136,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
 
     /**
      * Called when user clicks on a report in the list, it opens a
-     * fullscreen dialog containing all the report information
+     * fullscreen chooseImagDialog containing all the report information
      * @param report the clicked report
      */
     @Override
@@ -199,7 +199,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
                 }
                 radioGroup.check(idChecked);
 
-                // Listeners for dialog buttons
+                // Listeners for chooseImagDialog buttons
                 dialog.findViewById(R.id.bn_newest).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -245,7 +245,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
     }
 
     /**
-     * In this class it is defined the style of the dialog shown when user clicks on a report
+     * In this class it is defined the style of the chooseImagDialog shown when user clicks on a report
      */
     public static class ReportDialog extends DialogFragment {
 
@@ -270,10 +270,10 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         }
 
         /**
-         * Called when the dialog View is created, here all Views are
+         * Called when the chooseImagDialog View is created, here all Views are
          * initialized and the report data is adapted to user interface
          * @param inflater the layout inflater
-         * @param container this dialog parent
+         * @param container this chooseImagDialog parent
          * @param savedInstanceState a Bundle containing saved data to be restored
          * @return the created View
          */

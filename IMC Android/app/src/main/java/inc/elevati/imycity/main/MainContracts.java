@@ -66,7 +66,7 @@ public interface MainContracts {
     interface NewReportView {
 
         /**
-         * Dismisses the progress dialog after a report sending
+         * Dismisses the progress chooseImagDialog after a report sending
          * @param error should be true if the operation didn't complete
          *              If false the fragments fields (ImageView and EditText
          *              for title and description) are cleared
@@ -90,7 +90,7 @@ public interface MainContracts {
 
         /**
          * Called when user clicks on a report in the list, it opens a
-         * fullscreen dialog containing all the report information
+         * fullscreen chooseImagDialog containing all the report information
          * @param report the clicked report
          */
         void showReportDialog(Report report);

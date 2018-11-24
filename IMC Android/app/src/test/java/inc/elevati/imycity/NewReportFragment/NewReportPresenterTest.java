@@ -1,4 +1,4 @@
-package inc.elevati.imycity;
+package inc.elevati.imycity.NewReportFragment;
 
 import android.graphics.Bitmap;
 
@@ -14,6 +14,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.main.new_report_fragment.NewReportPresenter;
 import inc.elevati.imycity.utils.Report;
+import inc.elevati.imycity.utils.firebase.FirestoreSender;
 import inc.elevati.imycity.utils.firebase.StorageWriter;
 
 import static org.mockito.Mockito.verify;
@@ -29,6 +30,9 @@ public class NewReportPresenterTest {
 
     @Mock
     private Bitmap image;      // mock bitmap
+
+    @Mock
+    private Report report;     // mock report
 
     private NewReportPresenter presenter;
 
@@ -58,6 +62,16 @@ public class NewReportPresenterTest {
 
         //  verifico che il nuovo oggetto StorageWriter usi il metodo send con il report creato
         verify(storageWriter).send(image, report);
+
+    }
+
+    @Test
+    public void FirestoreSenderTest() throws Exception {
+        FirestoreSender firestoreSender = PowerMockito.mock(FirestoreSender.class);
+        PowerMockito.whenNew(FirestoreSender.class).withAnyArguments().thenReturn(firestoreSender);
+
+        presenter.sendReportData(report);
+        verify(firestoreSender).send(report);
 
     }
 
