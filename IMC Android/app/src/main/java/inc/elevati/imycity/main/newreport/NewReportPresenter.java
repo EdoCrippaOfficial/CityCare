@@ -1,6 +1,7 @@
-package inc.elevati.imycity.main.new_report_fragment;
+package inc.elevati.imycity.main.newreport;
 
-import android.graphics.Bitmap;
+import android.content.Context;
+import android.net.Uri;
 
 import java.util.UUID;
 
@@ -25,18 +26,27 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
 
     /**
      * Method called to handle the report sending logic
-     * @param image the report image
+     * @param imageStream the image inputStream
      * @param title the report title
      * @param description the report description
      */
     @Override
-    public void handleSendReport(Bitmap image, String title, String description) {
-        String uuid = UUID.randomUUID().toString();
-        Report report = new Report(uuid, title, description, System.currentTimeMillis(), "", 0, 0);
+    public void sendButtonClicked(String title, String description, Context appContext, Uri imageUri) {
+        if (imageUri == null) {
+            view.notifyInvalidImage();
+        } else if (title.equals("")) {
+            view.notifyInvalidTitle();
+        } else if (description.equals("")) {
+            view.notifyInvalidDescription();
+        } else {
+            view.showProgressDialog();
+            String uuid = UUID.randomUUID().toString();
+            Report report = new Report(uuid, title, description, System.currentTimeMillis(), "", 0, 0);
 
-        // Store image (normal and thumbnail) in Firebase Storage
-        StorageWriter storageWriter = new StorageWriter(this);
-        storageWriter.send(image, report);
+            // Store image (normal and thumbnail) in Firebase Storage
+            StorageWriter storageWriter = new StorageWriter(this);
+            storageWriter.send(report, appContext, imageUri);
+        }
     }
 
     /**

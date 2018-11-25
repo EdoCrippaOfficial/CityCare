@@ -1,6 +1,5 @@
-package inc.elevati.imycity.main.all_report_fragment;
+package inc.elevati.imycity.main.allreports;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -20,9 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -199,7 +195,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
                 }
                 radioGroup.check(idChecked);
 
-                // Listeners for chooseImagDialog buttons
+                // Listeners for dialog buttons
                 dialog.findViewById(R.id.bn_newest).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -245,7 +241,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
     }
 
     /**
-     * In this class it is defined the style of the chooseImagDialog shown when user clicks on a report
+     * In this class it is defined the style of the dialog shown when user clicks on a report
      */
     public static class ReportDialog extends DialogFragment {
 
@@ -270,10 +266,10 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         }
 
         /**
-         * Called when the chooseImagDialog View is created, here all Views are
+         * Called when the dialog View is created, here all Views are
          * initialized and the report data is adapted to user interface
          * @param inflater the layout inflater
-         * @param container this chooseImagDialog parent
+         * @param container this dialog parent
          * @param savedInstanceState a Bundle containing saved data to be restored
          * @return the created View
          */
@@ -286,8 +282,8 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
             TextView tv_title = v.findViewById(R.id.tv_title);
             TextView tv_desc = v.findViewById(R.id.tv_desc);
             TextView tv_date = v.findViewById(R.id.tv_date);
-            final PhotoView iv_image = v.findViewById(R.id.iv_image);
-            final ProgressBar pb_loading = v.findViewById(R.id.pb_loading);
+            final PhotoView iv_image = v.findViewById(R.id.iv_report_image);
+            final ProgressBar pb_loading = v.findViewById(R.id.pb_dialog_image);
             tv_title.setText(report.getTitle());
             tv_desc.setText(report.getDescription());
 

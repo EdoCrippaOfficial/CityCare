@@ -56,6 +56,14 @@ dependencies {
     testImplementation "org.powermock:powermock-api-mockito:1.6.2"
     testImplementation 'org.robolectric:robolectric:4.0.2'
     testImplementation "org.robolectric:shadows-supportv4:3.6.1"
+
+    // Android Testing Support Library's runner and rules
+    androidTestImplementation "com.android.support.test:runner:1.0.2"
+    androidTestImplementation "com.android.support.test:rules:1.0.2"
+
+    // Espresso UI Testing dependencies
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:3.0.2"
 }
 
 apply plugin: 'com.google.gms.google-services'

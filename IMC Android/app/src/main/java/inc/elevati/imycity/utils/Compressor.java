@@ -1,62 +1,69 @@
 package inc.elevati.imycity.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Class that compresses images to reduce their size
  */
-public class Compressor {
+public class Compressor implements Runnable {
 
-    private Compressor(){}
-
-    /**
-     * Singleton
-     */
-    private static Compressor instance;
-
-    /**
-     * Private constants that define quality and max size of the two possible image types
-     */
+    /** Private constants that define quality and max size of the two possible image types */
     private static final int QUALITY_THUMBNAIL = 40;
     private static final int QUALITY_FULL = 80;
     private static final int MAX_SIZE_THUMBNAIL = 320;
     private static final int MAX_SIZE_FULL = 1280;
 
-    /**
-     * Constant representing the THUMBNAIL image type
-     */
-    public static final int TYPE_THUMBNAIL = 1;
+    /** The listener which receives data when it's ready */
+    private UtilsContracts.compressorListener listener;
 
-    /**
-     * Constant representing the FULL image type
-     */
-    public static final int TYPE_FULL = 2;
+    private Context appContext;
 
+    private Uri imageUri;
 
-    public static Compressor getInstance() {
-        if (instance == null) instance = new Compressor();
-        return instance;
+    private Compressor(UtilsContracts.compressorListener listener, Context appContext, Uri imageUri) {
+        this.listener = listener;
+        this.appContext = appContext;
+        this.imageUri = imageUri;
     }
 
     /**
-     * Image compressing method
-     * @param image the image to be compressed
-     * @param imageType the image type requested (TYPE_THUMBNAIL or TYPE_FULL)
-     * @return the byte array of compressed image
+     * Method that starts compressing precess creating a new thread
+     * @param listener The listener which receives data when it's ready
      */
-    public byte[] getCompressedByteData(Bitmap image, int imageType) {
+    public static void startCompressing(UtilsContracts.compressorListener listener, Context appContext, Uri imageUri) {
+        new Thread(new Compressor(listener, appContext, imageUri)).start();
+    }
+
+    @Override
+    public void run() {
+        try {
+            // TODO non caricare full size!!!
+            Bitmap image = GlideApp.with(appContext).asBitmap().load(imageUri).submit().get();
+            byte[] thumbData = compressImage(image, true);
+            byte[] fullData = compressImage(image, false);
+            listener.onCompressed(fullData, thumbData);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            listener.onErrorOccurred();
+        } catch (InterruptedException ignored) {}
+    }
+
+    private byte[] compressImage(Bitmap image, boolean typeThumb) {
+        float height = image.getHeight();
+        float width = image.getWidth();
         int quality, maxSize;
-        if (imageType == TYPE_THUMBNAIL) {
+        if (typeThumb) {
             quality = QUALITY_THUMBNAIL;
             maxSize = MAX_SIZE_THUMBNAIL;
         } else {
             quality = QUALITY_FULL;
             maxSize = MAX_SIZE_FULL;
         }
-        float height = image.getHeight();
-        float width = image.getWidth();
         int nWidth, nHeight;
         if (width > height) {
             nWidth = maxSize;
@@ -66,8 +73,8 @@ public class Compressor {
             nWidth = (int) (width * (maxSize / height));
         }
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(image, nWidth, nHeight, false);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
-        return stream.toByteArray();
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteStream);
+        return byteStream.toByteArray();
     }
 }

@@ -1,6 +1,7 @@
 package inc.elevati.imycity.utils.firebase;
 
-import android.graphics.Bitmap;
+import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -16,36 +17,50 @@ import inc.elevati.imycity.utils.UtilsContracts;
 /**
  * Class that implements the storage writing
  */
-public class StorageWriter implements UtilsContracts.StorageSender {
+public class StorageWriter implements UtilsContracts.StorageSender, UtilsContracts.compressorListener {
 
-    /**
-     * The recipient presenter
-     */
+    /** The recipient presenter */
     private MainContracts.NewReportPresenter presenter;
 
-    public StorageWriter(MainContracts.NewReportPresenter presenter){
+    /** The report to send */
+    private Report report;
+
+    public StorageWriter(MainContracts.NewReportPresenter presenter) {
         this.presenter = presenter;
     }
 
     /**
      * Method called to send image to storage
-     * @param image the image to be sent
+     * @param imageStream the image inputStream
      * @param report the report that owns the image
      */
     @Override
-    public void send(Bitmap image, final Report report) {
+    public void send(Report report, Context appContext, Uri imageUri) {
+        this.report = report;
         // Image compressing, normal and thumbnail
-        Compressor compressor = Compressor.getInstance();
-        final byte[] imageData = compressor.getCompressedByteData(image, Compressor.TYPE_FULL);
-        final byte[] thumbData = compressor.getCompressedByteData(image, Compressor.TYPE_THUMBNAIL);
+        Compressor.startCompressing(this, appContext, imageUri);
+    }
+
+    /**
+     * Called when sending report data to database has failed
+     * @param report the report image to be removed from the storage
+     */
+    static void deleteImage(Report report) {
+        report.getImageReference(Report.IMAGE_FULL).delete();
+        report.getImageReference(Report.IMAGE_THUMBNAIL).delete();
+    }
+
+    @Override
+    public void onCompressed(byte[] fullImage, final byte[] thumbImage) {
+        presenter.dismissViewDialog(false);
 
         // Images storage sending
         final StorageReference imageReference = report.getImageReference(Report.IMAGE_FULL);
-        imageReference.putBytes(imageData)
+        imageReference.putBytes(fullImage)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        report.getImageReference(Report.IMAGE_THUMBNAIL).putBytes(thumbData)
+                        report.getImageReference(Report.IMAGE_THUMBNAIL).putBytes(thumbImage)
                                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -71,12 +86,8 @@ public class StorageWriter implements UtilsContracts.StorageSender {
                 });
     }
 
-    /**
-     * Called when sending report data to database has failed
-     * @param report the report image to be removed from the storage
-     */
-    static void deleteImage(Report report) {
-        report.getImageReference(Report.IMAGE_FULL).delete();
-        report.getImageReference(Report.IMAGE_THUMBNAIL).delete();
+    @Override
+    public void onErrorOccurred() {
+        presenter.dismissViewDialog(true);
     }
 }

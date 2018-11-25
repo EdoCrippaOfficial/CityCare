@@ -19,8 +19,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
 import inc.elevati.imycity.R;
-import inc.elevati.imycity.main.all_report_fragment.AllReportsFragment;
-import inc.elevati.imycity.main.new_report_fragment.NewReportFragment;
+import inc.elevati.imycity.main.allreports.AllReportsFragment;
+import inc.elevati.imycity.main.newreport.NewReportFragment;
 
 /**
  * The main activity that contains all the fragments

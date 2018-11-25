@@ -1,25 +1,26 @@
-package inc.elevati.imycity.NewReportFragment;
+package inc.elevati.imycity.newreport;
 
-import android.graphics.Bitmap;
+import android.content.Context;
+import android.net.Uri;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import inc.elevati.imycity.main.MainContracts;
-import inc.elevati.imycity.main.new_report_fragment.NewReportPresenter;
+import inc.elevati.imycity.main.newreport.NewReportPresenter;
 import inc.elevati.imycity.utils.Report;
 import inc.elevati.imycity.utils.firebase.FirestoreSender;
 import inc.elevati.imycity.utils.firebase.StorageWriter;
 
 import static org.mockito.Mockito.verify;
 
-//  annotazioni per PowerMockito
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(NewReportPresenter.class)
 
@@ -27,12 +28,6 @@ public class NewReportPresenterTest {
 
     @Mock
     private MainContracts.NewReportView view;   // mock della view associata
-
-    @Mock
-    private Bitmap image;      // mock bitmap
-
-    @Mock
-    private Report report;     // mock report
 
     private NewReportPresenter presenter;
 
@@ -47,7 +42,7 @@ public class NewReportPresenterTest {
     }
 
     @Test
-    public void HandlingReportTest() throws Exception {
+    public void sendButtonTest() throws Exception {
 
         //  riferimento all'oggetto StorageWriter creato
         StorageWriter storageWriter = PowerMockito.mock(StorageWriter.class);
@@ -57,26 +52,41 @@ public class NewReportPresenterTest {
         Report report = PowerMockito.mock(Report.class);
         PowerMockito.whenNew(Report.class).withAnyArguments().thenReturn(report);
 
-        //  chiamo la funzione
-        presenter.handleSendReport(image, "TitleTest", "DesctiptionTest");
+        // Mocks
+        Context appContext = Mockito.mock(Context.class);
+        Uri imageUri = Mockito.mock(Uri.class);
+
+        //  chiamo la funzione con "null" come Uri quindi senza immagine
+        presenter.sendButtonClicked("", "", appContext, null);
+        verify(view).notifyInvalidImage();
+
+        //  chiamo la funzione con con immagine ma senza un titolo
+        presenter.sendButtonClicked("", "", appContext, imageUri);
+        verify(view).notifyInvalidTitle();
+
+        //  chiamo la funzione senza descrizione
+        presenter.sendButtonClicked("Titolo", "", appContext, imageUri);
+        verify(view).notifyInvalidDescription();
+
+        //  chiamo correttamente la funzione
+        presenter.sendButtonClicked("Titolo", "Descrizione", appContext, imageUri);
 
         //  verifico che il nuovo oggetto StorageWriter usi il metodo send con il report creato
-        verify(storageWriter).send(image, report);
-
+        verify(storageWriter).send(report, appContext, imageUri);
     }
 
     @Test
-    public void FirestoreSenderTest() throws Exception {
+    public void firestoreSenderTest() throws Exception {
         FirestoreSender firestoreSender = PowerMockito.mock(FirestoreSender.class);
         PowerMockito.whenNew(FirestoreSender.class).withAnyArguments().thenReturn(firestoreSender);
 
+        Report report = Mockito.mock(Report.class);
         presenter.sendReportData(report);
         verify(firestoreSender).send(report);
-
     }
 
     @Test
-    public void dismissTest(){
+    public void dismissDialogTest(){
 
         //  chiamo il metodo
         presenter.dismissViewDialog(false);
@@ -84,6 +94,4 @@ public class NewReportPresenterTest {
         //  verifico la chiamata al metodo della view
         verify(view).dismissProgressDialog(false);
     }
-
-
 }

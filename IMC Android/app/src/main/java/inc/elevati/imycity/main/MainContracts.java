@@ -1,6 +1,8 @@
 package inc.elevati.imycity.main;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -22,7 +24,7 @@ public interface MainContracts {
          * @param title the report title
          * @param description the report description
          */
-        void handleSendReport(Bitmap image, String title, String description);
+        void sendButtonClicked(String title, String description, Context appContext, Uri imageUri);
 
         /**
          * Called after image has been sent to storage correctly,
@@ -65,8 +67,16 @@ public interface MainContracts {
 
     interface NewReportView {
 
+        void showProgressDialog();
+
+        void notifyInvalidImage();
+
+        void notifyInvalidTitle();
+
+        void notifyInvalidDescription();
+
         /**
-         * Dismisses the progress chooseImagDialog after a report sending
+         * Dismisses the progress dialog after a report sending
          * @param error should be true if the operation didn't complete
          *              If false the fragments fields (ImageView and EditText
          *              for title and description) are cleared
@@ -90,7 +100,7 @@ public interface MainContracts {
 
         /**
          * Called when user clicks on a report in the list, it opens a
-         * fullscreen chooseImagDialog containing all the report information
+         * fullscreen dialog containing all the report information
          * @param report the clicked report
          */
         void showReportDialog(Report report);

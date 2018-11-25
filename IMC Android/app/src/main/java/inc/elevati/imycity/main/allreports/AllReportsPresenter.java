@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main.all_report_fragment;
+package inc.elevati.imycity.main.allreports;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -41,7 +41,7 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
     @Override
     public void displayAllReports(QuerySnapshot results) {
         List<Report> reports = new ArrayList<>();
-        if(results != null){
+        if (results != null) {
             for (QueryDocumentSnapshot snap: results) {
                 String id = snap.getString("id");
                 String title = snap.getString("title");

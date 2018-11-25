@@ -1,11 +1,24 @@
 package inc.elevati.imycity.utils;
 
-import android.graphics.Bitmap;
+import android.content.Context;
+import android.net.Uri;
 
 /**
  * Interface that contains interfaces to utils package
  */
 public interface UtilsContracts {
+
+    interface compressorListener {
+
+        /**
+         * Method called when compress process has ended
+         * @param fullImage the byte data of compressed full image
+         * @param thumbImage the byte data of compressed thumbnail image
+         */
+        void onCompressed(byte[] fullImage, byte[] thumbImage);
+
+        void onErrorOccurred();
+    }
 
     interface StorageSender {
 
@@ -14,7 +27,7 @@ public interface UtilsContracts {
          * @param image the image to be sent
          * @param report the report that owns the image
          */
-        void send(Bitmap image, Report report);
+        void send(Report report, Context appContext, Uri imageUri);
     }
 
     interface DatabaseSender {

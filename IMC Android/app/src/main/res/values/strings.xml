@@ -17,8 +17,10 @@
     <string name="new_report_ok">Report sent correctly! Update the \"All reports\" section to view it</string>
     <string name="new_report_take_picture">Take a picture\nwith camera</string>
     <string name="new_report_camera_error">Unknown error: unable to open camera app</string>
-    <string name="new_report_pick_error">Unknown error: unable to access the device memory</string>
+    <string name="new_report_pick_error">Error: unable to load the chosen file</string>
     <string name="new_report_camera_missing">No camera app found on your device. You can download it from Play Store to use this feature</string>
+    <string name="new_report_permissions">Your file manager requires storage access to load the image. Please try again and tap on "allow" when it\'s asked or download another file manager from Play Store</string>
+    <string name="new_report_pick_again">Error loading image. Please choose it again</string>
 
     <string name="report_date">Created on: %s</string>
 

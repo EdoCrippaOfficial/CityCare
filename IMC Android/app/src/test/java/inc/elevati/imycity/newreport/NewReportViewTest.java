@@ -1,22 +1,20 @@
-package inc.elevati.imycity.NewReportFragment;
+package inc.elevati.imycity.newreport;
 
-import android.graphics.Bitmap;
+import android.content.Context;
+import android.net.Uri;
 import android.widget.Button;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.MainContracts;
-import inc.elevati.imycity.main.new_report_fragment.NewReportFragment;
+import inc.elevati.imycity.main.newreport.NewReportFragment;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -32,7 +30,7 @@ public class NewReportViewTest {
     }
 
     @Test
-    public void SendReportTest(){
+    public void sendButtonTest(){
 
         //  Riferimento al bottone per l'invio
         Button sendBn = fragment.getActivity().findViewById(R.id.bn_new_report_send);
@@ -40,20 +38,7 @@ public class NewReportViewTest {
         //  Settiamo come presenter non quello vero ma un mock
         fragment.presenter = mock(MainContracts.NewReportPresenter.class);
 
-        //  Test senza immagine
-        String toastText = "Please insert a picture to continue";
         sendBn.performClick();
-        assertEquals(ShadowToast.getTextOfLatestToast(), toastText);
-
-        // Test completo
-        fragment.imageData.image = mock(Bitmap.class);
-        fragment.textInputTitle.setText("ProvaTitolo");
-        fragment.textInputDesc.setText("ProvaDescr");
-        sendBn.performClick();
-        verify(fragment.presenter).handleSendReport(any(Bitmap.class), anyString(), anyString());
-
+        verify(fragment.presenter).sendButtonClicked(any(String.class), any(String.class), any(Context.class), any(Uri.class));
     }
-
-
-
 }

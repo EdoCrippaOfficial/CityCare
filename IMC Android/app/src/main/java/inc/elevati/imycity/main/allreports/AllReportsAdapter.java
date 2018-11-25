@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main.all_report_fragment;
+package inc.elevati.imycity.main.allreports;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -69,10 +69,10 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.pb_loading = itemView.findViewById(R.id.pb_loading);
+            this.pb_loading = itemView.findViewById(R.id.pb_dialog_image);
             this.tv_title = itemView.findViewById(R.id.tv_title);
             this.tv_desc = itemView.findViewById(R.id.tv_desc);
-            this.iv_image = itemView.findViewById(R.id.iv_image);
+            this.iv_image = itemView.findViewById(R.id.iv_report_image);
         }
     }
 
