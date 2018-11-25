@@ -84,11 +84,6 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     public PersistentData imageData;
 
     /**
-     * The dialog used to display the two intent options for selecting an image
-     */
-    public Dialog chooseImagDialog;
-
-    /**
      * Method called when the View associated to this fragment is created (the first time this
      * fragment is shown, at orientation changes, at activity re-creations...); Here the layout
      * is inflated and all Views owned by this fragment are initialized
@@ -211,23 +206,23 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
     /** Creates a chooseImagDialog that asks user where to pick the image (gallery or camera) */
     public void createImageDialog() {
-        chooseImagDialog = new Dialog(getContext());
-        chooseImagDialog.setContentView(R.layout.dialog_pick);
-        chooseImagDialog.findViewById(R.id.bn_gallery).setOnClickListener(new View.OnClickListener() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_pick);
+        dialog.findViewById(R.id.bn_gallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pickImage();
-                chooseImagDialog.dismiss();
+                dialog.dismiss();
             }
         });
-        chooseImagDialog.findViewById(R.id.bn_camera).setOnClickListener(new View.OnClickListener() {
+        dialog.findViewById(R.id.bn_camera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePicture();
-                chooseImagDialog.dismiss();
+                dialog.dismiss();
             }
         });
-        chooseImagDialog.show();
+        dialog.show();
     }
 
     /** Starts activity to pick image from gallery */

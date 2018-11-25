@@ -13,14 +13,14 @@ import inc.elevati.imycity.utils.Report;
 /**
  * Presenter class used by AllReportsFragment to interact with the app kernel
  */
-class AllReportsPresenter implements MainContracts.AllReportsPresenter {
+public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
 
     /**
      * The view instance
      */
     private MainContracts.AllReportsView view;
 
-    AllReportsPresenter(MainContracts.AllReportsView view) {
+    public AllReportsPresenter(MainContracts.AllReportsView view) {
         this.view = view;
     }
 
@@ -41,23 +41,25 @@ class AllReportsPresenter implements MainContracts.AllReportsPresenter {
     @Override
     public void displayAllReports(QuerySnapshot results) {
         List<Report> reports = new ArrayList<>();
-        for (QueryDocumentSnapshot snap: results) {
-            String id = snap.getString("id");
-            String title = snap.getString("title");
-            String description = snap.getString("description");
-            long timestamp = snap.getLong("timestamp");
-            String userId = snap.getString("user_id");
-            String operatorId = snap.getString("operator_id");
-            long nStars = snap.getLong("n_stars");
-            String reply = snap.getString("reply");
-            long status = snap.getLong("status");
-            String position = snap.getString("position");
-            String[] positionData = position.split(",");
+        if(results != null){
+            for (QueryDocumentSnapshot snap: results) {
+                String id = snap.getString("id");
+                String title = snap.getString("title");
+                String description = snap.getString("description");
+                long timestamp = snap.getLong("timestamp");
+                String userId = snap.getString("user_id");
+                String operatorId = snap.getString("operator_id");
+                long nStars = snap.getLong("n_stars");
+                String reply = snap.getString("reply");
+                long status = snap.getLong("status");
+                String position = snap.getString("position");
+                String[] positionData = position.split(",");
 
-            Report report = new Report(id, userId, title, description, reply, operatorId, timestamp, (int) nStars,
-                    Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status);
+                Report report = new Report(id, userId, title, description, reply, operatorId, timestamp, (int) nStars,
+                        Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status);
 
-            reports.add(report);
+                reports.add(report);
+            }
         }
         view.updateReports(reports);
     }

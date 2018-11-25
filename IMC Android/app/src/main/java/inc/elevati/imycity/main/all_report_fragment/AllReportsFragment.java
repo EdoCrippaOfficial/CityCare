@@ -136,7 +136,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
 
     /**
      * Called when user clicks on a report in the list, it opens a
-     * fullscreen chooseImagDialog containing all the report information
+     * fullscreen dialog containing all the report information
      * @param report the clicked report
      */
     @Override

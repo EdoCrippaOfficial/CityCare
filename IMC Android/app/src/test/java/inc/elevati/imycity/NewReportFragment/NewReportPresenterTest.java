@@ -47,7 +47,7 @@ public class NewReportPresenterTest {
     }
 
     @Test
-    public void testHandling() throws Exception {
+    public void HandlingReportTest() throws Exception {
 
         //  riferimento all'oggetto StorageWriter creato
         StorageWriter storageWriter = PowerMockito.mock(StorageWriter.class);
