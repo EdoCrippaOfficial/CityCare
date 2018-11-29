@@ -10,25 +10,26 @@ import inc.elevati.imycity.utils.firebase.FirestoreSender;
 import inc.elevati.imycity.utils.Report;
 import inc.elevati.imycity.utils.firebase.StorageWriter;
 
-/**
- * Presenter class used by NewReportFragment to interact with the app kernel
- */
+/** Presenter class used by NewReportFragment to interact with the app kernel */
 public class NewReportPresenter implements MainContracts.NewReportPresenter {
 
-    /**
-     * The view instance
-     */
+    /** The view instance */
     private MainContracts.NewReportView view;
 
+    /**
+     * Public constructor
+     * @param view The view instance that interacts with this presenter
+     */
     public NewReportPresenter(MainContracts.NewReportView view) {
         this.view = view;
     }
 
     /**
      * Method called to handle the report sending logic
-     * @param imageStream the image inputStream
      * @param title the report title
      * @param description the report description
+     * @param appContext the context needed by Glide to load image from Uri
+     * @param imageUri the Uri of the image
      */
     @Override
     public void sendButtonClicked(String title, String description, Context appContext, Uri imageUri) {
@@ -50,24 +51,23 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
     }
 
     /**
-     * Called by the app kernel to notify that storage sending completed
-     * successfully, it proceeds with database sending
+     * Called by the app kernel to notify that cloud storage sending completed
+     * successfully, here we proceed with database sending
      * @param report the report to be sent
      */
     @Override
     public void sendReportData(Report report) {
-        // Store report data (included image name) in Firebase Firestore
         FirestoreSender firestoreSender = new FirestoreSender(this);
         firestoreSender.send(report);
     }
 
     /**
      * Called by the app kernel to notify that report sending has completed
-     * @param error false if the operation has complete successfully, true otherwise
+     * @param resultCode integer representing the operation result
      */
     @Override
-    public void dismissViewDialog(boolean error) {
-        view.dismissProgressDialog(error);
+    public void dismissViewDialog(int resultCode) {
+        view.dismissProgressDialog(resultCode);
     }
 
 }

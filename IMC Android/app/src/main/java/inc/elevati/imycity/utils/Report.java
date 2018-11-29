@@ -12,18 +12,25 @@ import com.google.firebase.storage.StorageReference;
  */
 public class Report implements Parcelable {
 
-    /**
-     * Constants that identify the type of image requested
-     */
+    /** String representing the name appendix to retrieve full image from cloud storage */
     public static final String IMAGE_FULL = "_img";
+
+    /** String representing the name appendix to retrieve thumbnail from cloud storage */
     public static final String IMAGE_THUMBNAIL = "_thumb";
 
+    /** Constant representing an accepted report */
     public static final int STATUS_ACCEPTED = 1;
+
+    /** Constant representing a refused report */
     public static final int STATUS_REFUSED = 2;
+
+    /** Constant representing a completed report */
     public static final int STATUS_COMPLETED = 3;
+
+    /** Constant representing a waiting report */
     public static final int STATUS_WAITING = 4;
 
-
+    /** Report fields, self-descriptive */
     private String id, userId, title, description, reply, operatorId;
 
     /**

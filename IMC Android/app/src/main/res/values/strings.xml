@@ -5,15 +5,16 @@
     <string name="menu_new">New report</string>
     <string name="menu_all">All reports</string>
 
-    <string name="new_report_title">Insert a title</string>
-    <string name="new_report_description">Insert a description</string>
+    <string name="new_report_title">Title</string>
+    <string name="new_report_description">Description</string>
     <string name="new_report_send">Send</string>
     <string name="new_report_uploading">Sending in progress…</string>
     <string name="new_report_select_picture">Select a picture\nfrom gallery</string>
     <string name="new_report_no_picture">Please insert a picture to continue</string>
-    <string name="new_report_no_title">Please to insert a title to continue</string>
+    <string name="new_report_no_title">Please insert a title to continue</string>
     <string name="new_report_no_description">Please insert a description to continue</string>
-    <string name="new_report_error">Failed to connect to server. Please check your internet connection and try again</string>
+    <string name="new_report_error_db">Failed to connect to server. Please check your internet connection and try again</string>
+    <string name="new_report_error_image">Error while processing the image. Please upload it again</string>
     <string name="new_report_ok">Report sent correctly! Update the \"All reports\" section to view it</string>
     <string name="new_report_take_picture">Take a picture\nwith camera</string>
     <string name="new_report_camera_error">Unknown error: unable to open camera app</string>

@@ -16,6 +16,10 @@ import inc.elevati.imycity.utils.Report;
  */
 public interface MainContracts {
 
+    int RESULT_SEND_OK = 1;
+    int RESULT_SEND_ERROR_IMAGE = 2;
+    int RESULT_SEND_ERROR_DB = 3;
+
     interface NewReportPresenter {
 
         /**
@@ -37,7 +41,7 @@ public interface MainContracts {
          * Called by the app kernel to notify that report sending has completed
          * @param error false if the operation has complete successfully, true otherwise
          */
-        void dismissViewDialog(boolean error);
+        void dismissViewDialog(int resultCode);
     }
 
     interface AllReportsPresenter {
@@ -81,7 +85,7 @@ public interface MainContracts {
          *              If false the fragments fields (ImageView and EditText
          *              for title and description) are cleared
          */
-        void dismissProgressDialog(boolean error);
+        void dismissProgressDialog(int resultCode);
     }
 
     interface AllReportsView {

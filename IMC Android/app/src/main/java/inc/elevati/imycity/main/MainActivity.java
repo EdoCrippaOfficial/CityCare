@@ -1,18 +1,18 @@
 package inc.elevati.imycity.main;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.view.GravityCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.TranslateAnimation;
@@ -22,35 +22,25 @@ import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.allreports.AllReportsFragment;
 import inc.elevati.imycity.main.newreport.NewReportFragment;
 
-/**
- * The main activity that contains all the fragments
- */
+/** The main activity that contains the ViewPager with the fragments */
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * Constants used to identify the shown fragment
-     */
+    /** Constant representing the AllReportsFragment */
     private final static int PAGE_ALL = 0;
+
+    /** Constant representing the NewReportFragment */
     private final static int PAGE_NEW = 1;
 
-    /**
-     * Total number of fragments
-     */
+    /** Total number of fragments */
     private final static int NUM_FRAGMENTS = 2;
 
-    /**
-     * The object that organizes fragments in pages
-     */
+    /** The object that organizes fragments in pages */
     private ViewPager pager;
 
-    /**
-     * Main menu drawer
-     */
+    /** Main menu drawer */
     private DrawerLayout menuDrawer;
 
-    /**
-     * Main menu navigator
-     */
+    /** Main menu navigator */
     private NavigationView menuNavigator;
 
     /**
@@ -72,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
 
-        // Menu
+        // Main menu
         menuDrawer = findViewById(R.id.drawer_layout);
         menuNavigator = findViewById(R.id.nav_view);
         menuNavigator.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -146,11 +136,12 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        // If ic_menu is open then we only close it
+        // If menu is open then we only close it
         if (menuDrawer.isDrawerOpen(GravityCompat.START)) {
             menuDrawer.closeDrawer(GravityCompat.START, true);
             return;
         }
+
         // If we're on main fragment the app closes, else returns to main fragment
         if (pager.getCurrentItem() == PAGE_ALL) super.onBackPressed();
         else scrollToPage(PAGE_ALL);
@@ -171,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    /** Called when activity is destroyed, all onPageChangeListeners are removed from ViewPager*/
+    /** Called when activity is destroyed, all onPageChangeListeners are removed from ViewPager */
     @Override
     protected void onDestroy() {
         super.onDestroy();

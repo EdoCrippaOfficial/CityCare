@@ -1,6 +1,6 @@
 package inc.elevati.imycity.utils.firebase;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,7 +50,7 @@ public class FirestoreSender implements UtilsContracts.DatabaseSender {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        presenter.dismissViewDialog(false);
+                        presenter.dismissViewDialog(MainContracts.RESULT_SEND_OK);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -58,7 +58,7 @@ public class FirestoreSender implements UtilsContracts.DatabaseSender {
                     public void onFailure(@NonNull Exception e) {
                         // Delete the image uploaded previously on storage
                         StorageWriter.deleteImage(report);
-                        presenter.dismissViewDialog(true);
+                        presenter.dismissViewDialog(MainContracts.RESULT_SEND_ERROR_DB);
                     }
                 });
     }

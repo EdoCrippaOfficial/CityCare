@@ -31,5 +31,8 @@ improve-my-comune/typings
 improve-my-comune/.DS_Store
 improve-my-comune/Thumbs.db
 
+# JavaDoc
+IMC Android/JavaDoc
+
 *.bk
 *.un~

@@ -4,10 +4,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="30dp"
+    android:paddingStart="30dp"
+    android:paddingEnd="30dp"
+    android:paddingTop="30dp"
+    android:gravity="center"
     android:focusableInTouchMode="true">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -19,51 +22,65 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_add_image" />
 
-    </FrameLayout>
+        <ProgressBar
+            android:id="@+id/pb_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="25dp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:theme="@style/ProgressBar" />
 
-    <android.support.design.widget.TextInputLayout
+    </RelativeLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        app:errorEnabled="true">
+        android:layout_marginTop="15dp"
+        android:hint="@string/new_report_title"
+        app:errorEnabled="true"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_input_edit_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/new_report_title"
+            android:layout_height="match_parent"
             android:textSize="18sp"
-            android:inputType="textCapSentences"/>
+            android:inputType="textCapSentences"
+            android:scrollbars="horizontal"
+            android:scrollbarThumbHorizontal="@drawable/scrollbar_horizontal"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_desc"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="10dp"
-        app:errorEnabled="true">
+        android:hint="@string/new_report_description"
+        app:errorEnabled="true"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_input_edit_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minLines="5"
             android:textSize="16sp"
-            android:inputType="textMultiLine|textCapSentences"
+            android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
             android:scrollbars="vertical"
-            android:scrollbarThumbVertical="@drawable/scrollbar"
-            android:hint="@string/new_report_description"/>
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/bn_new_report_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="30dp"
         android:text="@string/new_report_send"
-        android:layout_gravity="center"
         android:textSize="20sp"
         android:textColor="@color/white"
         style="@style/Widget.MaterialComponents.Button"/>

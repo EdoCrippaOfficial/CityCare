@@ -2,7 +2,7 @@ package inc.elevati.imycity.utils.firebase;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,7 +22,7 @@ public class StorageWriter implements UtilsContracts.StorageSender, UtilsContrac
     /** The recipient presenter */
     private MainContracts.NewReportPresenter presenter;
 
-    /** The report to send */
+    /** The report to forward to presenter when image compressing and sending succeeded */
     private Report report;
 
     public StorageWriter(MainContracts.NewReportPresenter presenter) {
@@ -31,8 +31,7 @@ public class StorageWriter implements UtilsContracts.StorageSender, UtilsContrac
 
     /**
      * Method called to send image to storage
-     * @param imageStream the image inputStream
-     * @param report the report that owns the image
+     * @param report the report associated to the image
      */
     @Override
     public void send(Report report, Context appContext, Uri imageUri) {
@@ -52,7 +51,6 @@ public class StorageWriter implements UtilsContracts.StorageSender, UtilsContrac
 
     @Override
     public void onCompressed(byte[] fullImage, final byte[] thumbImage) {
-        presenter.dismissViewDialog(false);
 
         // Images storage sending
         final StorageReference imageReference = report.getImageReference(Report.IMAGE_FULL);
@@ -72,7 +70,7 @@ public class StorageWriter implements UtilsContracts.StorageSender, UtilsContrac
                                     public void onFailure(@NonNull Exception e) {
                                         // The thumbnail upload has failed, so remove the full image too
                                         imageReference.delete();
-                                        presenter.dismissViewDialog(true);
+                                        presenter.dismissViewDialog(MainContracts.RESULT_SEND_ERROR_DB);
                                     }
                                 });
                     }
@@ -81,13 +79,13 @@ public class StorageWriter implements UtilsContracts.StorageSender, UtilsContrac
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // No file has been uploaded
-                        presenter.dismissViewDialog(true);
+                        presenter.dismissViewDialog(MainContracts.RESULT_SEND_ERROR_DB);
                     }
                 });
     }
 
     @Override
     public void onErrorOccurred() {
-        presenter.dismissViewDialog(true);
+        presenter.dismissViewDialog(MainContracts.RESULT_SEND_ERROR_IMAGE);
     }
 }

@@ -10,24 +10,21 @@ import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.firebase.FirestoreReader;
 import inc.elevati.imycity.utils.Report;
 
-/**
- * Presenter class used by AllReportsFragment to interact with the app kernel
- */
+/** Presenter class used by AllReportsFragment to interact with the app kernel */
 public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
 
-    /**
-     * The view instance
-     */
+    /** The view instance */
     private MainContracts.AllReportsView view;
 
+    /**
+     * Public constructor
+     * @param view The view instance that interacts with this presenter
+     */
     public AllReportsPresenter(MainContracts.AllReportsView view) {
         this.view = view;
     }
 
-
-    /**
-     * Method called to retrieve all reports from database
-     */
+    /** Method called to retrieve all reports from database */
     @Override
     public void loadAllReports() {
         FirestoreReader reader = new FirestoreReader(this);
@@ -64,16 +61,14 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
         view.updateReports(reports);
     }
 
-    /**
-     * Method called by app kernel that tells View to hide the refreshing image
-     */
+    /** Method called by app kernel that tells View to hide the refreshing View */
     @Override
     public void resetViewRefreshing() {
         view.resetRefreshing();
     }
 
     /**
-     * Method called when user click on a report in the list
+     * Method called by AllReportsAdapter when user clicks on a report in the RecyclerView
      * @param report the report to be shown
      */
     @Override

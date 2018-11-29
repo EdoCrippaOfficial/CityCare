@@ -4,7 +4,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp"
+    android:paddingTop="15dp"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
     android:focusableInTouchMode="true">
 
     <LinearLayout
@@ -13,7 +15,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
@@ -25,7 +27,16 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_add_image" />
 
-        </FrameLayout>
+            <ProgressBar
+                android:id="@+id/pb_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="25dp"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:theme="@style/ProgressBar" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:orientation="vertical"
@@ -34,41 +45,45 @@
             android:layout_marginStart="10dp"
             android:layout_weight="6">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:errorEnabled="true">
+                android:hint="@string/new_report_title"
+                app:errorEnabled="true"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/text_input_edit_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/new_report_title"
                     android:textSize="18sp"
-                    android:inputType="textCapSentences"/>
+                    android:inputType="textCapSentences"
+                    android:scrollbars="horizontal"
+                    android:scrollbarThumbHorizontal="@drawable/scrollbar_horizontal"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_layout_desc"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:layout_marginTop="2dp"
-                app:errorEnabled="true">
+                android:hint="@string/new_report_description"
+                app:errorEnabled="true"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/text_input_edit_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:inputType="textMultiLine|textCapSentences"
+                    android:minLines="2"
+                    android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
                     android:scrollbars="vertical"
-                    android:scrollbarThumbVertical="@drawable/scrollbar"
-                    android:hint="@string/new_report_description"/>
+                    android:scrollbarThumbVertical="@drawable/scrollbar_vertical" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -83,6 +98,7 @@
         android:textSize="20sp"
         android:textColor="@color/white"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
         style="@style/Widget.MaterialComponents.Button"/>
 
 </LinearLayout>

@@ -4,21 +4,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatDialog;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatDialog;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -27,7 +28,6 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.github.chrisbanes.photoview.PhotoView;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -38,42 +38,36 @@ import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
 
-/**
- * This fragment shows all reports from the database
- */
+/** This fragment shows all reports retrieved from the database */
 public class AllReportsFragment extends Fragment implements MainContracts.AllReportsView, SwipeRefreshLayout.OnRefreshListener {
 
-    /**
-     * This constants define the possible report sorting criteria
-     */
+    /** Sorts reports by their creation date from the newest to the oldest */
     final static int REPORT_SORT_DATE_NEWEST = 1;
+
+    /** Sorts reports by their creation date from the oldest to the newest */
     final static int REPORT_SORT_DATE_OLDEST = 2;
+
+    /** Sorts reports by the number of stars from the most popular to the least */
     final static int REPORT_SORT_STARS_MORE = 3;
+
+    /** Sorts reports by the number of stars from the least popular to the most */
     final static int REPORT_SORT_STARS_LESS = 4;
 
-    /**
-     * The sorting criteria chosen
-     */
+    /** The sorting criteria chosen */
     private static int sort_criteria;
 
-    /**
-     * The reports adapter
-     */
+    /** The RecyclerView adapter */
     private AllReportsAdapter reportsAdapter;
 
-    /**
-     * Presenter that handles non-graphic requests
-     */
+    /** Presenter that handles non graphics-related requests */
     private MainContracts.AllReportsPresenter presenter;
 
-    /**
-     * Object used to refresh the list
-     */
+    /** Object used to refresh the report list */
     private SwipeRefreshLayout refresher;
 
     /**
      * Method called when the View associated to this fragment is created (the first time this
-     * fragment is shown, at orientation changes, at activity re-creations...); Here the layout
+     * fragment is shown, at orientation changes, at activity re-creations...); here the layout
      * is inflated and all Views owned by this fragment are initialized. In addition
      * SharedPreferences are read to retrieve the preferred report sorting criteria
      * @param inflater the layout inflater
@@ -96,6 +90,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         // Swipe refresh
         refresher = v.findViewById(R.id.refresher);
         refresher.setOnRefreshListener(this);
+        refresher.setColorSchemeResources(R.color.color_primary);
 
         // RecyclerView
         RecyclerView recyclerView = v.findViewById(R.id.recycler_all_reports);
@@ -103,6 +98,8 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
+
+        // Presenter and adapter creation
         presenter = new AllReportsPresenter(this);
         reportsAdapter = new AllReportsAdapter(this, presenter);
         recyclerView.setAdapter(reportsAdapter);
@@ -141,17 +138,13 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         dialog.show(getFragmentManager(), null);
     }
 
-    /**
-     * Method called to hide the View shown when refreshing
-     */
+    /** Method called to hide the View shown when refreshing */
     @Override
     public void resetRefreshing() {
         refresher.setRefreshing(false);
     }
 
-    /**
-     * Called when user swipe down on screen to refresh list
-     */
+    /** Called when user swipes down on screen to refresh list */
     @Override
     public void onRefresh() {
         presenter.loadAllReports();
@@ -240,9 +233,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
         sharedPreferences.edit().putInt("sort", sortCriteria).apply();
     }
 
-    /**
-     * In this class it is defined the style of the dialog shown when user clicks on a report
-     */
+    /** In this class it is defined the style of the dialog shown when user clicks on a report */
     public static class ReportDialog extends DialogFragment {
 
         /**
@@ -259,6 +250,10 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
             return dialog;
         }
 
+        /**
+         * Called when the dialog is created, here it's specified its style
+         * @param savedInstanceState a Bundle containing saved data to be restored
+         */
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -282,8 +277,8 @@ public class AllReportsFragment extends Fragment implements MainContracts.AllRep
             TextView tv_title = v.findViewById(R.id.tv_title);
             TextView tv_desc = v.findViewById(R.id.tv_desc);
             TextView tv_date = v.findViewById(R.id.tv_date);
-            final PhotoView iv_image = v.findViewById(R.id.iv_report_image);
-            final ProgressBar pb_loading = v.findViewById(R.id.pb_dialog_image);
+            final ImageView iv_image = v.findViewById(R.id.iv_report_image);
+            final ProgressBar pb_loading = v.findViewById(R.id.pb_image);
             tv_title.setText(report.getTitle());
             tv_desc.setText(report.getDescription());
 

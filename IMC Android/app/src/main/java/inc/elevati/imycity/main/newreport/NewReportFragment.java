@@ -9,14 +9,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -46,16 +48,18 @@ import inc.elevati.imycity.utils.GlideApp;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * This fragment contains the report creating form; It also handles
+ * This fragment contains the report creating form; it also handles
  * the database sending delegating it to its presenter
  */
 public class NewReportFragment extends Fragment implements MainContracts.NewReportView {
 
-    /** Constants used to send intent requests (image pick or camera) */
+    /** Constant representing the image pick intent request */
     private static final int PICK_IMAGE_REQUEST = 71;
+
+    /** Constant representing the camera intent request */
     private static final int TAKE_PHOTO_REQUEST = 45;
 
-    /** This view presenter, called to handle non-graphic requests*/
+    /** This view presenter, called to handle non graphics-related requests */
     public MainContracts.NewReportPresenter presenter;
 
     /** Dialog displayed during database and storage sending */
@@ -64,20 +68,24 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     /** Global toast reference to avoid toasts accumulation */
     private Toast toast;
 
-    /**
-     * This fragment views: imageView for the loaded report image
-     * and TextInputLayout for title and description
-     */
+    /** ImageView for the new report image */
     private ImageView imageView;
+
+    /** TextInputEditTexts for title and description */
     private TextInputEditText textInputTitle, textInputDesc;
+
+    /** TextInputLayouts for title and description */
     private TextInputLayout textLayoutTitle, textLayoutDesc;
 
-    /** Uri referencing the image loaded by the user */
+    /** ProgressBar shown during image loading */
+    private ProgressBar imageProgressBar;
+
+    /** Uri referencing the image chosen or taken by the user */
     private Uri imageUri;
 
     /**
      * Static method that returns an instance of this fragment,
-     * should be called only by the ViewPager adapted
+     * should be called only by the ViewPager adapter
      * @return a NewReportFragment instance
      */
     public static NewReportFragment newInstance() {
@@ -103,6 +111,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         textInputDesc = v.findViewById(R.id.text_input_edit_desc);
         textLayoutTitle = v.findViewById(R.id.text_input_layout_title);
         textLayoutDesc = v.findViewById(R.id.text_input_layout_desc);
+        imageProgressBar = v.findViewById(R.id.pb_image);
 
         // Restore the image uri if it was set and progress dialog if it was shown
         if (savedInstanceState != null) {
@@ -114,11 +123,16 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
             imageUri = savedInstanceState.getParcelable("uri");
             if (imageUri != null) {
 
+                // ProgressBar
+                imageProgressBar.setVisibility(View.VISIBLE);
+
                 // Reload the image
                 GlideApp.with(this).load(imageUri)
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                imageProgressBar.setVisibility(View.GONE);
+
                                 // If error occurs during image restoring, delete the saved file reference
                                 imageUri = null;
                                 imageView.setImageResource(R.drawable.ic_add_image);
@@ -127,6 +141,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                imageProgressBar.setVisibility(View.GONE);
                                 return false;
                             }
                         }).into(imageView);
@@ -179,13 +194,23 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         return v;
     }
 
+    /**
+     * Method called by Android system when the state has to be saved
+     * (e.g. during screen orientation changes)
+     * @param outState the saved state
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        // Save the image Uri
         outState.putParcelable("uri", imageUri);
+
+        // Keep track of a possible progress dialog displayed
         if (progressDialog != null && progressDialog.isShowing()) outState.putBoolean("progress_dialog", true);
     }
 
+    /** Method called to show a non-cancelable progress dialog during database operations */
     @Override
     public void showProgressDialog() {
         progressDialog = new Dialog(getContext());
@@ -195,6 +220,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         progressDialog.show();
     }
 
+    /** Method called by presenter that notifies an invalid image (null Uri) */
     @Override
     public void notifyInvalidImage() {
         if (toast != null) toast.cancel();
@@ -208,11 +234,13 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         imageView.startAnimation(animation);
     }
 
+    /** Method called by presenter that notifies an invalid title (empty string) */
     @Override
     public void notifyInvalidTitle() {
         textLayoutTitle.setError(getString(R.string.new_report_no_title));
     }
 
+    /** Method called by presenter that notifies an invalid description (empty string) */
     @Override
     public void notifyInvalidDescription() {
         textLayoutDesc.setError(getString(R.string.new_report_no_description));
@@ -220,26 +248,32 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
     /**
      * Dismisses the progress dialog after a report sending
-     * @param error should be true if the operation didn't complete
-     *              If false the fragments fields (ImageView and EditText
-     *              for title and description) are cleared
+     * @param resultCode integer representing the operation result
      */
     @Override
-    public void dismissProgressDialog(final boolean error) {
+    public void dismissProgressDialog(final int resultCode) {
         FragmentActivity activity = getActivity();
         if (activity == null || activity.isDestroyed()) return;
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
-                if (error) {
-                    Toast.makeText(getContext(), R.string.new_report_error, Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getContext(), R.string.new_report_ok, Toast.LENGTH_LONG).show();
-                    imageView.setImageResource(R.drawable.ic_add_image);
-                    imageUri = null;
-                    textInputDesc.setText(null);
-                    textInputTitle.setText(null);
+                switch (resultCode) {
+                    case MainContracts.RESULT_SEND_OK:
+                        Toast.makeText(getContext(), R.string.new_report_ok, Toast.LENGTH_LONG).show();
+                        imageView.setImageResource(R.drawable.ic_add_image);
+                        imageUri = null;
+                        textInputDesc.setText(null);
+                        textInputTitle.setText(null);
+                        break;
+                    case MainContracts.RESULT_SEND_ERROR_DB:
+                        Toast.makeText(getContext(), R.string.new_report_error_db, Toast.LENGTH_LONG).show();
+                        break;
+                    case MainContracts.RESULT_SEND_ERROR_IMAGE:
+                        Toast.makeText(getContext(), R.string.new_report_error_image, Toast.LENGTH_LONG).show();
+                        imageUri = null;
+                        imageView.setBackgroundResource(R.drawable.ic_add_image);
+                        break;
                 }
             }
         });
@@ -277,6 +311,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     /** Creates a File object to receive photo from camera and then start camera activity */
     private void takePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             try {
@@ -285,7 +320,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                 Uri photoURI = FileProvider.getUriForFile(getContext(), "inc.elevati.imycity.fileprovider", cameraFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST);
-            } catch (IOException ex) {
+            } catch (IOException e) {
                 Toast.makeText(getContext(), R.string.new_report_camera_error, Toast.LENGTH_LONG).show();
             }
         } else {
@@ -305,6 +340,10 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
         // Retrieving image from storage
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            // ProgressBar
+            imageProgressBar.setVisibility(View.VISIBLE);
+
             imageUri = data.getData();
             GlideApp.with(this).load(imageUri).listener(new RequestListener<Drawable>() {
                 @Override
@@ -315,6 +354,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                         requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE_REQUEST);
                     } else {
                         // Unknown error
+                        imageProgressBar.setVisibility(View.GONE);
                         imageView.setImageResource(R.drawable.ic_add_image);
                         Toast.makeText(getContext(), R.string.new_report_pick_error, Toast.LENGTH_LONG).show();
                         return true;
@@ -324,16 +364,22 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
                 @Override
                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    imageProgressBar.setVisibility(View.GONE);
                     return false;
                 }
             }).into(imageView);
 
         // Getting camera result
         } else if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
+
+            // ProgressBar
+            imageProgressBar.setVisibility(View.VISIBLE);
+
             GlideApp.with(this).load(imageUri)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        imageProgressBar.setVisibility(View.GONE);
                         imageView.setImageResource(R.drawable.ic_add_image);
                         Toast.makeText(getContext(), R.string.new_report_camera_error, Toast.LENGTH_SHORT).show();
                         return true;
@@ -341,6 +387,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        imageProgressBar.setVisibility(View.GONE);
                         return false;
                     }
                 })
@@ -358,10 +405,13 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
             // Permission is granted, try again to load image
             GlideApp.with(this).load(imageUri).listener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    imageProgressBar.setVisibility(View.GONE);
+
                     // Error occurred even with permissions, error message displayed
                     Toast.makeText(getContext(), R.string.new_report_pick_error, Toast.LENGTH_LONG).show();
                     imageView.setImageResource(R.drawable.ic_add_image);
@@ -369,10 +419,13 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                 }
                 @Override
                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    imageProgressBar.setVisibility(View.GONE);
                     return false;
                 }
             }).into(imageView);
         } else {
+            imageProgressBar.setVisibility(View.GONE);
+
             // Permission is denied, error message displayed
             imageView.setImageResource(R.drawable.ic_add_image);
             Toast.makeText(getContext(), R.string.new_report_permissions, Toast.LENGTH_LONG).show();
@@ -395,9 +448,6 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                 storageDir      /* directory */
         );
         imageUri = Uri.fromFile(image);
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(imageUri);
-        getActivity().sendBroadcast(mediaScanIntent);
         return image;
     }
 }

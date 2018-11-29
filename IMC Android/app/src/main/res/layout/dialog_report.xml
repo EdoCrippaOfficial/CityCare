@@ -31,7 +31,7 @@
                 android:layout_height="match_parent" />
 
             <ProgressBar
-                android:id="@+id/pb_dialog_image"
+                android:id="@+id/pb_image"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:visibility="gone"

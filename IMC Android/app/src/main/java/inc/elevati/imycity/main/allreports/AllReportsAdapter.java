@@ -1,10 +1,10 @@
 package inc.elevati.imycity.main.allreports;
 
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,49 +27,36 @@ import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
 
-/**
- * Adapter class that organizes report data to show it in a RecyclerView hosted in AllReportsFragment
- */
+/** Adapter class that organizes report data to show it in a RecyclerView hosted in AllReportsFragment */
 class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHolder> {
 
-    /**
-     * The context reference
-     */
+    /** The context reference */
     private Fragment context;
 
-    /**
-     * The report list to be shown
-     */
+    /** The report list to be shown */
     private List<Report> reports;
 
-    /**
-     * The presenter that allows communication with the view
-     */
+    /** The presenter that allows communication with the view */
     private MainContracts.AllReportsPresenter presenter;
 
-    /**
-     * Class that lists and retrieves View objects from layout
-     */
+    /** Class that holds the required View objects in a layout */
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        /**
-         * The progress bar shown during image loading
-         */
+        /** The progress bar shown during image loading*/
         ProgressBar pb_loading;
 
-        /**
-         * TextViews fot title and description
-         */
-        TextView tv_title, tv_desc;
+        /** TextView for the report title */
+        TextView tv_title;
 
-        /**
-         * ImageView for report image
-         */
+        /** TextView for the report description */
+        TextView tv_desc;
+
+        /** ImageView for the report image*/
         ImageView iv_image;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.pb_loading = itemView.findViewById(R.id.pb_dialog_image);
+            this.pb_loading = itemView.findViewById(R.id.pb_image);
             this.tv_title = itemView.findViewById(R.id.tv_title);
             this.tv_desc = itemView.findViewById(R.id.tv_desc);
             this.iv_image = itemView.findViewById(R.id.iv_report_image);
@@ -84,7 +71,7 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
 
     /**
      * Called when a single item holder in RecyclerView is created, here
-     * click listeners is attached to ViewHolder
+     * click listener is attached to ViewHolder
      * @param parent the parent View
      * @param viewType the view type
      * @return the ViewHolder created
@@ -115,7 +102,7 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         holder.tv_desc.setText(r.getDescription());
         holder.pb_loading.setVisibility(View.VISIBLE);
 
-        // Image loading from storage with Glide
+        // Image loading from cloud storage with Glide
         GlideApp.with(context)
                 .load(r.getImageReference(Report.IMAGE_THUMBNAIL))
                 .placeholder(R.drawable.ic_image)
