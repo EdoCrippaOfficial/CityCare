@@ -17,7 +17,7 @@ import inc.elevati.imycity.utils.UtilsContracts;
 /**
  * Class that implements the storage writing
  */
-public class StorageWriter implements UtilsContracts.StorageSender, UtilsContracts.compressorListener {
+public class StorageWriter implements UtilsContracts.StorageSender, UtilsContracts.CompressorListener {
 
     /** The recipient presenter */
     private MainContracts.NewReportPresenter presenter;
@@ -32,6 +32,8 @@ public class StorageWriter implements UtilsContracts.StorageSender, UtilsContrac
     /**
      * Method called to send image to storage
      * @param report the report associated to the image
+     * @param appContext context needed by Glide to load the image from Uri
+     * @param imageUri the image Uri
      */
     @Override
     public void send(Report report, Context appContext, Uri imageUri) {

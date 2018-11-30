@@ -6,6 +6,7 @@ import android.net.Uri;
 import java.util.UUID;
 
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.firebase.FirestoreSender;
 import inc.elevati.imycity.utils.Report;
 import inc.elevati.imycity.utils.firebase.StorageWriter;
@@ -40,6 +41,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
         } else if (description.equals("")) {
             view.notifyInvalidDescription();
         } else {
+            EspressoIdlingResource.increment();
             view.showProgressDialog();
             String uuid = UUID.randomUUID().toString();
             Report report = new Report(uuid, title, description, System.currentTimeMillis(), "", 0, 0);
@@ -67,6 +69,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
      */
     @Override
     public void dismissViewDialog(int resultCode) {
+        EspressoIdlingResource.decrement();
         view.dismissProgressDialog(resultCode);
     }
 

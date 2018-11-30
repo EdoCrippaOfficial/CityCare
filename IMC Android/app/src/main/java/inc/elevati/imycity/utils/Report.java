@@ -33,21 +33,16 @@ public class Report implements Parcelable {
     /** Report fields, self-descriptive */
     private String id, userId, title, description, reply, operatorId;
 
-    /**
-     * The report creation time, in milliseconds from January 1 1970, 00:00 UTC
-     */
+    /** The report creation time, in milliseconds from January 1 1970, 00:00 UTC */
     private long timestamp;
 
-    /**
-     * The number of stars that this report received
-     */
+    /** The number of stars that this report received */
     private int nStars;
 
-    /**
-     * GPS latitude and longitude of the report
-     */
+    /** GPS latitude and longitude of the report */
     private long latitude, longitude;
 
+    /** The report status (STATUS_ACCEPTED, STATUS_REFUSED, STATUS_COMPLETED, STATUS_WAITING) */
     private int status;
 
     /**
@@ -197,9 +192,7 @@ public class Report implements Parcelable {
         dest.writeInt(status);
     }
 
-    /**
-     * Required by Parcelable interface
-     */
+    /** Required by Parcelable interface */
     public static final Parcelable.Creator<Report> CREATOR = new Parcelable.Creator<Report>() {
         @Override
         public Report createFromParcel(Parcel in) {

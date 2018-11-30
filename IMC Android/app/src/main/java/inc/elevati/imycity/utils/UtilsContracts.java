@@ -3,12 +3,10 @@ package inc.elevati.imycity.utils;
 import android.content.Context;
 import android.net.Uri;
 
-/**
- * Interface that contains interfaces to utils package
- */
+/** Interface that contains interfaces to utils package */
 public interface UtilsContracts {
 
-    interface compressorListener {
+    interface CompressorListener {
 
         /**
          * Method called when compress process has ended
@@ -17,6 +15,7 @@ public interface UtilsContracts {
          */
         void onCompressed(byte[] fullImage, byte[] thumbImage);
 
+        /** Method called to notify the listener that an error is occurred */
         void onErrorOccurred();
     }
 
@@ -24,8 +23,9 @@ public interface UtilsContracts {
 
         /**
          * Method called to send image to storage
-         * @param image the image to be sent
-         * @param report the report that owns the image
+         * @param report the report associated to the image
+         * @param appContext context needed by Glide to load the image from Uri
+         * @param imageUri the image Uri
          */
         void send(Report report, Context appContext, Uri imageUri);
     }
@@ -41,9 +41,7 @@ public interface UtilsContracts {
 
     interface DatabaseReader {
 
-        /**
-         * Method called to asynchronously retrieve all reports in database
-         */
+        /** Method called to asynchronously retrieve all reports in database */
         void readAllReports();
     }
 }

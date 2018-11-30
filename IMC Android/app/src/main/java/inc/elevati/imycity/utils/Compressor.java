@@ -23,7 +23,7 @@ public class Compressor implements Runnable {
     private static final int SCALE_THUMBNAIL = 4;
 
     /** The listener which receives data when it's ready or gets notified of an error */
-    private UtilsContracts.compressorListener listener;
+    private UtilsContracts.CompressorListener listener;
 
     /** Context needed by Glide to load the image from Uri */
     private Context appContext;
@@ -37,7 +37,7 @@ public class Compressor implements Runnable {
      * @param appContext context needed by Glide to load the image from Uri
      * @param imageUri the image Uri
      */
-    private Compressor(UtilsContracts.compressorListener listener, Context appContext, Uri imageUri) {
+    private Compressor(UtilsContracts.CompressorListener listener, Context appContext, Uri imageUri) {
         this.listener = listener;
         this.appContext = appContext;
         this.imageUri = imageUri;
@@ -49,7 +49,7 @@ public class Compressor implements Runnable {
      * @param appContext context needed by Glide to load the image from Uri
      * @param imageUri the image Uri
      */
-    public static void startCompressing(UtilsContracts.compressorListener listener, Context appContext, Uri imageUri) {
+    public static void startCompressing(UtilsContracts.CompressorListener listener, Context appContext, Uri imageUri) {
         new Thread(new Compressor(listener, appContext, imageUri)).start();
     }
 

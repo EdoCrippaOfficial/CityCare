@@ -47,7 +47,6 @@ public class AllReportsPresenterTest {
 
     @Test
     public void displaySnapshotTest() {
-        // TODO
         presenter.displayAllReports(any(QuerySnapshot.class));
         verify(view).updateReports(anyListOf(Report.class));
     }

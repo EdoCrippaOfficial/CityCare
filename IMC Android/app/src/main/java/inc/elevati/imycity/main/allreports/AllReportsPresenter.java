@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.firebase.FirestoreReader;
 import inc.elevati.imycity.utils.Report;
 
@@ -27,6 +28,7 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
     /** Method called to retrieve all reports from database */
     @Override
     public void loadAllReports() {
+        EspressoIdlingResource.increment();
         FirestoreReader reader = new FirestoreReader(this);
         reader.readAllReports();
     }
@@ -64,6 +66,7 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
     /** Method called by app kernel that tells View to hide the refreshing View */
     @Override
     public void resetViewRefreshing() {
+        EspressoIdlingResource.decrement();
         view.resetRefreshing();
     }
 

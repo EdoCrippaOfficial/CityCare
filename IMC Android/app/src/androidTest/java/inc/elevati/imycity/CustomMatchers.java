@@ -8,9 +8,12 @@ import android.graphics.drawable.VectorDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import org.hamcrest.Description;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.matcher.BoundedMatcher;
 
 public class CustomMatchers {
@@ -63,6 +66,40 @@ public class CustomMatchers {
             @Override
             public boolean matchesSafely(ImageView imageView) {
                 return imageView.getDrawable() != null;
+            }
+        };
+    }
+
+    public static BoundedMatcher<View, TextInputLayout> hasErrorText(final int expectedErrorId) {
+        return new BoundedMatcher<View, TextInputLayout>(TextInputLayout.class) {
+
+            @Override
+            public boolean matchesSafely(TextInputLayout textInputLayout) {
+                String expectedErrorText = textInputLayout.getContext().getString(expectedErrorId);
+                CharSequence actualError = textInputLayout.getError();
+                if (actualError == null) return false;
+                return expectedErrorText.equals(actualError.toString());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with error text");
+            }
+        };
+    }
+
+    public static BoundedMatcher<View, RecyclerView> hasItems() {
+        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class) {
+            @Override
+            public boolean matchesSafely(RecyclerView recyclerView) {
+                RecyclerView.Adapter adapter = recyclerView.getAdapter();
+                if (adapter == null) return false;
+                return adapter.getItemCount() > 0;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with items");
             }
         };
     }

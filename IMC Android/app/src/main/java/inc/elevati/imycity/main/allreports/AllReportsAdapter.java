@@ -28,7 +28,7 @@ import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
 
 /** Adapter class that organizes report data to show it in a RecyclerView hosted in AllReportsFragment */
-class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHolder> {
+public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHolder> {
 
     /** The context reference */
     private Fragment context;
@@ -172,5 +172,14 @@ class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHol
         this.reports.clear();
         this.reports.addAll(reports);
         sortReports(order);
+    }
+
+    /**
+     * Method called to retrieve a report from the list
+     * @param position the report position in the list
+     * @return the report in the specified positon
+     */
+    public Report getItemAt(int position) {
+        return reports.get(position);
     }
 }

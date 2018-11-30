@@ -89,9 +89,9 @@ public class NewReportPresenterTest {
     public void dismissDialogTest(){
 
         //  chiamo il metodo
-        presenter.dismissViewDialog(false);
+        presenter.dismissViewDialog(MainContracts.RESULT_SEND_OK);
 
         //  verifico la chiamata al metodo della view
-        verify(view).dismissProgressDialog(false);
+        verify(view).dismissProgressDialog(MainContracts.RESULT_SEND_OK);
     }
 }
