@@ -3,7 +3,7 @@
 ### Generale
 
 #### Iterazione 1
-- [x] Inizializzazione Firebase Database e Storage 
+- [x] Inizializzazione Firebase Database e Storage
 
 #### Iterazione 2
 - [ ] Inizializzazione Firebase auth
@@ -37,5 +37,16 @@
 - [ ] Possibilità di cancellare una segnalazione fatta dall’utente corrente
 - [ ] TESTING E VERIFICA DEL SOFTWARE
 ---
-### Web (?)
-- [ ] Errore nel binding asincrono in report-detail
+### Web
+
+#### Iterazione 1
+
+- [x] Struttura sito
+- [x] Visualizzazione base report
+- [x] Routing
+
+#### Iterazione 2
+
+- [ ] Pagina iniziale con log-in
+- [ ] Visualizzazione segnalazioni secondo stato
+- [ ] Cambio status e commento operatore
