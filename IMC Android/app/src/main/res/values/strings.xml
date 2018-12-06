@@ -2,6 +2,20 @@
 
     <string name="app_name">Improve My City</string>
 
+    <string name="login_email">E-mail</string>
+    <string name="login_password">Password</string>
+    <string name="login_sign_in">Sign in</string>
+    <string name="login_register">Need an account? <a href="">Register here</a></string>
+
+    <string name="register_create">Create account</string>
+    <string name="register_name">Name</string>
+    <string name="register_ssn">Social security number</string>
+    <string name="register_login">Already have an account? <a href="">Login</a></string>
+    <string name="register_no_name">Please insert a name to continue</string>
+    <string name="register_no_ssn">Please insert a valid SSN to continue</string>
+    <string name="register_no_email">Please insert a valid email address to continue</string>
+    <string name="register_no_password">Your password must be at least 8 characters long, with at least one number and one letter</string>
+
     <string name="menu_new">New report</string>
     <string name="menu_all">All reports</string>
 

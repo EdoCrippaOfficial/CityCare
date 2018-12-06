@@ -4,6 +4,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -15,8 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.allreports.AllReportsFragment;
@@ -81,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // UserName in navigator header
+        View headerView = menuNavigator.getHeaderView(0);
+        TextView tvUser = headerView.findViewById(R.id.tv_username);
+        tvUser.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         // View pager for fragments
         pager = findViewById(R.id.view_pager);

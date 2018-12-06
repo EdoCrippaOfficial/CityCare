@@ -1,38 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/radio_sort"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp">
+    android:orientation="vertical">
 
-    <RadioButton
-        android:id="@+id/bn_newest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sort_report_newest"
-        android:textSize="22sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/color_primary"/>
 
-    <RadioButton
-        android:id="@+id/bn_oldest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sort_report_oldest"
-        android:textSize="22sp"/>
+    <RadioGroup
+        android:id="@+id/radio_sort"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp">
 
-    <RadioButton
-        android:id="@+id/bn_more_stars"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sort_report_most"
-        android:enabled="false"
-        android:textSize="22sp"/>
+        <RadioButton
+            android:id="@+id/bn_newest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/sort_report_newest"
+            android:textAppearance="?android:textAppearanceMedium"/>
 
-    <RadioButton
-        android:id="@+id/bn_less_stars"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sort_report_least"
-        android:enabled="false"
-        android:textSize="22sp"/>
+        <RadioButton
+            android:id="@+id/bn_oldest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/sort_report_oldest"
+            android:textAppearance="?android:textAppearanceMedium"/>
 
-</RadioGroup>
+        <RadioButton
+            android:id="@+id/bn_more_stars"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/sort_report_most"
+            android:enabled="false"
+            android:textAppearance="?android:textAppearanceMedium"/>
+
+        <RadioButton
+            android:id="@+id/bn_less_stars"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/sort_report_least"
+            android:enabled="false"
+            android:textAppearance="?android:textAppearanceMedium"/>
+
+    </RadioGroup>
+
+</LinearLayout>

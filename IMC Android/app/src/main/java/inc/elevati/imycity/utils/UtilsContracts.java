@@ -44,4 +44,9 @@ public interface UtilsContracts {
         /** Method called to asynchronously retrieve all reports in database */
         void readAllReports();
     }
+
+    interface AuthHelper {
+
+        void register(String name, String ssn, String email, String password);
+    }
 }

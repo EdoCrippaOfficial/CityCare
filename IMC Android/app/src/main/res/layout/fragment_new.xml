@@ -46,7 +46,7 @@
             android:id="@+id/text_input_edit_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="18sp"
+            android:textAppearance="?android:textAppearanceMedium"
             android:inputType="textCapSentences"
             android:scrollbars="horizontal"
             android:scrollbarThumbHorizontal="@drawable/scrollbar_horizontal"/>
@@ -67,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minLines="5"
+            android:textAppearance="?android:textAppearanceMedium"
             android:textSize="16sp"
             android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
             android:scrollbars="vertical"
@@ -80,9 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="30dp"
-        android:text="@string/new_report_send"
         android:textSize="20sp"
-        android:textColor="@color/white"
-        style="@style/Widget.MaterialComponents.Button"/>
+        android:text="@string/new_report_send" />
 
 </LinearLayout>
