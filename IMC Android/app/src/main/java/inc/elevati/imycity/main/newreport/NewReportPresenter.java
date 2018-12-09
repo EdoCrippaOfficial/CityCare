@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
+import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.utils.firebase.FirestoreSender;
 import inc.elevati.imycity.utils.Report;
 import inc.elevati.imycity.utils.firebase.StorageWriter;
@@ -44,7 +45,8 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
             EspressoIdlingResource.increment();
             view.showProgressDialog();
             String uuid = UUID.randomUUID().toString();
-            Report report = new Report(uuid, title, description, System.currentTimeMillis(), "", 0, 0);
+            String userId = FirebaseAuthHelper.getUserId();
+            Report report = new Report(uuid, title, description, System.currentTimeMillis(), userId, 0, 0);
 
             // Store image (normal and thumbnail) in Firebase Storage
             StorageWriter storageWriter = new StorageWriter(this);
@@ -68,9 +70,10 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
      * @param resultCode integer representing the operation result
      */
     @Override
-    public void dismissViewDialog(int resultCode) {
+    public void onSendTaskComplete(int resultCode) {
         EspressoIdlingResource.decrement();
-        view.dismissProgressDialog(resultCode);
+        view.dismissProgressDialog();
+        view.notifySendTaskCompleted(resultCode);
     }
 
 }

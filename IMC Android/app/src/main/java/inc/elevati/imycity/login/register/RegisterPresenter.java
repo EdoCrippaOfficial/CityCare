@@ -3,7 +3,6 @@ package inc.elevati.imycity.login.register;
 import java.util.regex.Pattern;
 
 import inc.elevati.imycity.login.LoginContracts;
-import inc.elevati.imycity.utils.UtilsContracts;
 import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
 
 public class RegisterPresenter implements LoginContracts.RegisterPresenter {
@@ -45,14 +44,19 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
         }
 
         // Everything is ok, proceed with register process
-        UtilsContracts.AuthHelper authHelper = new FirebaseAuthHelper(this);
-        authHelper.register(name, ssn, email, password);
+        view.showProgressDialog();
+        FirebaseAuthHelper.register(email, password, this);
     }
 
     @Override
     public void onRegisterTaskComplete(int resultCode) {
         if (resultCode == LoginContracts.REGISTER_ACCOUNT_CREATED) {
             view.startMainActivity();
+        } else if (resultCode == LoginContracts.REGISTER_FAILED_ALREADY_EXISTS){
+            view.notifyEmailAlreadyExists();
+        } else {
+            view.notifyUnknownError();
         }
+        view.dismissProgressDialog();
     }
 }

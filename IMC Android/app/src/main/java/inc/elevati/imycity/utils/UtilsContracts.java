@@ -3,6 +3,8 @@ package inc.elevati.imycity.utils;
 import android.content.Context;
 import android.net.Uri;
 
+import inc.elevati.imycity.login.LoginContracts;
+
 /** Interface that contains interfaces to utils package */
 public interface UtilsContracts {
 
@@ -43,10 +45,5 @@ public interface UtilsContracts {
 
         /** Method called to asynchronously retrieve all reports in database */
         void readAllReports();
-    }
-
-    interface AuthHelper {
-
-        void register(String name, String ssn, String email, String password);
     }
 }

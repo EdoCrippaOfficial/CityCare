@@ -32,7 +32,7 @@ public class FirestoreReader implements UtilsContracts.DatabaseReader {
                         if (task.isSuccessful()) presenter.displayAllReports(task.getResult());
 
                         // Hide refresh image
-                        presenter.resetViewRefreshing();
+                        presenter.onLoadTaskComplete();
                     }
                 });
     }

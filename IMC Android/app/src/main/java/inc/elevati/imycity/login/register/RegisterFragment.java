@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -19,12 +20,17 @@ import androidx.fragment.app.FragmentManager;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.login.LoginContracts;
 import inc.elevati.imycity.main.MainActivity;
+import inc.elevati.imycity.utils.ProgressDialog;
 
 public class RegisterFragment extends Fragment implements LoginContracts.RegisterView {
 
     private TextInputEditText textInputName, textInputSSN, textInputEmail, textInputPassword;
     private TextInputLayout textLayoutName, textLayoutSSN, textLayoutEmail, textLayoutPassword;
+
     private LoginContracts.RegisterPresenter presenter;
+
+    /** Dialog displayed during firebase communications */
+    private ProgressDialog progressDialog;
 
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
@@ -54,6 +60,14 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
         v.findViewById(R.id.bn_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                textInputName.clearFocus();
+                textInputSSN.clearFocus();
+                textInputEmail.clearFocus();
+                textInputPassword.clearFocus();
+                textLayoutEmail.setError(null);
+                textLayoutPassword.setError(null);
+                textLayoutSSN.setError(null);
+                textLayoutName.setError(null);
                 String name = textInputName.getText().toString();
                 String ssn = textInputSSN.getText().toString();
                 String email = textInputEmail.getText().toString();
@@ -82,6 +96,17 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
     }
 
     @Override
+    public void notifyEmailAlreadyExists() {
+        if (isAdded()) textLayoutEmail.setError(getString(R.string.register_email_already_exists));
+    }
+
+    @Override
+    public void notifyUnknownError() {
+        if (isAdded())
+            Toast.makeText(getContext(), R.string.register_unknown_error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void notifyInvalidName() {
         textLayoutName.setError(getString(R.string.register_no_name));
     }
@@ -99,6 +124,19 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
     @Override
     public void notifyInvalidPassword() {
         textLayoutPassword.setError(getString(R.string.register_no_password));
+    }
+
+    /** Method called to show a non-cancelable progress dialog */
+    @Override
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.newInstance(R.string.register_loading);
+        progressDialog.show(getFragmentManager(), null);
+    }
+
+    /** Dismisses the progress dialog */
+    @Override
+    public void dismissProgressDialog() {
+        if (progressDialog != null) progressDialog.dismiss();
     }
 
     private void resetErrorOnTextInput() {

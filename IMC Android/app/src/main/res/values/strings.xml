@@ -6,6 +6,12 @@
     <string name="login_password">Password</string>
     <string name="login_sign_in">Sign in</string>
     <string name="login_register">Need an account? <a href="">Register here</a></string>
+    <string name="login_loading">Processing request. Please wait…</string>
+    <string name="login_account_not_exists">The email you\'ve entered doesn\'t match any account</string>
+    <string name="login_wrong_password">The password you\'ve entered is incorrect</string>
+    <string name="login_no_email">Please enter your email to continue</string>
+    <string name="login_no_password">Please enter your password to continue</string>
+    <string name="login_unknown_error">An error has occurred. Please try again later</string>
 
     <string name="register_create">Create account</string>
     <string name="register_name">Name</string>
@@ -15,9 +21,13 @@
     <string name="register_no_ssn">Please insert a valid SSN to continue</string>
     <string name="register_no_email">Please insert a valid email address to continue</string>
     <string name="register_no_password">Your password must be at least 8 characters long, with at least one number and one letter</string>
+    <string name="register_email_already_exists">This email is already associated to an existing account</string>
+    <string name="register_loading">Processing request. Please wait…</string>
+    <string name="register_unknown_error">An error has occurred. Please try again later</string>
 
     <string name="menu_new">New report</string>
     <string name="menu_all">All reports</string>
+    <string name="menu_logout">Log out</string>
 
     <string name="new_report_title">Title</string>
     <string name="new_report_description">Description</string>

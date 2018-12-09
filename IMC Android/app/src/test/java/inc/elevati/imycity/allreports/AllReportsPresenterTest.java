@@ -53,7 +53,7 @@ public class AllReportsPresenterTest {
 
     @Test
     public void resetRefreshTest(){
-        presenter.resetViewRefreshing();
+        presenter.onLoadTaskComplete();
         verify(view).resetRefreshing();
     }
 

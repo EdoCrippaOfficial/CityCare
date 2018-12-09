@@ -72,7 +72,7 @@ public class StorageWriter implements UtilsContracts.StorageSender, UtilsContrac
                                     public void onFailure(@NonNull Exception e) {
                                         // The thumbnail upload has failed, so remove the full image too
                                         imageReference.delete();
-                                        presenter.dismissViewDialog(MainContracts.RESULT_SEND_ERROR_DB);
+                                        presenter.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
                                     }
                                 });
                     }
@@ -81,13 +81,13 @@ public class StorageWriter implements UtilsContracts.StorageSender, UtilsContrac
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // No file has been uploaded
-                        presenter.dismissViewDialog(MainContracts.RESULT_SEND_ERROR_DB);
+                        presenter.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
                     }
                 });
     }
 
     @Override
     public void onErrorOccurred() {
-        presenter.dismissViewDialog(MainContracts.RESULT_SEND_ERROR_IMAGE);
+        presenter.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_IMAGE);
     }
 }

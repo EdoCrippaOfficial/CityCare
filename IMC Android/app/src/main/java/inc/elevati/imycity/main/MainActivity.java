@@ -1,5 +1,6 @@
 package inc.elevati.imycity.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
@@ -23,8 +24,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.login.LoginActivity;
 import inc.elevati.imycity.main.allreports.AllReportsFragment;
 import inc.elevati.imycity.main.newreport.NewReportFragment;
+import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
 
 /** The main activity that contains the ViewPager with the fragments */
 public class MainActivity extends AppCompatActivity {
@@ -81,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.menu_new:
                         scrollToPage(PAGE_NEW);
                         break;
+                    case R.id.menu_logout:
+                        firebaseLogOut();
+                        break;
                 }
                 return true;
             }
@@ -89,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         // UserName in navigator header
         View headerView = menuNavigator.getHeaderView(0);
         TextView tvUser = headerView.findViewById(R.id.tv_username);
-        tvUser.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        tvUser.setText(FirebaseAuthHelper.getUserEmail());
 
         // View pager for fragments
         pager = findViewById(R.id.view_pager);
@@ -203,6 +209,15 @@ public class MainActivity extends AppCompatActivity {
             sortButton.getActionView().startAnimation(animate);
         }
         return false;
+    }
+
+    /** Method called when user click on logout button, LoginActivity il launched */
+    private void firebaseLogOut() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.signOut();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     /** Adapter class used by ViewPager to show fragments in pages */

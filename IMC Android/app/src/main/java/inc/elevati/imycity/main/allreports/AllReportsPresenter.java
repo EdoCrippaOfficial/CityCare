@@ -65,7 +65,7 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
 
     /** Method called by app kernel that tells View to hide the refreshing View */
     @Override
-    public void resetViewRefreshing() {
+    public void onLoadTaskComplete() {
         EspressoIdlingResource.decrement();
         view.resetRefreshing();
     }

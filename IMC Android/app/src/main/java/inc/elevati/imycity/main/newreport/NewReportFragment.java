@@ -15,7 +15,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import android.text.Editable;
@@ -23,7 +22,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -44,6 +42,7 @@ import java.util.Date;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.GlideApp;
+import inc.elevati.imycity.utils.ProgressDialog;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -63,7 +62,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     public MainContracts.NewReportPresenter presenter;
 
     /** Dialog displayed during database and storage sending */
-    private Dialog progressDialog;
+    private ProgressDialog progressDialog;
 
     /** Global toast reference to avoid toasts accumulation */
     private Toast toast;
@@ -92,6 +91,13 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         return new NewReportFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new NewReportPresenter(this);
+        progressDialog = (ProgressDialog) getFragmentManager().findFragmentByTag("progress");
+    }
+
     /**
      * Method called when the View associated to this fragment is created (the first time this
      * fragment is shown, at orientation changes, at activity re-creations...); Here the layout
@@ -105,7 +111,6 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_new, container, false);
-        presenter = new NewReportPresenter(this);
         imageView = v.findViewById(R.id.iv_new_report);
         textInputTitle = v.findViewById(R.id.text_input_edit_title);
         textInputDesc = v.findViewById(R.id.text_input_edit_desc);
@@ -113,13 +118,8 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         textLayoutDesc = v.findViewById(R.id.text_input_layout_desc);
         imageProgressBar = v.findViewById(R.id.pb_image);
 
-        // Restore the image uri if it was set and progress dialog if it was shown
+        // Restore the image uri if it was set
         if (savedInstanceState != null) {
-
-            // Progress dialog check
-            if (savedInstanceState.getBoolean("progress_dialog")) showProgressDialog();
-
-            // Image uri check
             imageUri = savedInstanceState.getParcelable("uri");
             if (imageUri != null) {
 
@@ -205,19 +205,19 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
         // Save the image Uri
         outState.putParcelable("uri", imageUri);
-
-        // Keep track of a possible progress dialog displayed
-        if (progressDialog != null && progressDialog.isShowing()) outState.putBoolean("progress_dialog", true);
     }
 
     /** Method called to show a non-cancelable progress dialog during database operations */
     @Override
     public void showProgressDialog() {
-        progressDialog = new Dialog(getContext());
-        progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        progressDialog.setContentView(R.layout.dialog_progress);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog = ProgressDialog.newInstance(R.string.new_report_uploading);
+        progressDialog.show(getFragmentManager(), "progress");
+    }
+
+    /*** Dismisses the progress dialog after a report sending */
+    @Override
+    public void dismissProgressDialog() {
+        if (progressDialog != null) progressDialog.dismiss();
     }
 
     /** Method called by presenter that notifies an invalid image (null Uri) */
@@ -247,17 +247,15 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     }
 
     /**
-     * Dismisses the progress dialog after a report sending
+     * Updates UI according to sending task result
      * @param resultCode integer representing the operation result
      */
     @Override
-    public void dismissProgressDialog(final int resultCode) {
-        FragmentActivity activity = getActivity();
-        if (activity == null || activity.isDestroyed()) return;
+    public void notifySendTaskCompleted(final int resultCode) {
+        if (getActivity() == null) return;
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
                 switch (resultCode) {
                     case MainContracts.RESULT_SEND_OK:
                         Toast.makeText(getContext(), R.string.new_report_ok, Toast.LENGTH_LONG).show();
@@ -337,6 +335,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (getActivity() == null) return;
 
         // Retrieving image from storage
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {

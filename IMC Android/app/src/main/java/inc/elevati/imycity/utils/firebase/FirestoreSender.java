@@ -50,7 +50,7 @@ public class FirestoreSender implements UtilsContracts.DatabaseSender {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        presenter.dismissViewDialog(MainContracts.RESULT_SEND_OK);
+                        presenter.onSendTaskComplete(MainContracts.RESULT_SEND_OK);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -58,7 +58,7 @@ public class FirestoreSender implements UtilsContracts.DatabaseSender {
                     public void onFailure(@NonNull Exception e) {
                         // Delete the image uploaded previously on storage
                         StorageWriter.deleteImage(report);
-                        presenter.dismissViewDialog(MainContracts.RESULT_SEND_ERROR_DB);
+                        presenter.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
                     }
                 });
     }

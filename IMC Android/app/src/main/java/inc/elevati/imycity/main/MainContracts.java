@@ -46,7 +46,7 @@ public interface MainContracts {
          * Called by the app kernel to notify that report sending has completed
          * @param resultCode integer representing the operation result
          */
-        void dismissViewDialog(int resultCode);
+        void onSendTaskComplete(int resultCode);
     }
 
     interface AllReportsPresenter {
@@ -61,7 +61,7 @@ public interface MainContracts {
         void displayAllReports(QuerySnapshot results);
 
         /** Method called by app kernel that tells View to hide the refreshing image */
-        void resetViewRefreshing();
+        void onLoadTaskComplete();
 
         /**
          * Method called when user click on a report in the list
@@ -84,15 +84,17 @@ public interface MainContracts {
         /** Method called by presenter that notifies an invalid description (empty string) */
         void notifyInvalidDescription();
 
+        /*** Dismisses the progress dialog after a report sending*/
+        void dismissProgressDialog();
+
         /**
-         * Dismisses the progress dialog after a report sending
+         * Updates UI according to sending task result
          * @param resultCode integer representing the operation result
          */
-        void dismissProgressDialog(int resultCode);
+        void notifySendTaskCompleted(int resultCode);
     }
 
     interface AllReportsView {
-
 
         /**
          * Replaces the displayed reports with the ones in the list
