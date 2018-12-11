@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.MainActivity;
-import inc.elevati.imycity.main.allreports.AllReportsAdapter;
+import inc.elevati.imycity.main.ReportsAdapter;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -54,7 +54,7 @@ public class AllReportsViewAndroidTest {
 
         // Get first and last report timestamp for validation
         RecyclerView recyclerView = intentsRule.getActivity().findViewById(R.id.recycler_all_reports);
-        AllReportsAdapter adapter = (AllReportsAdapter) recyclerView.getAdapter();
+        ReportsAdapter adapter = (ReportsAdapter) recyclerView.getAdapter();
         assert adapter != null;
         long time1 = adapter.getItemAt(0).getTimestamp();
         int last = adapter.getItemCount() - 1;
@@ -92,7 +92,7 @@ public class AllReportsViewAndroidTest {
 
         // Get first report title for validation
         RecyclerView recyclerView = intentsRule.getActivity().findViewById(R.id.recycler_all_reports);
-        AllReportsAdapter adapter = (AllReportsAdapter) recyclerView.getAdapter();
+        ReportsAdapter adapter = (ReportsAdapter) recyclerView.getAdapter();
         assert adapter != null;
         String title = adapter.getItemAt(0).getTitle();
 

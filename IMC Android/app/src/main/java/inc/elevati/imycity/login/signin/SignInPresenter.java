@@ -1,14 +1,36 @@
 package inc.elevati.imycity.login.signin;
 
 import inc.elevati.imycity.login.LoginContracts;
+import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
 
 public class SignInPresenter implements LoginContracts.SignInPresenter {
 
     private LoginContracts.SignInView view;
 
-    SignInPresenter(LoginContracts.SignInView view) {
-        this.view = view;
+    private boolean pendingTask;
+    private int resultCode;
+
+    @Override
+    public void attachView(MvpContracts.MvpView view) {
+        this.view = (LoginContracts.SignInView) view;
+
+        // If there were pending tasks, execute them now
+        if (pendingTask) {
+
+            // If resultCode is not 0, then onLoginTaskComplete has to be executed
+            if (resultCode != 0) {
+                onLoginTaskComplete(resultCode);
+                resultCode = 0;
+            }
+            pendingTask = false;
+        }
+
+    }
+
+    @Override
+    public void detachView() {
+        this.view = null;
     }
 
     @Override
@@ -32,6 +54,14 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
 
     @Override
     public void onLoginTaskComplete(int resultCode) {
+
+        // If view is detached, set the pendingTask flag
+        if (view == null) {
+            pendingTask = true;
+            this.resultCode = resultCode;
+            return;
+        }
+
         if (resultCode == LoginContracts.LOGIN_OK) {
             view.startMainActivity();
         } else if (resultCode == LoginContracts.LOGIN_FAILED_NO_ACCOUNT) {

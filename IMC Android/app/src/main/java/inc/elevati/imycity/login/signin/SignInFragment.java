@@ -3,6 +3,7 @@ package inc.elevati.imycity.login.signin;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.login.LoginActivity;
 import inc.elevati.imycity.login.LoginContracts;
 import inc.elevati.imycity.login.register.RegisterFragment;
 import inc.elevati.imycity.main.MainActivity;
@@ -38,12 +40,6 @@ public class SignInFragment extends Fragment implements LoginContracts.SignInVie
         return new SignInFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter = new SignInPresenter(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,8 +49,16 @@ public class SignInFragment extends Fragment implements LoginContracts.SignInVie
         textLayoutEmail = v.findViewById(R.id.text_input_layout_email);
         textLayoutPassword = v.findViewById(R.id.text_input_layout_password);
 
-        resetErrorOnTextInput();
+        // Clear error when users provides input in TextInputEditTexts
+        clearEditTextErrorOnInput();
 
+        // ProgressDialog retrieval
+        progressDialog = (ProgressDialog) getFragmentManager().findFragmentByTag("progress");
+
+        // Presenter retrieval
+        presenter = ((LoginActivity) getActivity()).getPresenter().getSignInPresenter();
+
+        // Switch to register fragment
         v.findViewById(R.id.tv_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +66,7 @@ public class SignInFragment extends Fragment implements LoginContracts.SignInVie
             }
         });
 
+        // Login button clicked
         v.findViewById(R.id.bn_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,14 +83,15 @@ public class SignInFragment extends Fragment implements LoginContracts.SignInVie
     }
 
     @Override
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.newInstance(R.string.login_loading);
-        progressDialog.show(getFragmentManager(), null);
+    public void onStart() {
+        super.onStart();
+        presenter.attachView(this);
     }
 
     @Override
-    public void dismissProgressDialog() {
-        if (progressDialog != null) progressDialog.dismiss();
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     @Override
@@ -95,6 +101,17 @@ public class SignInFragment extends Fragment implements LoginContracts.SignInVie
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.container_login, RegisterFragment.newInstance());
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.newInstance(R.string.login_loading);
+        progressDialog.show(getFragmentManager(), "progress");
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (progressDialog != null) progressDialog.dismiss();
     }
 
     @Override
@@ -132,7 +149,7 @@ public class SignInFragment extends Fragment implements LoginContracts.SignInVie
             Toast.makeText(getContext(), R.string.login_unknown_error, Toast.LENGTH_SHORT).show();
     }
 
-    private void resetErrorOnTextInput() {
+    private void clearEditTextErrorOnInput() {
         textInputEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }

@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main.allreports;
+package inc.elevati.imycity.main.myreports;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -9,11 +9,11 @@ import java.util.List;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
-import inc.elevati.imycity.utils.firebase.FirestoreReader;
 import inc.elevati.imycity.utils.Report;
+import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
+import inc.elevati.imycity.utils.firebase.FirestoreReader;
 
-/** Presenter class used by AllReportsFragment to interact with the app kernel */
-public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
+public class MyReportsPresenter implements MainContracts.MyReportsPresenter {
 
     /** The view instance */
     private MainContracts.ReportsView view;
@@ -36,7 +36,7 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
 
             // If results is not null, then onLoadAllReportsTaskComplete has to be executed
             if (results != null) {
-                onLoadAllReportsTaskComplete(results);
+                onLoadMyReportsTaskComplete(results);
                 results = null;
             }
 
@@ -56,9 +56,9 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
 
     /** Method called to retrieve all reports from database */
     @Override
-    public void loadAllReports() {
+    public void loadMyReports() {
         EspressoIdlingResource.increment();
-        FirestoreReader.readAllReports(this);
+        FirestoreReader.readMyReports(this, FirebaseAuthHelper.getUserId());
     }
 
     /**
@@ -68,7 +68,7 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
      * @param results the data retrieved
      */
     @Override
-    public void onLoadAllReportsTaskComplete(QuerySnapshot results) {
+    public void onLoadMyReportsTaskComplete(QuerySnapshot results) {
 
         // If view is detached, set the pendingTask flag
         if (view == null) {

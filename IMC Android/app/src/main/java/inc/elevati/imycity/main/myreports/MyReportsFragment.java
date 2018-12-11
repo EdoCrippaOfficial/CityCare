@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main.allreports;
+package inc.elevati.imycity.main.myreports;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -33,8 +33,7 @@ import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_DATE_OLDEST;
 import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_STARS_LESS;
 import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_STARS_MORE;
 
-/** This fragment shows all reports retrieved from the database */
-public class AllReportsFragment extends Fragment implements MainContracts.ReportsView, SwipeRefreshLayout.OnRefreshListener {
+public class MyReportsFragment extends Fragment implements MainContracts.ReportsView, SwipeRefreshLayout.OnRefreshListener {
 
     /** The sorting criteria chosen */
     private static int sort_criteria;
@@ -43,7 +42,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.Report
     private ReportsAdapter reportsAdapter;
 
     /** Presenter that handles non graphics-related requests */
-    private MainContracts.AllReportsPresenter presenter;
+    private MainContracts.MyReportsPresenter presenter;
 
     /** Object used to refresh the report list */
     private SwipeRefreshLayout refresher;
@@ -61,7 +60,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.Report
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_all_reports, container, false);
+        View v = inflater.inflate(R.layout.fragment_my_reports, container, false);
         setHasOptionsMenu(true);
 
         // Swipe refresh
@@ -70,7 +69,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.Report
         refresher.setColorSchemeResources(R.color.color_primary);
 
         // Presenter retrieval
-        presenter = ((MainActivity) getActivity()).getPresenter().getAllReportsPresenter();
+        presenter = ((MainActivity) getActivity()).getPresenter().getMyReportsPresenter();
         reportsAdapter = new ReportsAdapter(this, presenter);
 
         // Shared preferences for report sorting criteria
@@ -80,16 +79,16 @@ public class AllReportsFragment extends Fragment implements MainContracts.Report
         }
 
         // RecyclerView
-        RecyclerView recyclerView = v.findViewById(R.id.recycler_all_reports);
+        RecyclerView recyclerView = v.findViewById(R.id.recycler_my_reports);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(reportsAdapter);
 
-        // Load all reports
+        // Load my reports
         refresher.setRefreshing(true);
-        presenter.loadAllReports();
+        presenter.loadMyReports();
         return v;
     }
 
@@ -109,8 +108,8 @@ public class AllReportsFragment extends Fragment implements MainContracts.Report
      * Static method that returns an instance of this fragment
      * @return a NewReportFragment instance
      */
-    public static AllReportsFragment newInstance() {
-        return new AllReportsFragment();
+    public static MyReportsFragment newInstance() {
+        return new MyReportsFragment();
     }
 
     /**
@@ -142,7 +141,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.Report
     /** Called when user swipes down on screen to refresh list */
     @Override
     public void onRefresh() {
-        presenter.loadAllReports();
+        presenter.loadMyReports();
     }
 
     /**

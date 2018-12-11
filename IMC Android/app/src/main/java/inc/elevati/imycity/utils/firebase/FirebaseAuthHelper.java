@@ -29,6 +29,11 @@ public class FirebaseAuthHelper {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
+    public static void signOut() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.signOut();
+    }
+
     public static void register(String email, String password, final LoginContracts.RegisterPresenter presenter) {
 
         // Try to create account

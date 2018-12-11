@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,20 +25,20 @@ import android.widget.TextView;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.login.LoginActivity;
 import inc.elevati.imycity.main.allreports.AllReportsFragment;
+import inc.elevati.imycity.main.myreports.MyReportsFragment;
 import inc.elevati.imycity.main.newreport.NewReportFragment;
-import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
+
+import static inc.elevati.imycity.main.MainContracts.PAGE_ALL;
+import static inc.elevati.imycity.main.MainContracts.PAGE_MY;
+import static inc.elevati.imycity.main.MainContracts.PAGE_NEW;
 
 /** The main activity that contains the ViewPager with the fragments */
-public class MainActivity extends AppCompatActivity {
-
-    /** Constant representing the AllReportsFragment */
-    private final static int PAGE_ALL = 0;
-
-    /** Constant representing the NewReportFragment */
-    private final static int PAGE_NEW = 1;
+public class MainActivity extends AppCompatActivity implements MainContracts.MainView {
 
     /** Total number of fragments */
-    private final static int NUM_FRAGMENTS = 2;
+    private final static int NUM_FRAGMENTS = 3;
+
+    private MainPresenter presenter;
 
     /** The object that organizes fragments in pages */
     private ViewPager pager;
@@ -60,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Presenter creation
+        presenter = (MainPresenter) getLastCustomNonConfigurationInstance();
+        if (presenter == null) presenter = new MainPresenter();
+        presenter.attachView(this);
+
         // Action Bar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,17 +81,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 menuNavigator.setCheckedItem(menuItem);
                 menuDrawer.closeDrawers();
-                switch (menuItem.getItemId()) {
-                    case R.id.menu_all:
-                        scrollToPage(PAGE_ALL);
-                        break;
-                    case R.id.menu_new:
-                        scrollToPage(PAGE_NEW);
-                        break;
-                    case R.id.menu_logout:
-                        firebaseLogOut();
-                        break;
-                }
+                presenter.menuItemClicked(menuItem.getItemId());
                 return true;
             }
         });
@@ -95,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         // UserName in navigator header
         View headerView = menuNavigator.getHeaderView(0);
         TextView tvUser = headerView.findViewById(R.id.tv_username);
-        tvUser.setText(FirebaseAuthHelper.getUserEmail());
+        tvUser.setText(presenter.getCurrentUserEmail());
 
         // View pager for fragments
         pager = findViewById(R.id.view_pager);
@@ -108,40 +102,45 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int i) {
                 invalidateOptionsMenu();
-                updateCheckedMenuItem(i);
+                presenter.pageScrolled(i);
             }
             @Override
             public void onPageScrollStateChanged(int i) {}
         });
 
-        // Update current selected menu item
-        updateCheckedMenuItem(pager.getCurrentItem());
+        // Set starting page
+        pager.setCurrentItem(PAGE_ALL);
+        presenter.pageScrolled(PAGE_ALL);
 
         // Tab layout showing pages below menu bar
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(pager);
     }
 
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return presenter;
+    }
+
+    public MainContracts.MainPresenter getPresenter() {
+        return presenter;
+    }
+
     /**
      * Method called to update the checked item in left menu
-     * @param page the page currently shown
+     * @param itemId the checked item id
      */
-    private void updateCheckedMenuItem(int page) {
-        switch (page) {
-            case PAGE_ALL:
-                menuNavigator.setCheckedItem(R.id.menu_all);
-                break;
-            case PAGE_NEW:
-                menuNavigator.setCheckedItem(R.id.menu_new);
-                break;
-        }
+    @Override
+    public void setCheckedMenuItem(int itemId) {
+        menuNavigator.setCheckedItem(itemId);
     }
 
     /**
      * Called when a menu item is clicked, changes the current visible fragment
      * @param page the fragment to switch to
      */
-    private void scrollToPage(int page) {
+    @Override
+    public void scrollToPage(int page) {
         pager.setCurrentItem(page, true);
     }
 
@@ -182,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         pager.clearOnPageChangeListeners();
+        presenter.detachView();
     }
 
     /** Method called when menu bar is created, here we can inflate and animate menu buttons */
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             animate.setDuration(500);
             animate.setFillAfter(true);
             sortButton.getActionView().startAnimation(animate);
-        } else {
+        } else if (pager.getCurrentItem() == PAGE_NEW){
             sortButton.setEnabled(false);
             TranslateAnimation animate = new TranslateAnimation(0, 200, 0, 0);
             animate.setDuration(400);
@@ -211,10 +211,8 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    /** Method called when user click on logout button, LoginActivity il launched */
-    private void firebaseLogOut() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.signOut();
+    @Override
+    public void startLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
@@ -230,8 +228,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case 0: return AllReportsFragment.newInstance();
-                case 1: return NewReportFragment.newInstance();
+                case PAGE_NEW: return NewReportFragment.newInstance();
+                case PAGE_ALL: return AllReportsFragment.newInstance();
+                case PAGE_MY: return MyReportsFragment.newInstance();
                 default: return AllReportsFragment.newInstance();
             }
         }
@@ -244,12 +243,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0:
-                    return getString(R.string.menu_all);
-                case 1:
+                case PAGE_NEW:
                     return getString(R.string.menu_new);
-                case 2:
+                case PAGE_ALL:
                     return getString(R.string.menu_all);
+                case PAGE_MY:
+                    return getString(R.string.menu_my);
             }
             return null;
         }

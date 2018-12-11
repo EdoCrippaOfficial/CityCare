@@ -3,6 +3,7 @@ package inc.elevati.imycity.login.register;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.login.LoginActivity;
 import inc.elevati.imycity.login.LoginContracts;
 import inc.elevati.imycity.main.MainActivity;
 import inc.elevati.imycity.utils.ProgressDialog;
@@ -36,12 +38,6 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
         return new RegisterFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter = new RegisterPresenter(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,8 +51,24 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
         textLayoutEmail = v.findViewById(R.id.text_input_layout_email);
         textLayoutPassword = v.findViewById(R.id.text_input_layout_password);
 
-        resetErrorOnTextInput();
+        // Clear error when users provides input in TextInputEditTexts
+        clearEditTextErrorOnInput();
 
+        // ProgressDialog retrieval
+        progressDialog = (ProgressDialog) getFragmentManager().findFragmentByTag("progress");
+
+        // Presenter retrieval
+        presenter = ((LoginActivity) getActivity()).getPresenter().getRegisterPresenter();
+
+        // Switch to login fragment
+        v.findViewById(R.id.tv_login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.signInButtonClicked();
+            }
+        });
+
+        // Register button clicked
         v.findViewById(R.id.bn_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,15 +87,38 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
                 presenter.registerButtonClicked(name, ssn, email, password);
             }
         });
-
-        v.findViewById(R.id.tv_login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.popBackStack();
-            }
-        });
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.attachView(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
+
+    @Override
+    public void switchToSignInView() {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.popBackStack();
+    }
+
+    /** Method called to show a non-cancelable progress dialog */
+    @Override
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.newInstance(R.string.register_loading);
+        progressDialog.show(getFragmentManager(), "progress");
+    }
+
+    /** Dismisses the progress dialog */
+    @Override
+    public void dismissProgressDialog() {
+        if (progressDialog != null) progressDialog.dismiss();
     }
 
     @Override
@@ -126,20 +161,7 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
         textLayoutPassword.setError(getString(R.string.register_no_password));
     }
 
-    /** Method called to show a non-cancelable progress dialog */
-    @Override
-    public void showProgressDialog() {
-        progressDialog = ProgressDialog.newInstance(R.string.register_loading);
-        progressDialog.show(getFragmentManager(), null);
-    }
-
-    /** Dismisses the progress dialog */
-    @Override
-    public void dismissProgressDialog() {
-        if (progressDialog != null) progressDialog.dismiss();
-    }
-
-    private void resetErrorOnTextInput() {
+    private void clearEditTextErrorOnInput() {
         textInputName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }

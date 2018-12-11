@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main.allreports;
+package inc.elevati.imycity.main;
 
 import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
@@ -23,12 +23,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import inc.elevati.imycity.R;
-import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
 
+import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_DATE_NEWEST;
+import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_DATE_OLDEST;
+import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_STARS_LESS;
+import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_STARS_MORE;
+
 /** Adapter class that organizes report data to show it in a RecyclerView hosted in AllReportsFragment */
-public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.MyViewHolder> {
+public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHolder> {
 
     /** The context reference */
     private Fragment context;
@@ -37,7 +41,7 @@ public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.My
     private List<Report> reports;
 
     /** The presenter that allows communication with the view */
-    private MainContracts.AllReportsPresenter presenter;
+    private MainContracts.ReportListPresenter presenter;
 
     /** Class that holds the required View objects in a layout */
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -63,7 +67,7 @@ public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.My
         }
     }
 
-    AllReportsAdapter(Fragment context, MainContracts.AllReportsPresenter presenter) {
+    public ReportsAdapter(Fragment context, MainContracts.ReportListPresenter presenter) {
         this.reports = new ArrayList<>();
         this.context = context;
         this.presenter = presenter;
@@ -78,7 +82,7 @@ public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.My
      */
     @NonNull
     @Override
-    public AllReportsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ReportsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.report_list_item, parent, false);
         final MyViewHolder viewHolder = new MyViewHolder(v);
         v.setOnClickListener(new View.OnClickListener() {
@@ -137,9 +141,9 @@ public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.My
      * Method called to change the reports order in the list
      * @param order the requested order, should be one defined in AllReportsFragment
      */
-    void sortReports(int order) {
+    public void sortReports(int order) {
         switch (order) {
-            case AllReportsFragment.REPORT_SORT_DATE_NEWEST:
+            case REPORT_SORT_DATE_NEWEST:
                 Collections.sort(reports, new Comparator<Report>() {
                     @Override
                     public int compare(Report r1, Report r2) {
@@ -147,7 +151,7 @@ public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.My
                     }
                 });
                 break;
-            case AllReportsFragment.REPORT_SORT_DATE_OLDEST:
+            case REPORT_SORT_DATE_OLDEST:
                 Collections.sort(reports, new Comparator<Report>() {
                     @Override
                     public int compare(Report r1, Report r2) {
@@ -155,9 +159,9 @@ public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.My
                     }
                 });
                 break;
-            case AllReportsFragment.REPORT_SORT_STARS_MORE:
+            case REPORT_SORT_STARS_MORE:
                 break;
-            case AllReportsFragment.REPORT_SORT_STARS_LESS:
+            case REPORT_SORT_STARS_LESS:
                 break;
         }
         notifyDataSetChanged();
@@ -168,7 +172,7 @@ public class AllReportsAdapter extends RecyclerView.Adapter<AllReportsAdapter.My
      * @param reports the new report list
      * @param order the order used to show reports
      */
-    void updateReports(List<Report> reports, int order) {
+    public void updateReports(List<Report> reports, int order) {
         this.reports.clear();
         this.reports.addAll(reports);
         sortReports(order);

@@ -7,6 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
+import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.utils.Report;
 
 /**
@@ -15,101 +16,96 @@ import inc.elevati.imycity.utils.Report;
  */
 public interface MainContracts {
 
-    /** Constant representing the correct result of the task */
     int RESULT_SEND_OK = 1;
-
-    /** Constant representing an error during image compressing/resizing */
     int RESULT_SEND_ERROR_IMAGE = 2;
-
-    /** Constant representing an error during cloud (database or storage) communication */
     int RESULT_SEND_ERROR_DB = 3;
 
-    interface NewReportPresenter {
+    int PAGE_NEW = 0;
+    int PAGE_ALL = 1;
+    int PAGE_MY = 2;
 
-        /**
-         * Method called to handle the report sending logic
-         * @param title the report title
-         * @param description the report description
-         * @param appContext the context needed by Glide to load image from Uri
-         * @param imageUri the Uri of the image
-         */
+    int REPORT_SORT_DATE_NEWEST = 1;
+    int REPORT_SORT_DATE_OLDEST = 2;
+    int REPORT_SORT_STARS_MORE = 3;
+    int REPORT_SORT_STARS_LESS = 4;
+
+    interface MainView extends MvpContracts.MvpView {
+
+        void scrollToPage(int page);
+
+        void startLoginActivity();
+
+        void setCheckedMenuItem(int itemId);
+    }
+
+    interface MainPresenter extends MvpContracts.MvpPresenter {
+
+        void menuItemClicked(int itemId);
+
+        void pageScrolled(int page);
+
+        String getCurrentUserEmail();
+
+        NewReportPresenter getNewReportPresenter();
+
+        AllReportsPresenter getAllReportsPresenter();
+
+        MyReportsPresenter getMyReportsPresenter();
+    }
+
+    interface NewReportPresenter extends MvpContracts.MvpPresenter {
+
         void sendButtonClicked(String title, String description, Context appContext, Uri imageUri);
 
-        /**
-         * Called after image has been sent to storage correctly,
-         * it sends the report data to database
-         * @param report the report to be sent
-         */
         void sendReportData(Report report);
 
-        /**
-         * Called by the app kernel to notify that report sending has completed
-         * @param resultCode integer representing the operation result
-         */
         void onSendTaskComplete(int resultCode);
     }
 
-    interface AllReportsPresenter {
+    interface AllReportsPresenter extends ReportListPresenter {
 
-        /** Method called to retrieve all reports from database */
         void loadAllReports();
 
-        /**
-         * Method called to forward data retrieved from database to View
-         * @param results the data retrieved
-         */
-        void displayAllReports(QuerySnapshot results);
+        void onLoadAllReportsTaskComplete(QuerySnapshot results);
 
-        /** Method called by app kernel that tells View to hide the refreshing image */
-        void onLoadTaskComplete();
+        void onUpdateTaskComplete();
+    }
 
-        /**
-         * Method called when user click on a report in the list
-         * @param report the report to be shown
-         */
+    interface MyReportsPresenter extends ReportListPresenter {
+
+        void loadMyReports();
+
+        void onLoadMyReportsTaskComplete(QuerySnapshot results);
+
+        void onUpdateTaskComplete();
+    }
+
+    interface ReportListPresenter extends MvpContracts.MvpPresenter {
+
         void showReport(Report report);
     }
 
-    interface NewReportView {
+    interface NewReportView extends MvpContracts.MvpView {
 
-        /** Method called to show a non-cancelable progress dialog during database operations */
         void showProgressDialog();
 
-        /** Method called by presenter that notifies an invalid image (null Uri) */
         void notifyInvalidImage();
 
-        /** Method called by presenter that notifies an invalid title (empty string) */
         void notifyInvalidTitle();
 
-        /** Method called by presenter that notifies an invalid description (empty string) */
         void notifyInvalidDescription();
 
-        /*** Dismisses the progress dialog after a report sending*/
         void dismissProgressDialog();
 
-        /**
-         * Updates UI according to sending task result
-         * @param resultCode integer representing the operation result
-         */
         void notifySendTaskCompleted(int resultCode);
     }
 
-    interface AllReportsView {
+    interface ReportsView extends MvpContracts.MvpView {
 
-        /**
-         * Replaces the displayed reports with the ones in the list
-         * @param reports the list of reports to be displayed
-         */
         void updateReports(List<Report> reports);
 
-        /** Method called to hide the View shown when refreshing */
         void resetRefreshing();
 
-        /**
-         * Called when user clicks on a report in the list, it opens a
-         * fullscreen dialog containing all the report information
-         * @param report the clicked report
-         */
         void showReportDialog(Report report);
     }
 }

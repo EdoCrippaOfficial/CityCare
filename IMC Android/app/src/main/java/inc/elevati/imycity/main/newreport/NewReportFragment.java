@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.main.MainActivity;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.ProgressDialog;
@@ -91,13 +92,6 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         return new NewReportFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter = new NewReportPresenter(this);
-        progressDialog = (ProgressDialog) getFragmentManager().findFragmentByTag("progress");
-    }
-
     /**
      * Method called when the View associated to this fragment is created (the first time this
      * fragment is shown, at orientation changes, at activity re-creations...); Here the layout
@@ -110,7 +104,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.fragment_new, container, false);
+        View v = inflater.inflate(R.layout.fragment_new_report, container, false);
         imageView = v.findViewById(R.id.iv_new_report);
         textInputTitle = v.findViewById(R.id.text_input_edit_title);
         textInputDesc = v.findViewById(R.id.text_input_edit_desc);
@@ -142,11 +136,27 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 imageProgressBar.setVisibility(View.GONE);
+
+                                // If meanwhile imageUri is set to null (for example after executing a
+                                // pending task from the presenter) restore the default image
+                                if (imageUri == null) {
+                                    imageView.setImageResource(R.drawable.ic_add_image);
+                                    return true;
+                                }
                                 return false;
                             }
                         }).into(imageView);
             }
         }
+
+        // Clear error when users provides input in TextInputEditTexts
+        clearEditTextErrorOnInput();
+
+        // ProgressDialog retrieval
+        progressDialog = (ProgressDialog) getFragmentManager().findFragmentByTag("progress");
+
+        // Presenter retrieval
+        presenter = ((MainActivity) getActivity()).getPresenter().getNewReportPresenter();
 
         // Click listener to pick or take a picture
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -156,42 +166,32 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
             }
         });
 
-        // Clear error when users provides input in TextInputEditTexts
-        textInputTitle.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                textLayoutTitle.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) { }
-        });
-        textInputDesc.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                textLayoutDesc.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) { }
-        });
-
         // Send report button
         v.findViewById(R.id.bn_new_report_send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                textLayoutTitle.setError(null);
+                textLayoutDesc.setError(null);
+                textLayoutTitle.clearFocus();
+                textLayoutDesc.clearFocus();
                 String title = textInputTitle.getText().toString();
                 String desc = textInputDesc.getText().toString();
                 presenter.sendButtonClicked(title, desc, getActivity().getApplicationContext(), imageUri);
             }
         });
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.attachView(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     /**
@@ -214,7 +214,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         progressDialog.show(getFragmentManager(), "progress");
     }
 
-    /*** Dismisses the progress dialog after a report sending */
+    /** Dismisses the progress dialog after a report sending */
     @Override
     public void dismissProgressDialog() {
         if (progressDialog != null) progressDialog.dismiss();
@@ -448,5 +448,32 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         );
         imageUri = Uri.fromFile(image);
         return image;
+    }
+
+    private void clearEditTextErrorOnInput() {
+        textInputTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                textLayoutTitle.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
+        textInputDesc.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                textLayoutDesc.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
     }
 }

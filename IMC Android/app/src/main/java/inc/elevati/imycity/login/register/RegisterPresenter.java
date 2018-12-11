@@ -3,6 +3,7 @@ package inc.elevati.imycity.login.register;
 import java.util.regex.Pattern;
 
 import inc.elevati.imycity.login.LoginContracts;
+import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
 
 public class RegisterPresenter implements LoginContracts.RegisterPresenter {
@@ -12,8 +13,33 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
     private final static String passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
     private LoginContracts.RegisterView view;
 
-    public RegisterPresenter(LoginContracts.RegisterView view) {
-        this.view = view;
+    private boolean pendingTask;
+    private int resultCode;
+
+    @Override
+    public void attachView(MvpContracts.MvpView view) {
+        this.view = (LoginContracts.RegisterView) view;
+
+        // If there were pending tasks, execute them now
+        if (pendingTask) {
+
+            // If resultCode is not 0, then onRegisterTaskComplete has to be executed
+            if (resultCode != 0) {
+                onRegisterTaskComplete(resultCode);
+                resultCode = 0;
+            }
+            pendingTask = false;
+        }
+    }
+
+    @Override
+    public void detachView() {
+        this.view = null;
+    }
+
+    @Override
+    public void signInButtonClicked() {
+        view.switchToSignInView();
     }
 
     @Override
@@ -50,6 +76,14 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
 
     @Override
     public void onRegisterTaskComplete(int resultCode) {
+
+        // If view is detached, set the pendingTask flag
+        if (view == null) {
+            pendingTask = true;
+            this.resultCode = resultCode;
+            return;
+        }
+
         if (resultCode == LoginContracts.REGISTER_ACCOUNT_CREATED) {
             view.startMainActivity();
         } else if (resultCode == LoginContracts.REGISTER_FAILED_ALREADY_EXISTS){

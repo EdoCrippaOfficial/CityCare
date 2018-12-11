@@ -6,15 +6,21 @@
         android:checkableBehavior="single">
 
         <item
+            android:id="@+id/menu_new"
+            android:icon="@drawable/ic_new_report"
+            android:title="@string/menu_new"
+            android:checkable="true"/>
+
+        <item
             android:id="@+id/menu_all"
             android:icon="@drawable/ic_all_reports"
             android:title="@string/menu_all"
             android:checkable="true"/>
 
         <item
-            android:id="@+id/menu_new"
-            android:icon="@drawable/ic_new_report"
-            android:title="@string/menu_new"
+            android:id="@+id/menu_my"
+            android:icon="@drawable/ic_my_reports"
+            android:title="@string/menu_my"
             android:checkable="true"/>
 
     </group>

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
+import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.utils.firebase.FirestoreSender;
 import inc.elevati.imycity.utils.Report;
@@ -18,12 +19,31 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
     /** The view instance */
     private MainContracts.NewReportView view;
 
-    /**
-     * Public constructor
-     * @param view The view instance that interacts with this presenter
-     */
-    public NewReportPresenter(MainContracts.NewReportView view) {
-        this.view = view;
+    /** Indicates that a task is completed while View was detached */
+    private boolean pendingTask;
+
+    /** Variable set when onSendTaskComplete is called while View was detached */
+    private int resultCode;
+
+    @Override
+    public void attachView(MvpContracts.MvpView view) {
+        this.view = (MainContracts.NewReportView) view;
+
+        // If there were pending tasks, execute them now
+        if (pendingTask) {
+
+            // If resultCode is not 0, then onSendTaskComplete has to be executed
+            if (resultCode != 0) {
+                onSendTaskComplete(resultCode);
+                resultCode = 0;
+            }
+            pendingTask = false;
+        }
+    }
+
+    @Override
+    public void detachView() {
+        this.view = null;
     }
 
     /**
@@ -67,13 +87,21 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
 
     /**
      * Called by the app kernel to notify that report sending has completed
+     * If called when View is detached, resultCode is saved and the method
+     * is called again when view is re-attached
      * @param resultCode integer representing the operation result
      */
     @Override
     public void onSendTaskComplete(int resultCode) {
+
+        // If view is detached, set the pendingTask flag
+        if (view == null) {
+            pendingTask = true;
+            this.resultCode = resultCode;
+            return;
+        }
         EspressoIdlingResource.decrement();
         view.dismissProgressDialog();
         view.notifySendTaskCompleted(resultCode);
     }
-
 }

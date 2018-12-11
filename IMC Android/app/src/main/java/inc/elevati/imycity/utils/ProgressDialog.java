@@ -34,6 +34,6 @@ public class ProgressDialog extends DialogFragment {
     @Override
     public void dismiss() {
         Dialog dialog = getDialog();
-        if (dialog != null && dialog.isShowing()) super.dismiss();
+        if (dialog != null && dialog.isShowing()) super.dismissAllowingStateLoss();
     }
 }

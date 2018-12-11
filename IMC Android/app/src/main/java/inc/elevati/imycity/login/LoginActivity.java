@@ -10,14 +10,22 @@ import androidx.fragment.app.FragmentTransaction;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.login.signin.SignInFragment;
 import inc.elevati.imycity.main.MainActivity;
-import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
 
-public class LoginActivity extends FragmentActivity {
+public class LoginActivity extends FragmentActivity implements LoginContracts.LoginView {
+
+    private LoginContracts.LoginPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Presenter creation
+        presenter = (LoginPresenter) getLastCustomNonConfigurationInstance();
+        if (presenter == null) presenter = new LoginPresenter();
+        presenter.attachView(this);
+
+        // Fragment inflation if activity il launched for the first time
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -27,16 +35,30 @@ public class LoginActivity extends FragmentActivity {
     }
 
     @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return presenter;
+    }
+
+    public LoginContracts.LoginPresenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
+        presenter.checkIfAlreadySignedIn();
+    }
 
-        // Check if the user is already signed in
-        if (FirebaseAuthHelper.isAuthenticated()) {
+    @Override
+    public void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
-            // Go to main activity
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

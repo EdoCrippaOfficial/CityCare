@@ -47,13 +47,13 @@ public class AllReportsPresenterTest {
 
     @Test
     public void displaySnapshotTest() {
-        presenter.displayAllReports(any(QuerySnapshot.class));
+        presenter.onLoadAllReportsTaskComplete(any(QuerySnapshot.class));
         verify(view).updateReports(anyListOf(Report.class));
     }
 
     @Test
     public void resetRefreshTest(){
-        presenter.onLoadTaskComplete();
+        presenter.onUpdateTaskComplete();
         verify(view).resetRefreshing();
     }
 
