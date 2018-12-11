@@ -71,7 +71,7 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
 
         // Everything is ok, proceed with register process
         view.showProgressDialog();
-        FirebaseAuthHelper.register(email, password, this);
+        FirebaseAuthHelper.register(name, email, password, this);
     }
 
     @Override

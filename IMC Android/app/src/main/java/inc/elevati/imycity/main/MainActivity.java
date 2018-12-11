@@ -92,10 +92,12 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
             }
         });
 
-        // UserName in navigator header
+        // UserName and email in navigator header
         View headerView = menuNavigator.getHeaderView(0);
         TextView tvUser = headerView.findViewById(R.id.tv_username);
-        tvUser.setText(presenter.getCurrentUserEmail());
+        TextView tvEmail = headerView.findViewById(R.id.tv_email);
+        tvUser.setText(presenter.getCurrentUserName());
+        tvEmail.setText(presenter.getCurrentUserEmail());
 
         // View pager for fragments
         pager = findViewById(R.id.view_pager);
@@ -107,8 +109,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
             public void onPageScrolled(int i, float v, int i1) { }
             @Override
             public void onPageSelected(int i) {
-                if(i == PAGE_NEW)
-                    invalidateOptionsMenu();
+                if (i == PAGE_NEW) invalidateOptionsMenu();
                 presenter.pageScrolled(i);
             }
             @Override
@@ -150,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
     @Override
     public void scrollToPage(int page) {
         pager.setCurrentItem(page, true);
-
     }
 
     /**

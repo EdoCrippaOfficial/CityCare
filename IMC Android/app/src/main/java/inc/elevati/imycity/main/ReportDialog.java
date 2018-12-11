@@ -23,6 +23,7 @@ import androidx.fragment.app.DialogFragment;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
+import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
 
 /** In this class it is defined the style of the dialog shown when user clicks on a report */
 public class ReportDialog extends DialogFragment {
@@ -78,7 +79,7 @@ public class ReportDialog extends DialogFragment {
         DateFormat dateFormat = android.text.format.DateFormat.getMediumDateFormat(getContext());
         Date date = new Date(report.getTimestamp());
         String completeDate = dateFormat.format(date) + ", " + timeFormat.format(date);
-        tv_date.setText(getString(R.string.report_date, completeDate));
+        tv_date.setText(getString(R.string.report_date, report.getUserName(), completeDate));
         pb_loading.setVisibility(View.VISIBLE);
 
         // Image loading from storage with Glide

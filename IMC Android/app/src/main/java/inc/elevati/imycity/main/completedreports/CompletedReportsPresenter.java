@@ -84,6 +84,7 @@ public class CompletedReportsPresenter implements MainContracts.CompletedReports
                 String description = snap.getString("description");
                 long timestamp = snap.getLong("timestamp");
                 String userId = snap.getString("user_id");
+                String userName = snap.getString("user_name");
                 String operatorId = snap.getString("operator_id");
                 long nStars = snap.getLong("n_stars");
                 String reply = snap.getString("reply");
@@ -91,8 +92,8 @@ public class CompletedReportsPresenter implements MainContracts.CompletedReports
                 String position = snap.getString("position");
                 String[] positionData = position.split(",");
 
-                Report report = new Report(id, userId, title, description, reply, operatorId, timestamp, (int) nStars,
-                        Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status);
+                Report report = new Report(id, userId, userName, title, description, reply, operatorId, timestamp,
+                        (int) nStars, Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status);
 
                 reports.add(report);
             }

@@ -94,4 +94,9 @@ public class MainPresenter implements MainContracts.MainPresenter {
     public String getCurrentUserEmail() {
         return FirebaseAuthHelper.getUserEmail();
     }
+
+    @Override
+    public String getCurrentUserName() {
+        return FirebaseAuthHelper.getUserName();
+    }
 }

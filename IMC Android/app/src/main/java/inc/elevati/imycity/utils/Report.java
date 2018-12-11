@@ -31,7 +31,7 @@ public class Report implements Parcelable {
     public static final int STATUS_WAITING = 4;
 
     /** Report fields, self-descriptive */
-    private String id, userId, title, description, reply, operatorId;
+    private String id, userId, userName, title, description, reply, operatorId;
 
     /** The report creation time, in milliseconds from January 1 1970, 00:00 UTC */
     private long timestamp;
@@ -55,12 +55,13 @@ public class Report implements Parcelable {
      * @param latitude the GPS latitude of the report
      * @param longitude the GPS longitude of the report
      */
-    public Report(String id, String title, String description, long timestamp, String userId, long latitude, long longitude) {
+    public Report(String id, String title, String description, long timestamp, String userId, String userName, long latitude, long longitude) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.timestamp = timestamp;
         this.userId = userId;
+        this.userName = userName;
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = STATUS_WAITING;
@@ -81,10 +82,11 @@ public class Report implements Parcelable {
      * @param longitude the GPS longitude of the report
      * @param status the report status
      */
-    public Report(String id, String userId, String title, String description, String reply, String operatorId,
-                  long timestamp, int nStars, long latitude, long longitude, int status) {
+    public Report(String id, String userId, String userName, String title, String description, String reply,
+                  String operatorId, long timestamp, int nStars, long latitude, long longitude, int status) {
         this.id = id;
         this.userId = userId;
+        this.userName = userName;
         this.title = title;
         this.description = description;
         this.reply = reply;
@@ -106,6 +108,7 @@ public class Report implements Parcelable {
         this.description = in.readString();
         this.timestamp = in.readLong();
         this.userId = in.readString();
+        this.userName = in.readString();
         this.reply = in.readString();
         this.operatorId = in.readString();
         this.nStars = in.readInt();
@@ -141,6 +144,10 @@ public class Report implements Parcelable {
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     public String getReply() {
@@ -184,6 +191,7 @@ public class Report implements Parcelable {
         dest.writeString(description);
         dest.writeLong(timestamp);
         dest.writeString(userId);
+        dest.writeString(userName);
         dest.writeString(reply);
         dest.writeString(operatorId);
         dest.writeInt(nStars);

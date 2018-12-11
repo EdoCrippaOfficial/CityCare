@@ -40,6 +40,7 @@ public class FirestoreSender implements UtilsContracts.DatabaseSender {
         map.put("description", report.getDescription());
         map.put("timestamp", report.getTimestamp());
         map.put("user_id", report.getUserId());
+        map.put("user_name", report.getUserName());
         map.put("operator_id", "");
         map.put("n_stars", 0);
         map.put("reply", "");

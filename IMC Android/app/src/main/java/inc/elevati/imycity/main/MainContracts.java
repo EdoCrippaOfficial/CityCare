@@ -47,6 +47,8 @@ public interface MainContracts {
 
         String getCurrentUserEmail();
 
+        String getCurrentUserName();
+
         NewReportPresenter getNewReportPresenter();
 
         AllReportsPresenter getAllReportsPresenter();

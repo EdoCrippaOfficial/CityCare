@@ -1,5 +1,6 @@
 package inc.elevati.imycity.utils.firebase;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -7,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import androidx.annotation.NonNull;
 import inc.elevati.imycity.login.LoginContracts;
@@ -34,27 +36,41 @@ public class FirebaseAuthHelper {
         firebaseAuth.signOut();
     }
 
-    public static void register(String email, String password, final LoginContracts.RegisterPresenter presenter) {
+    public static void register(final String name, String email, String password, final LoginContracts.RegisterPresenter presenter) {
 
         // Try to create account
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        Task<Void> mainTask = FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(email, password)
+
+                // Update user name
+                .continueWithTask(new Continuation<AuthResult, Task<Void>>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            presenter.onRegisterTaskComplete(LoginContracts.REGISTER_ACCOUNT_CREATED);
-                        } else {
-
-                            // Account already exists
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException)
-                                presenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_ALREADY_EXISTS);
-
-                            // Unknown error
-                            else
-                                presenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_UNKNOWN);
-                        }
+                    public Task<Void> then(@NonNull Task<AuthResult> t) {
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(name)
+                                .build();
+                        return t.getResult().getUser().updateProfile(profileUpdates);
                     }
                 });
+
+        // Result listener
+        mainTask.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    presenter.onRegisterTaskComplete(LoginContracts.REGISTER_ACCOUNT_CREATED);
+                } else {
+
+                    // Account already exists
+                    if (task.getException() instanceof FirebaseAuthUserCollisionException)
+                        presenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_ALREADY_EXISTS);
+
+                    // Unknown error
+                    else
+                        presenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_UNKNOWN);
+                }
+            }
+        });
     }
 
     public static void signIn(String email, String password, final LoginContracts.SignInPresenter presenter) {

@@ -66,7 +66,8 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
             view.showProgressDialog();
             String uuid = UUID.randomUUID().toString();
             String userId = FirebaseAuthHelper.getUserId();
-            Report report = new Report(uuid, title, description, System.currentTimeMillis(), userId, 0, 0);
+            String userName = FirebaseAuthHelper.getUserName();
+            Report report = new Report(uuid, title, description, System.currentTimeMillis(), userId, userName, 0, 0);
 
             // Store image (normal and thumbnail) in Firebase Storage
             StorageWriter storageWriter = new StorageWriter(this);
