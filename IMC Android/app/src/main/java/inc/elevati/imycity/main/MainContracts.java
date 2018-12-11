@@ -23,6 +23,7 @@ public interface MainContracts {
     int PAGE_NEW = 0;
     int PAGE_ALL = 1;
     int PAGE_MY = 2;
+    int PAGE_COMPL = 3;
 
     int REPORT_SORT_DATE_NEWEST = 1;
     int REPORT_SORT_DATE_OLDEST = 2;
@@ -51,6 +52,8 @@ public interface MainContracts {
         AllReportsPresenter getAllReportsPresenter();
 
         MyReportsPresenter getMyReportsPresenter();
+
+        CompletedReportsPresenter getCompletedReportsPresenter();
     }
 
     interface NewReportPresenter extends MvpContracts.MvpPresenter {
@@ -76,6 +79,15 @@ public interface MainContracts {
         void loadMyReports();
 
         void onLoadMyReportsTaskComplete(QuerySnapshot results);
+
+        void onUpdateTaskComplete();
+    }
+
+    interface CompletedReportsPresenter extends ReportListPresenter {
+
+        void loadCompletedReports();
+
+        void onLoadCompletedReportsTaskComplete(QuerySnapshot results);
 
         void onUpdateTaskComplete();
     }

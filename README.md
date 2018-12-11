@@ -6,8 +6,7 @@
 - [x] Inizializzazione Firebase Database e Storage
 
 #### Iterazione 2
-- [ ] Inizializzazione Firebase auth
-- [ ] Scrittura cloud functions per l’aggiornamento tramite trigger del database dopo la registrazione di un utente
+- [x] Inizializzazione Firebase auth
 - [x] Scrittura cloud functions per la cancellazione di un report (consistenza tra database e storage di immagini)
 ---
 ### Android
@@ -30,11 +29,12 @@
 
 #### Iterazione 2
 
-- [ ] Pagina iniziale con log-in e sign-in
+- [x] Pagina iniziale con log-in e sign-in
 - [ ] Inserimento di user_id e user_name nell’invio di nuove segnalazioni
-- [ ] Visualizzazione in fragment separati di segnalazioni attive e completate
-- [ ] Pagina per visualizzare solo le segnalazioni dell’utente corrente
+- [x] Visualizzazione in fragment separati di segnalazioni attive e completate
+- [x] Pagina per visualizzare solo le segnalazioni dell’utente corrente
 - [ ] Possibilità di cancellare una segnalazione fatta dall’utente corrente
+- [ ] Aggiornamento del database dopo la registrazione di un utente
 - [ ] TESTING E VERIFICA DEL SOFTWARE
 ---
 ### Web

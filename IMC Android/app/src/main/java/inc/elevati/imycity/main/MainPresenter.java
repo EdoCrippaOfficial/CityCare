@@ -2,6 +2,7 @@ package inc.elevati.imycity.main;
 
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.allreports.AllReportsPresenter;
+import inc.elevati.imycity.main.completedreports.CompletedReportsPresenter;
 import inc.elevati.imycity.main.myreports.MyReportsPresenter;
 import inc.elevati.imycity.main.newreport.NewReportPresenter;
 import inc.elevati.imycity.utils.MvpContracts;
@@ -14,11 +15,13 @@ public class MainPresenter implements MainContracts.MainPresenter {
     private MainContracts.NewReportPresenter newReportPresenter;
     private MainContracts.AllReportsPresenter allReportsPresenter;
     private MainContracts.MyReportsPresenter myReportsPresenter;
+    private MainContracts.CompletedReportsPresenter completedReportsPresenter;
 
     public MainPresenter() {
         this.allReportsPresenter = new AllReportsPresenter();
         this.newReportPresenter = new NewReportPresenter();
         this.myReportsPresenter = new MyReportsPresenter();
+        this.completedReportsPresenter = new CompletedReportsPresenter();
     }
 
     @Override
@@ -39,6 +42,10 @@ public class MainPresenter implements MainContracts.MainPresenter {
         return allReportsPresenter;
     }
 
+    public MainContracts.CompletedReportsPresenter getCompletedReportsPresenter() {
+        return completedReportsPresenter;
+    }
+
     public MainContracts.MyReportsPresenter getMyReportsPresenter() {
         return myReportsPresenter;
     }
@@ -54,6 +61,9 @@ public class MainPresenter implements MainContracts.MainPresenter {
                 break;
             case R.id.menu_my:
                 view.scrollToPage(MainContracts.PAGE_MY);
+                break;
+            case R.id.menu_completed:
+                view.scrollToPage(MainContracts.PAGE_COMPL);
                 break;
             case R.id.menu_logout:
                 FirebaseAuthHelper.signOut();
@@ -73,6 +83,9 @@ public class MainPresenter implements MainContracts.MainPresenter {
                 break;
             case MainContracts.PAGE_MY:
                 view.setCheckedMenuItem(R.id.menu_my);
+                break;
+            case MainContracts.PAGE_COMPL:
+                view.setCheckedMenuItem(R.id.menu_completed);
                 break;
         }
     }

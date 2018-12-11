@@ -15,6 +15,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,10 +27,12 @@ import android.widget.TextView;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.login.LoginActivity;
 import inc.elevati.imycity.main.allreports.AllReportsFragment;
+import inc.elevati.imycity.main.completedreports.CompletedReportsFragment;
 import inc.elevati.imycity.main.myreports.MyReportsFragment;
 import inc.elevati.imycity.main.newreport.NewReportFragment;
 
 import static inc.elevati.imycity.main.MainContracts.PAGE_ALL;
+import static inc.elevati.imycity.main.MainContracts.PAGE_COMPL;
 import static inc.elevati.imycity.main.MainContracts.PAGE_MY;
 import static inc.elevati.imycity.main.MainContracts.PAGE_NEW;
 
@@ -36,7 +40,7 @@ import static inc.elevati.imycity.main.MainContracts.PAGE_NEW;
 public class MainActivity extends AppCompatActivity implements MainContracts.MainView {
 
     /** Total number of fragments */
-    private final static int NUM_FRAGMENTS = 3;
+    private final static int NUM_FRAGMENTS = 4;
 
     private MainPresenter presenter;
 
@@ -48,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
 
     /** Main menu navigator */
     private NavigationView menuNavigator;
+
+    private int previousPage;
 
     /**
      * Called when app starts and after orientation changes or activity re-creations,
@@ -101,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
             public void onPageScrolled(int i, float v, int i1) { }
             @Override
             public void onPageSelected(int i) {
-                invalidateOptionsMenu();
+                if(i == PAGE_NEW)
+                    invalidateOptionsMenu();
                 presenter.pageScrolled(i);
             }
             @Override
@@ -111,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
         // Set starting page
         pager.setCurrentItem(PAGE_ALL);
         presenter.pageScrolled(PAGE_ALL);
+        previousPage = PAGE_ALL;
 
         // Tab layout showing pages below menu bar
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -142,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
     @Override
     public void scrollToPage(int page) {
         pager.setCurrentItem(page, true);
+
     }
 
     /**
@@ -195,19 +204,23 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
         sortButton.setActionView(imageSort);
 
         // Animate in or out the button depending on which page is showing
-        if (pager.getCurrentItem() == PAGE_ALL) {
+        if (pager.getCurrentItem() != PAGE_NEW && previousPage == PAGE_NEW) {
+            Log.d("DEBUG", previousPage + " " + pager.getCurrentItem() + " Animazione in");
             sortButton.setEnabled(true);
             TranslateAnimation animate = new TranslateAnimation(200, 0, 0, 0);
             animate.setDuration(500);
             animate.setFillAfter(true);
             sortButton.getActionView().startAnimation(animate);
-        } else if (pager.getCurrentItem() == PAGE_NEW){
+        } else if (pager.getCurrentItem() == PAGE_NEW && previousPage != PAGE_NEW){
+            Log.d("DEBUG", previousPage + " " + pager.getCurrentItem() + " Animazione out");
             sortButton.setEnabled(false);
             TranslateAnimation animate = new TranslateAnimation(0, 200, 0, 0);
-            animate.setDuration(400);
+            animate.setDuration(500);
             animate.setFillAfter(true);
             sortButton.getActionView().startAnimation(animate);
         }
+        previousPage = pager.getCurrentItem();
+        Log.d("DEBUG", previousPage+ "");
         return false;
     }
 
@@ -231,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
                 case PAGE_NEW: return NewReportFragment.newInstance();
                 case PAGE_ALL: return AllReportsFragment.newInstance();
                 case PAGE_MY: return MyReportsFragment.newInstance();
+                case PAGE_COMPL: return CompletedReportsFragment.newInstance();
                 default: return AllReportsFragment.newInstance();
             }
         }
@@ -249,6 +263,8 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
                     return getString(R.string.menu_all);
                 case PAGE_MY:
                     return getString(R.string.menu_my);
+                case PAGE_COMPL:
+                    return getString(R.string.menu_completed);
             }
             return null;
         }

@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.Report;
 
 /** Class that implements the database reading */
 public class FirestoreReader {
@@ -36,6 +37,22 @@ public class FirestoreReader {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) presenter.onLoadMyReportsTaskComplete(task.getResult());
+
+                        // Hide refresh image
+                        presenter.onUpdateTaskComplete();
+                    }
+                });
+    }
+
+    public static void readCompletedReports(final MainContracts.CompletedReportsPresenter presenter) {
+        FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
+        dbRef.collection("reports")
+                .whereEqualTo("status", Report.STATUS_COMPLETED)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) presenter.onLoadCompletedReportsTaskComplete(task.getResult());
 
                         // Hide refresh image
                         presenter.onUpdateTaskComplete();
