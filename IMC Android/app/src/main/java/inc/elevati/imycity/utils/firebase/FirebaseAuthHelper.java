@@ -15,16 +15,27 @@ import inc.elevati.imycity.login.LoginContracts;
 
 public class FirebaseAuthHelper {
 
+    //current user information
+    private static String userName;
+    private static String userEmail;
+    private static String userId;
+
     public static String getUserName() {
-        return FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        if (userName == null)
+            userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        return userName;
     }
 
     public static String getUserEmail() {
-        return FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        if (userEmail == null)
+            userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        return userEmail;
     }
 
     public static String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (userId == null)
+            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return userId;
     }
 
     public static boolean isAuthenticated() {
@@ -80,6 +91,10 @@ public class FirebaseAuthHelper {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            //on signin set current user information
+                            userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                            userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                             presenter.onLoginTaskComplete(LoginContracts.LOGIN_OK);
                         } else {
 

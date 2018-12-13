@@ -1,13 +1,18 @@
 package inc.elevati.imycity.main;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -24,6 +29,7 @@ import inc.elevati.imycity.R;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.Report;
 import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
+import inc.elevati.imycity.utils.firebase.FirestoreDeleter;
 
 /** In this class it is defined the style of the dialog shown when user clicks on a report */
 public class ReportDialog extends DialogFragment {
@@ -65,10 +71,35 @@ public class ReportDialog extends DialogFragment {
         View v = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.dialog_report, null);
 
         // Report retrieving from arguments
-        Report report = getArguments().getParcelable("report");
+        final Report report = getArguments().getParcelable("report");
         TextView tv_title = v.findViewById(R.id.tv_title);
         TextView tv_desc = v.findViewById(R.id.tv_desc);
         TextView tv_date = v.findViewById(R.id.tv_date);
+        Button bn_delete = v.findViewById(R.id.bn_delete);
+        if (report.getUserId().equals(FirebaseAuthHelper.getUserId()))
+            bn_delete.setVisibility(View.VISIBLE);
+        bn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Cancellazione");
+                builder.setMessage("Sei sicuro?");
+                builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirestoreDeleter.deleteReport(report.getId(), ReportDialog.this);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
         final ImageView iv_image = v.findViewById(R.id.iv_report_image);
         final ProgressBar pb_loading = v.findViewById(R.id.pb_image);
         tv_title.setText(report.getTitle());
@@ -101,5 +132,10 @@ public class ReportDialog extends DialogFragment {
                 })
                 .into(iv_image);
         return v;
+    }
+
+    public void onReportDeleted(){
+        this.dismiss();
+        Toast.makeText(getContext(), "Segnalazione cancellata!, ricarica la pagina", Toast.LENGTH_LONG).show();
     }
 }
