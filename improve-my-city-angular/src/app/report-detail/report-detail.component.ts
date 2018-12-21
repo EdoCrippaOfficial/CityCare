@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { Report } from '../report';
 import { ReportService } from '../report.service';
+import { Status } from '../status';
 
 @Component({
   selector: 'app-report-detail',
@@ -12,6 +13,17 @@ import { ReportService } from '../report.service';
   styleUrls: ['./report-detail.component.css']
 })
 export class ReportDetailComponent implements OnInit {
+  accettato = Status.ACCETTATO;
+  rifiutato = Status.RIFIUTATO;
+  completato = Status.COMPLETATO;
+  attesa = Status.ATTESA;
+  statusList = [
+    this.accettato,
+    this.rifiutato,
+    this.completato,
+    this.attesa
+  ];
+
   report: Report;
 
   constructor(
@@ -39,6 +51,14 @@ export class ReportDetailComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  getStatus(report: Report): string {
+    return Status[report.status];
+  }
+
+  getStatusText(status: number): string {
+    return Status[status];
   }
 
 }

@@ -9,8 +9,16 @@
       <li class="nav-item" [routerLinkActive]="['active']">
         <a class="nav-link" routerLink="/home">Home</a>
       </li>
-      <li class="nav-item" [routerLinkActive]="['active']">
-        <a class="nav-link" routerLink="/reports">Reports</a>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" routerLink="/reports">Reports</a>
+        <div class="dropdown-menu" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;">
+          <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0">Tutti</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ accettato }}">Accettati</a>
+          <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ rifiutato }}">Rifiutati</a>
+          <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ completato }}">Completati</a>
+          <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ attesa }}">In attesa</a>
+        </div>
       </li>
       <li class="nav-item" [routerLinkActive]="['active']">
         <a class="nav-link" routerLink="/about">About</a>

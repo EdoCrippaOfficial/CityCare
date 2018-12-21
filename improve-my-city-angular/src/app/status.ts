@@ -1,7 +1,7 @@
 //Enumerative for report's status
 export enum Status {
-  accettato,
-  rifiutato,
-  completato,
-  attesa
+  ACCETTATO = 1,
+  RIFIUTATO,
+  COMPLETATO,
+  ATTESA
 }

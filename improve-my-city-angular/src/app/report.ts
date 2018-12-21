@@ -3,12 +3,15 @@ import { Observable } from 'rxjs';
 import { Status } from './status';
 
 export class Report {
-  id: string;
-  title: string;
-  timestamp: Date;
   description: string;
+  id: string;
+  n_stars: number;
+  operator_id: string;
+  position: number;
   reply: string;
-  image: Observable<string | null>;
-  user: string;
   status: Status;
+  timestamp: Date;
+  title: string;
+  image: Observable<string | null>;
+  user_id: string;
 }

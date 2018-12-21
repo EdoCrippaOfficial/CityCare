@@ -3,7 +3,7 @@
   <div class="text-left">
     <button (click)="goBack()">go back</button>
   </div>
-  <div class="container text-center">
+  <div class="container text-center m-2">
     <img class="img-fluid img-responsive text-center" [src]="report.image | async" alt="Image">
     <h5 class="card-title text-center">{{ report.title }}</h5>
     <!--ID: {{ report.id }}<br />-->
@@ -12,14 +12,34 @@
       {{ report.description }}<br />
       <!--by {{ report.utente }}-->
     </p>
-    <!--<div class="text-center">
+    <div class="text-center">
       <button type="button" class="btn"
               [class.btn-primary]="report.status === accettato"
               [class.btn-danger]="report.status === rifiutato"
               [class.btn-success]="report.status === completato"
               [class.btn-secondary]="report.status === attesa">
-          {{ report.status }}
+          {{ getStatus(report) }}
       </button>
-    </div>-->
+    </div>
+  </div>
+  <div class="jumbotron text-left p-4">
+    <h2>Modifica</h2>
+    <form>
+      <div class="form-group">
+        <label for="commento" class="col-sm-3">Commento operatore:</label>
+        <textarea class="form-control" id="commento" placeholder="Inserire un commento operatore..." rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="status" class="col-1">Stato:</label>
+        <select class="custom-select mr-sm-1 col-2" id="status">
+          <option *ngFor="let status of statusList"
+                  [value]="status"
+                  [selected]="report.status == status ? true : null">
+                  {{ getStatusText(status) }}
+          </option>
+        </select>
+      </div>
+      <button type="invia" class="btn btn-primary">Invia</button>
+    </form>
   </div>
 </div>

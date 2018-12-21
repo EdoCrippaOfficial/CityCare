@@ -48,5 +48,6 @@
 #### Iterazione 2
 
 - [ ] Pagina iniziale con log-in
-- [ ] Visualizzazione segnalazioni secondo stato
-- [ ] Cambio status e commento operatore
+- [x] Visualizzazione segnalazioni secondo stato
+- [x] Cambio status e commento operatore
+- [ ] Aggiornamento su firebase di status e commento operatore

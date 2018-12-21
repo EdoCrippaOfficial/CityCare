@@ -1,7 +1,7 @@
 <h2>REPORTS</h2>
 <div class="container">
   <div class="row">
-    <div class="col-4" *ngFor="let report of reports">
+    <div class="col-4" *ngFor="let report of filterReports(reports)">
       <div class="card p-3 mt-2 mb-2" style="width: 18rem; position: relative;"
             routerLink="/report/{{ report.id }}">
         <img class="card-img-top img-responsive text-center" [src]="report.image | async" alt="Image">
@@ -13,15 +13,15 @@
             {{ (report.description.length > 30) ? (report.description | slice:0:30)+'...' : (report.description) }}<br />
             <!--by {{ report.utente }}-->
           </p>
-          <!--<div class="text-center">
+          <div class="text-center">
             <button type="button" class="btn"
                     [class.btn-primary]="report.status === accettato"
                     [class.btn-danger]="report.status === rifiutato"
                     [class.btn-success]="report.status === completato"
                     [class.btn-secondary]="report.status === attesa">
-                {{ report.status }}
+                {{ getStatus(report) }}
             </button>
-          </div>-->
+          </div>
         </div>
       </div>
     </div>
