@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LayoutComponent } from './layout.component';
+import { PlainLayoutComponent } from './plain-layout.component';
 
-describe('LayoutComponent', () => {
-  let component: LayoutComponent;
-  let fixture: ComponentFixture<LayoutComponent>;
+describe('PlainLayoutComponent', () => {
+  let component: PlainLayoutComponent;
+  let fixture: ComponentFixture<PlainLayoutComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LayoutComponent ]
+      declarations: [ PlainLayoutComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LayoutComponent);
+    fixture = TestBed.createComponent(PlainLayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

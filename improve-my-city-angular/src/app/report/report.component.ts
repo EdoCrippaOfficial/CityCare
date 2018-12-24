@@ -53,7 +53,7 @@ export class ReportComponent implements OnInit {
   }
 
   filterReports(reports: Report[]): Report[] {
-    return reports.filter(report => this.isCurrentStatus(report));
+    if (reports) return reports.filter(report => this.isCurrentStatus(report));
   }
 
 }

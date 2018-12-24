@@ -14,32 +14,35 @@
     </p>
     <div class="text-center">
       <button type="button" class="btn"
-              [class.btn-primary]="report.status === accettato"
-              [class.btn-danger]="report.status === rifiutato"
-              [class.btn-success]="report.status === completato"
-              [class.btn-secondary]="report.status === attesa">
+              [class.btn-primary]="report.status == accettato"
+              [class.btn-danger]="report.status == rifiutato"
+              [class.btn-success]="report.status == completato"
+              [class.btn-secondary]="report.status == attesa">
           {{ getStatus(report) }}
       </button>
     </div>
   </div>
   <div class="jumbotron text-left p-4">
     <h2>Modifica</h2>
-    <form>
+    <form (ngSubmit)=onSubmit() #form="ngForm">
       <div class="form-group">
         <label for="commento" class="col-sm-3">Commento operatore:</label>
-        <textarea class="form-control" id="commento" placeholder="Inserire un commento operatore..." rows="3"></textarea>
+        <textarea class="form-control" id="commento"
+                  placeholder="Inserire un commento operatore..." rows="3"
+                  [(ngModel)]="report.reply" name="reply"
+                  #reply="ngModel"></textarea>
       </div>
       <div class="form-group">
         <label for="status" class="col-1">Stato:</label>
-        <select class="custom-select mr-sm-1 col-2" id="status">
-          <option *ngFor="let status of statusList"
-                  [value]="status"
-                  [selected]="report.status == status ? true : null">
+        <select class="form-control custom-select mr-sm-1 col-2" id="status"
+                [(ngModel)]="report.status" name="selectedStatus"
+                #selectedStatus="ngModel">
+          <option *ngFor="let status of statusList" [value]="status">
                   {{ getStatusText(status) }}
           </option>
         </select>
       </div>
-      <button type="invia" class="btn btn-primary">Invia</button>
+      <button [disabled]="!reply.dirty && !selectedStatus.dirty" type="submit" class="btn btn-primary">Invia</button>
     </form>
   </div>
 </div>

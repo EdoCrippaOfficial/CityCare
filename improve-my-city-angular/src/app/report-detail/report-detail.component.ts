@@ -61,4 +61,8 @@ export class ReportDetailComponent implements OnInit {
     return Status[status];
   }
 
+  onSubmit() {
+    this.reportService.updateReport(this.report.id, this.report);
+  }
+
 }

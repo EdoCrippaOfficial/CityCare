@@ -47,7 +47,10 @@
 
 #### Iterazione 2
 
-- [ ] Pagina iniziale con log-in
+- [x] Pagina iniziale con log-in
 - [x] Visualizzazione segnalazioni secondo stato
 - [x] Cambio status e commento operatore
-- [ ] Aggiornamento su firebase di status e commento operatore
+- [x] Aggiornamento su firebase di status e commento operatore
+- [ ] Logica Login
+- [ ] Logica cookies
+- [ ] Logica auth

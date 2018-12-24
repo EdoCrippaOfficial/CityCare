@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs'; //async stuff
-import { map } from 'rxjs/operators';
 
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -31,7 +30,13 @@ export class ReportService {
     return this.db.collection<Report>(this.REPORTPATH).valueChanges();
   }
 
-  getReport(id): Observable<Report> {
+  getReport(id: string): Observable<Report> {
     return this.db.doc<Report>(this.REPORTPATH + '/' + id).valueChanges();
+  }
+
+  updateReport(id: string, report: Report) {
+    let thisReport = new Report(report);
+    this.db.doc<Report>(this.REPORTPATH + '/' + id)
+          .update(thisReport.toUploadableObject());
   }
 }

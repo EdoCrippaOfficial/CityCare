@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Status } from '../../status';
+
+import { Status } from '../../../status';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +12,7 @@ export class HeaderComponent implements OnInit {
   rifiutato = Status.RIFIUTATO;
   completato = Status.COMPLETATO;
   attesa = Status.ATTESA;
-  
+
   constructor() { }
 
   ngOnInit() {

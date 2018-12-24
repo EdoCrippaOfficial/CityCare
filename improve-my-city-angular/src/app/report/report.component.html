@@ -15,10 +15,10 @@
           </p>
           <div class="text-center">
             <button type="button" class="btn"
-                    [class.btn-primary]="report.status === accettato"
-                    [class.btn-danger]="report.status === rifiutato"
-                    [class.btn-success]="report.status === completato"
-                    [class.btn-secondary]="report.status === attesa">
+                    [class.btn-primary]="report.status == accettato"
+                    [class.btn-danger]="report.status == rifiutato"
+                    [class.btn-success]="report.status == completato"
+                    [class.btn-secondary]="report.status == attesa">
                 {{ getStatus(report) }}
             </button>
           </div>
