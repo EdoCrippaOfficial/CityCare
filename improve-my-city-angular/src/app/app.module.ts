@@ -15,7 +15,13 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+
+import { UserResolver } from './auth/user.resolver';
+import { AuthGuard } from './auth/auth.guard';
+import { AuthService } from './auth/auth.service';
+import { UserService } from './auth/user.service';
 import { environment } from '../environments/environment';
+
 import { ReportDetailComponent } from './report-detail/report-detail.component';
 import { AboutComponent } from './about/about.component';
 import { LoginComponent } from './login/login.component';
@@ -41,12 +47,12 @@ import { FooterComponent } from './layout/main-layout/footer/footer.component';
     AppRoutingModule,
     NgbModule.forRoot(), //bootstrap stuff
     FormsModule, //Forms stuff
-    AngularFireModule.initializeApp(environment.firebase, 'improvemycity'), // imports firebase/app needed for everything
+    AngularFireModule.initializeApp(environment.firebase), // imports firebase/app needed for everything
     AngularFirestoreModule, // imports firebase/database, only needed for database features
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features,
     AngularFireStorageModule // imports firebase/storage only needed for storage features
   ],
-  providers: [],
+  providers: [AuthService, UserService, UserResolver, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

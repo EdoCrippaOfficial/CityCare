@@ -57,9 +57,10 @@
 - [x] Visualizzazione segnalazioni secondo stato
 - [x] Cambio status e commento operatore
 - [x] Aggiornamento su firebase di status e commento operatore
+- [x] Logica auth
+- [x] Logica timeout auth
+
+#### Iterazione 3
 - [x] Abbellimento
 - [x] Sistema a stelle
 - [x] Ordinamento data & stelle
-- [ ] Logica Login
-- [ ] Logica cookies
-- [ ] Logica auth

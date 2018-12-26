@@ -7,6 +7,8 @@ import { ReportComponent } from './report/report.component';
 import { ReportDetailComponent } from './report-detail/report-detail.component';
 import { AboutComponent } from './about/about.component';
 import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth/auth.guard';
+import { UserResolver } from './auth/user.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full'},
@@ -15,16 +17,17 @@ const routes: Routes = [
     component: PlainLayoutComponent,
     children: [
       { path: 'login', component: LoginComponent}
-    ]
+    ],
+    canActivate: [AuthGuard]
   },
   {
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: 'reports', component: ReportComponent},
-      { path: 'reports/:status', component: ReportComponent},
-      { path: 'report/:id', component: ReportDetailComponent },
-      { path: 'about', component: AboutComponent},
+      { path: 'reports', component: ReportComponent, resolve: { data: UserResolver}},
+      { path: 'reports/:status', component: ReportComponent, resolve: { data: UserResolver}},
+      { path: 'report/:id', component: ReportDetailComponent, resolve: { data: UserResolver}},
+      { path: 'about', component: AboutComponent, resolve: { data: UserResolver}},
       { path: 'home', redirectTo: '/reports'}
     ]
   },

@@ -1,11 +1,19 @@
-<form>
+<form (ngSubmit)=onSubmit() #form="ngForm">
   <div class="form-group">
-    <label for="username">Username:</label>
-    <input type="username" class="form-control" id="username" placeholder="Inserire lo username...">
+    <label for="email">Email:</label>
+    <input type="email" class="form-control" id="email" placeholder="Inserire l'email..." required [(ngModel)]="email" name="emailValue" #emailValue="ngModel">
+    <div [hidden]="emailValue.valid || emailValue.pristine"
+     class="alert alert-danger">
+      L'email è obbligatoria
+    </div>
   </div>
   <div class="form-group">
     <label for="password">Password:</label>
-    <input type="password" class="form-control" id="password" placeholder="Password...">
+    <input type="password" class="form-control" id="password" placeholder="Password..." required [(ngModel)]="password" name="passwordValue" #passwordValue="ngModel">
+    <div [hidden]="passwordValue.valid || passwordValue.pristine"
+     class="alert alert-danger">
+      La password è obbligatoria
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary">Login</button>
+  <button [disabled]="!emailValue.dirty && !passwordValue.dirty" type="submit" class="btn btn-primary">Login</button>
 </form>
