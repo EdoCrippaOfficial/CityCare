@@ -1,17 +1,42 @@
 <h2>REPORTS</h2>
 <div class="container">
+  <div class="jumbotron text-left p-4">
+    <form (ngSubmit)=onSubmit(reports) #form="ngForm">
+      <div class="form-group row">
+        <label for="ordina" class="col-sm-1 col-form-label">Ordina:</label>
+        <select class="form-control col-sm-1" id="ordinaTipo"
+                [(ngModel)]="ordinaTipo" name="selectedTipo"
+                #selectedTipo="ngModel">
+          <option value="data">Data</option>
+          <option value="stella">Stelle</option>
+        </select>
+        <select class="form-control col-sm-1" id="ordinaVerso"
+                [(ngModel)]="ordinaVerso" name="selectedVerso"
+                #selectedVerso="ngModel">
+          <option value="asc">Cre.</option>
+          <option value="desc">Dec.</option>
+        </select>
+      </div>
+      <button [disabled]="!selectedTipo.dirty && !selectedVerso.dirty" type="submit" class="btn btn-primary">Invia</button>
+    </form>
+  </div>
   <div class="row">
     <div class="col-4" *ngFor="let report of filterReports(reports)">
       <div class="card p-3 mt-2 mb-2" style="width: 18rem; position: relative;"
             routerLink="/report/{{ report.id }}">
-        <img class="card-img-top img-responsive text-center" [src]="report.image | async" alt="Image">
+        <div class="stars-container text-right">
+          <span>{{ report.n_stars }} <i class="fa fa-star-o"></i></span>
+        </div>
+        <h5 class="card-title text-center">
+          {{ (report.title.length > 20) ? (report.title | slice:0:20)+'...' : (report.title) }}
+        </h5>
+        <img class="card-img-top img-responsive img-thumbnail text-center" [src]="report.image | async" alt="Image">
         <div class="card-body">
-          <h5 class="card-title text-center">{{ (report.title.length > 20) ? (report.title | slice:0:20)+'...' : (report.title) }}</h5>
           <!--ID: {{ report.id }}<br />-->
           Data: {{ report.timestamp | date : "dd/MM/yyyy" }}
           <p class="card-text not-full-text">
             {{ (report.description.length > 30) ? (report.description | slice:0:30)+'...' : (report.description) }}<br />
-            <!--by {{ report.utente }}-->
+            <!--by {{ report.user_id }}-->
           </p>
           <div class="text-center">
             <button type="button" class="btn"

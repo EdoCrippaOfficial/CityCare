@@ -20,6 +20,8 @@ export class ReportComponent implements OnInit {
 
   reports: Report[];
   currentStatus: Status;
+  ordinaTipo: string;
+  ordinaVerso: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,6 +56,21 @@ export class ReportComponent implements OnInit {
 
   filterReports(reports: Report[]): Report[] {
     if (reports) return reports.filter(report => this.isCurrentStatus(report));
+  }
+
+  sortReports(reports: Report[]): Report[] {
+    if (reports) {
+      if (this.ordinaTipo == "data")
+        reports.sort((a,b) => (a.timestamp > b.timestamp) ? 1 : (a.timestamp === b.timestamp) ? 0 : -1);
+      else
+        reports.sort((a,b) => (a.n_stars > b.n_stars) ? 1 : (a.n_stars === b.n_stars) ? 0 : -1);
+      if (this.ordinaVerso == "desc") reports.reverse();
+      return this.filterReports(reports);
+    }
+  }
+
+  onSubmit(reports: Report[]) {
+    if (reports) this.reports = this.sortReports(reports);
   }
 
 }

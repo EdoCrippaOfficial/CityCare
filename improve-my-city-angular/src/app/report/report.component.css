@@ -13,3 +13,8 @@
   height: 15vw;
   object-fit: cover;
 }
+div .stars-container {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+}

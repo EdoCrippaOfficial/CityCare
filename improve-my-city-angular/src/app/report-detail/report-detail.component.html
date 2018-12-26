@@ -1,16 +1,18 @@
 <div *ngIf="report">
-  <span class="text-center"><h2>{{ report.title | uppercase }}</h2></span>
-  <div class="text-left">
-    <button (click)="goBack()">go back</button>
+  <div class="text-left m-2">
+    <button class="btn"(click)="goBack()"><i class="fa fa-arrow-left"></i> Indietro</button>
   </div>
-  <div class="container text-center m-2">
-    <img class="img-fluid img-responsive text-center" [src]="report.image | async" alt="Image">
-    <h5 class="card-title text-center">{{ report.title }}</h5>
+  <div class="card text-center m-2 p-2">
+    <div class="container img-container p-2">
+      <img class="img-full img-fluid img-responsive rounded" [src]="report.image | async" alt="Image">
+    </div>
+    <h5 class="card-title text-center">
+      {{ report.title }} - <span>{{ report.n_stars }} <i class="fa fa-star-o"></i></span></h5>
     <!--ID: {{ report.id }}<br />-->
     Data: {{ report.timestamp | date : "dd/MM/yyyy" }}
     <p class="card-text not-full-text">
       {{ report.description }}<br />
-      <!--by {{ report.utente }}-->
+      <!--by {{ report.user_id }}-->
     </p>
     <div class="text-center">
       <button type="button" class="btn"

@@ -13,3 +13,56 @@
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+
+.navbar-toggler {
+	border: none;
+	background: transparent !important;
+}
+
+.navbar-toggler:hover {
+	background: transparent !important;
+}
+
+.navbar-toggler span {
+  display: block;
+   background-color: #444;
+   height: 3px;
+   width: 25px;
+   margin-top: 4px;
+   margin-bottom: 4px;
+	width: 22px;
+	-webkit-transition: all 0.2s;
+	transition: all 0.2s;
+}
+/* ANIMATED UP ARROW */
+.navbar-toggler[aria-expanded="false"] span:nth-of-type(1) {
+	transform: translate3d(0,0,0) rotate(0deg);
+	width: 22px;
+}
+
+.navbar-toggler[aria-expanded="false"] span:nth-of-type(2) {
+	transform: translate3d(0,0,0) rotate(0deg);
+}
+
+.navbar-toggler[aria-expanded="false"] span:nth-of-type(3) {
+	transform: translate3d(0,0,0) rotate(0deg);
+	width: 22px;
+}
+
+.navbar-toggler[aria-expanded="true"] span:nth-of-type(1) {
+	transform: translate3d(3px,0,0) rotate(-45deg);
+	transform-origin: center center;
+	width: 11px;
+}
+
+.navbar-toggler[aria-expanded="true"] span:nth-of-type(2) {
+	transform: rotate(-90deg);
+	transform-origin: center center;
+}
+
+.navbar-toggler[aria-expanded="true"] span:nth-of-type(3) {
+	transform: translate3d(-1px,-15px,0) rotate(-135deg);
+	transform-origin: right top;
+	width: 11px;
+}
+/* END ANIMATED UP ARROW */

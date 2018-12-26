@@ -39,7 +39,7 @@ import { FooterComponent } from './layout/main-layout/footer/footer.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule, //bootstrap stuff
+    NgbModule.forRoot(), //bootstrap stuff
     FormsModule, //Forms stuff
     AngularFireModule.initializeApp(environment.firebase, 'improvemycity'), // imports firebase/app needed for everything
     AngularFirestoreModule, // imports firebase/database, only needed for database features

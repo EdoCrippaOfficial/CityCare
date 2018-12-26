@@ -8,6 +8,8 @@ import { Status } from '../../../status';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  isCollapsed = true;
+
   accettato = Status.ACCETTATO;
   rifiutato = Status.RIFIUTATO;
   completato = Status.COMPLETATO;
