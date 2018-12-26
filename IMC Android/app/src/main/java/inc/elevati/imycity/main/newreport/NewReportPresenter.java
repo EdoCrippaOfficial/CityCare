@@ -5,13 +5,13 @@ import android.net.Uri;
 
 import java.util.UUID;
 
+import inc.elevati.imycity.firebase.FirestoreHelper;
+import inc.elevati.imycity.firebase.StorageHelper;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
-import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
-import inc.elevati.imycity.utils.firebase.FirestoreSender;
+import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.utils.firebase.StorageWriter;
 
 /** Presenter class used by NewReportFragment to interact with the app kernel */
 public class NewReportPresenter implements MainContracts.NewReportPresenter {
@@ -70,8 +70,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
             Report report = new Report(uuid, title, description, System.currentTimeMillis(), userId, userName, 0, 0);
 
             // Store image (normal and thumbnail) in Firebase Storage
-            StorageWriter storageWriter = new StorageWriter(this);
-            storageWriter.send(report, appContext, imageUri);
+            StorageHelper.sendImage(report, appContext, imageUri, this);
         }
     }
 
@@ -82,8 +81,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
      */
     @Override
     public void sendReportData(Report report) {
-        FirestoreSender firestoreSender = new FirestoreSender(this);
-        firestoreSender.send(report);
+        FirestoreHelper.sendReport(report, this);
     }
 
     /**

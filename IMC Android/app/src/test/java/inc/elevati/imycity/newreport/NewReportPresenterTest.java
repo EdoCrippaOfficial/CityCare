@@ -13,11 +13,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import inc.elevati.imycity.firebase.StorageHelper;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.main.newreport.NewReportPresenter;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.utils.firebase.FirestoreSender;
-import inc.elevati.imycity.utils.firebase.StorageWriter;
+import inc.elevati.imycity.firebase.FirestoreSender;
 
 import static org.mockito.Mockito.verify;
 
@@ -44,9 +44,9 @@ public class NewReportPresenterTest {
     @Test
     public void sendButtonTest() throws Exception {
 
-        //  riferimento all'oggetto StorageWriter creato
-        StorageWriter storageWriter = PowerMockito.mock(StorageWriter.class);
-        PowerMockito.whenNew(StorageWriter.class).withAnyArguments().thenReturn(storageWriter);
+        //  riferimento all'oggetto StorageHelper creato
+        StorageHelper storageWriter = PowerMockito.mock(StorageHelper.class);
+        PowerMockito.whenNew(StorageHelper.class).withAnyArguments().thenReturn(storageWriter);
 
         //  riferimento all'oggetto Report creato
         Report report = PowerMockito.mock(Report.class);
@@ -71,7 +71,7 @@ public class NewReportPresenterTest {
         //  chiamo correttamente la funzione
         presenter.sendButtonClicked("Titolo", "Descrizione", appContext, imageUri);
 
-        //  verifico che il nuovo oggetto StorageWriter usi il metodo send con il report creato
+        //  verifico che il nuovo oggetto StorageHelper usi il metodo sendReport con il report creato
         verify(storageWriter).send(report, appContext, imageUri);
     }
 

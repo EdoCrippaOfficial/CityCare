@@ -15,7 +15,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.main.allreports.AllReportsPresenter;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.utils.firebase.FirestoreReader;
+import inc.elevati.imycity.firebase.FirestoreReader;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;

@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.List;
 
 import inc.elevati.imycity.utils.MvpContracts;
@@ -23,7 +24,8 @@ public interface MainContracts {
     int PAGE_NEW = 0;
     int PAGE_ALL = 1;
     int PAGE_MY = 2;
-    int PAGE_COMPL = 3;
+    int PAGE_STARRED = 3;
+    int PAGE_COMPLETED = 4;
 
     int REPORT_SORT_DATE_NEWEST = 1;
     int REPORT_SORT_DATE_OLDEST = 2;
@@ -51,11 +53,13 @@ public interface MainContracts {
 
         NewReportPresenter getNewReportPresenter();
 
-        AllReportsPresenter getAllReportsPresenter();
+        ReportListPresenter getAllReportsPresenter();
 
-        MyReportsPresenter getMyReportsPresenter();
+        ReportListPresenter getCompletedReportsPresenter();
 
-        CompletedReportsPresenter getCompletedReportsPresenter();
+        ReportListPresenter getMyReportsPresenter();
+
+        ReportListPresenter getStarredReportsPresenter();
     }
 
     interface NewReportPresenter extends MvpContracts.MvpPresenter {
@@ -67,36 +71,19 @@ public interface MainContracts {
         void onSendTaskComplete(int resultCode);
     }
 
-    interface AllReportsPresenter extends ReportListPresenter {
+    interface ReportListPresenter extends MvpContracts.MvpPresenter, Serializable {
 
-        void loadAllReports();
+        void loadReports();
 
-        void onLoadAllReportsTaskComplete(QuerySnapshot results);
-
-        void onUpdateTaskComplete();
-    }
-
-    interface MyReportsPresenter extends ReportListPresenter {
-
-        void loadMyReports();
-
-        void onLoadMyReportsTaskComplete(QuerySnapshot results);
+        void onLoadReportsTaskComplete(QuerySnapshot results);
 
         void onUpdateTaskComplete();
-    }
-
-    interface CompletedReportsPresenter extends ReportListPresenter {
-
-        void loadCompletedReports();
-
-        void onLoadCompletedReportsTaskComplete(QuerySnapshot results);
-
-        void onUpdateTaskComplete();
-    }
-
-    interface ReportListPresenter extends MvpContracts.MvpPresenter {
 
         void showReport(Report report);
+
+        void starsButtonClicked(Report report);
+
+        void onStarOperationComplete();
     }
 
     interface NewReportView extends MvpContracts.MvpView {

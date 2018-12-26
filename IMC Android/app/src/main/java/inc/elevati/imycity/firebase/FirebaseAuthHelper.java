@@ -1,4 +1,4 @@
-package inc.elevati.imycity.utils.firebase;
+package inc.elevati.imycity.firebase;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -15,7 +15,7 @@ import inc.elevati.imycity.login.LoginContracts;
 
 public class FirebaseAuthHelper {
 
-    //current user information
+    // Current user information
     private static String userName;
     private static String userEmail;
     private static String userId;
@@ -91,7 +91,8 @@ public class FirebaseAuthHelper {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //on signin set current user information
+
+                            // On sign in set current user information
                             userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             userId = FirebaseAuth.getInstance().getCurrentUser().getUid();

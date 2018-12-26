@@ -16,7 +16,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,17 +29,19 @@ import inc.elevati.imycity.main.allreports.AllReportsFragment;
 import inc.elevati.imycity.main.completedreports.CompletedReportsFragment;
 import inc.elevati.imycity.main.myreports.MyReportsFragment;
 import inc.elevati.imycity.main.newreport.NewReportFragment;
+import inc.elevati.imycity.main.starredreports.StarredReportsFragment;
 
 import static inc.elevati.imycity.main.MainContracts.PAGE_ALL;
-import static inc.elevati.imycity.main.MainContracts.PAGE_COMPL;
+import static inc.elevati.imycity.main.MainContracts.PAGE_COMPLETED;
 import static inc.elevati.imycity.main.MainContracts.PAGE_MY;
 import static inc.elevati.imycity.main.MainContracts.PAGE_NEW;
+import static inc.elevati.imycity.main.MainContracts.PAGE_STARRED;
 
 /** The main activity that contains the ViewPager with the fragments */
 public class MainActivity extends AppCompatActivity implements MainContracts.MainView {
 
     /** Total number of fragments */
-    private final static int NUM_FRAGMENTS = 4;
+    private final static int NUM_FRAGMENTS = 5;
 
     private MainPresenter presenter;
 
@@ -205,14 +206,12 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
 
         // Animate in or out the button depending on which page is showing
         if (pager.getCurrentItem() != PAGE_NEW && previousPage == PAGE_NEW) {
-            Log.d("DEBUG", previousPage + " " + pager.getCurrentItem() + " Animazione in");
             sortButton.setEnabled(true);
             TranslateAnimation animate = new TranslateAnimation(200, 0, 0, 0);
             animate.setDuration(500);
             animate.setFillAfter(true);
             sortButton.getActionView().startAnimation(animate);
         } else if (pager.getCurrentItem() == PAGE_NEW && previousPage != PAGE_NEW){
-            Log.d("DEBUG", previousPage + " " + pager.getCurrentItem() + " Animazione out");
             sortButton.setEnabled(false);
             TranslateAnimation animate = new TranslateAnimation(0, 200, 0, 0);
             animate.setDuration(500);
@@ -220,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
             sortButton.getActionView().startAnimation(animate);
         }
         previousPage = pager.getCurrentItem();
-        Log.d("DEBUG", previousPage+ "");
         return false;
     }
 
@@ -244,7 +242,8 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
                 case PAGE_NEW: return NewReportFragment.newInstance();
                 case PAGE_ALL: return AllReportsFragment.newInstance();
                 case PAGE_MY: return MyReportsFragment.newInstance();
-                case PAGE_COMPL: return CompletedReportsFragment.newInstance();
+                case PAGE_STARRED: return StarredReportsFragment.newInstance();
+                case PAGE_COMPLETED: return CompletedReportsFragment.newInstance();
                 default: return AllReportsFragment.newInstance();
             }
         }
@@ -263,7 +262,9 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
                     return getString(R.string.menu_all);
                 case PAGE_MY:
                     return getString(R.string.menu_my);
-                case PAGE_COMPL:
+                case PAGE_STARRED:
+                    return getString(R.string.menu_starred);
+                case PAGE_COMPLETED:
                     return getString(R.string.menu_completed);
             }
             return null;

@@ -42,7 +42,7 @@ public class CompletedReportsFragment extends Fragment implements MainContracts.
     private ReportsAdapter reportsAdapter;
 
     /** Presenter that handles non graphics-related requests */
-    private MainContracts.CompletedReportsPresenter presenter;
+    private MainContracts.ReportListPresenter presenter;
 
     /** Object used to refresh the report list */
     private SwipeRefreshLayout refresher;
@@ -88,7 +88,7 @@ public class CompletedReportsFragment extends Fragment implements MainContracts.
 
         // Load my reports
         refresher.setRefreshing(true);
-        presenter.loadCompletedReports();
+        presenter.loadReports();
         return v;
     }
 
@@ -128,7 +128,7 @@ public class CompletedReportsFragment extends Fragment implements MainContracts.
      */
     @Override
     public void showReportDialog(Report report) {
-        ReportDialog dialog = ReportDialog.newInstance(report);
+        ReportDialog dialog = ReportDialog.newInstance(report, presenter);
         dialog.show(getFragmentManager(), null);
     }
 
@@ -141,7 +141,7 @@ public class CompletedReportsFragment extends Fragment implements MainContracts.
     /** Called when user swipes down on screen to refresh list */
     @Override
     public void onRefresh() {
-        presenter.loadCompletedReports();
+        presenter.loadReports();
     }
 
     /**

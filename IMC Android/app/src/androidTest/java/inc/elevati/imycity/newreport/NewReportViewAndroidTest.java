@@ -96,7 +96,7 @@ public class NewReportViewAndroidTest {
         // Go to the target fragment
         onView(withId(R.id.view_pager)).perform(swipeLeft());
 
-        // Click on send button
+        // Click on sendReport button
         onView(withId(R.id.bn_new_report_send)).perform(click());
 
         // Check if toast error is displayed
@@ -110,7 +110,7 @@ public class NewReportViewAndroidTest {
         // Click on the pick image option, our mock intent should be returned
         onView(withId(R.id.bn_gallery)).perform(click());
 
-        // Click on send button
+        // Click on sendReport button
         onView(withId(R.id.bn_new_report_send)).perform(click());
 
         // Check if error message is displayed on title TextInputLayout
@@ -120,7 +120,7 @@ public class NewReportViewAndroidTest {
         // Provide a title
         onView(withId(R.id.text_input_edit_title)).perform(replaceText("TestTitle"));
 
-        // Click on send button
+        // Click on sendReport button
         onView(withId(R.id.bn_new_report_send)).perform(click());
 
         // Check if error message is displayed on title TextInputLayout
@@ -130,7 +130,7 @@ public class NewReportViewAndroidTest {
         // Provide a description
         onView(withId(R.id.text_input_edit_desc)).perform(replaceText("TestDesc"));
 
-        // Click on send button
+        // Click on sendReport button
         onView(withId(R.id.bn_new_report_send)).perform(click());
 
         // Check if success toast is displayed

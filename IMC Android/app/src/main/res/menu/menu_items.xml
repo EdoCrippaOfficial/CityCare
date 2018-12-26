@@ -24,6 +24,12 @@
             android:checkable="true"/>
 
         <item
+            android:id="@+id/menu_starred"
+            android:icon="@drawable/ic_star"
+            android:title="@string/menu_starred"
+            android:checkable="true"/>
+
+        <item
             android:id="@+id/menu_completed"
             android:icon="@drawable/ic_completed_reports"
             android:title="@string/menu_completed"

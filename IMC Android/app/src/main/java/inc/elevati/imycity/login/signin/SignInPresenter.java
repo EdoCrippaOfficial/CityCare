@@ -2,7 +2,7 @@ package inc.elevati.imycity.login.signin;
 
 import inc.elevati.imycity.login.LoginContracts;
 import inc.elevati.imycity.utils.MvpContracts;
-import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
+import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
 public class SignInPresenter implements LoginContracts.SignInPresenter {
 

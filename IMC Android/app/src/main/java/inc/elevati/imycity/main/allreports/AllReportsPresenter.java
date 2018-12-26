@@ -6,14 +6,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import inc.elevati.imycity.firebase.FirebaseAuthHelper;
+import inc.elevati.imycity.firebase.FirestoreHelper;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
-import inc.elevati.imycity.utils.firebase.FirestoreReader;
 import inc.elevati.imycity.utils.Report;
 
 /** Presenter class used by AllReportsFragment to interact with the app kernel */
-public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
+public class AllReportsPresenter implements MainContracts.ReportListPresenter {
 
     /** The view instance */
     private MainContracts.ReportsView view;
@@ -34,9 +35,9 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
         // If there were pending tasks, execute them now
         if (pendingTask) {
 
-            // If results is not null, then onLoadAllReportsTaskComplete has to be executed
+            // If results is not null, then onLoadReportsTaskComplete has to be executed
             if (results != null) {
-                onLoadAllReportsTaskComplete(results);
+                onLoadReportsTaskComplete(results);
                 results = null;
             }
 
@@ -56,9 +57,9 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
 
     /** Method called to retrieve all reports from database */
     @Override
-    public void loadAllReports() {
+    public void loadReports() {
         EspressoIdlingResource.increment();
-        FirestoreReader.readAllReports(this);
+        FirestoreHelper.readAllReports(this);
     }
 
     /**
@@ -68,7 +69,7 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
      * @param results the data retrieved
      */
     @Override
-    public void onLoadAllReportsTaskComplete(QuerySnapshot results) {
+    public void onLoadReportsTaskComplete(QuerySnapshot results) {
 
         // If view is detached, set the pendingTask flag
         if (view == null) {
@@ -89,11 +90,15 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
                 long nStars = snap.getLong("n_stars");
                 String reply = snap.getString("reply");
                 long status = snap.getLong("status");
+
                 String position = snap.getString("position");
                 String[] positionData = position.split(",");
 
+                ArrayList<String> usersStarred = (ArrayList<String>) snap.get("users_starred");
+                boolean starred = usersStarred.contains(FirebaseAuthHelper.getUserId());
+
                 Report report = new Report(id, userId, userName, title, description, reply, operatorId, timestamp,
-                        (int) nStars, Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status);
+                        (int) nStars, Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status, starred);
 
                 reports.add(report);
             }
@@ -125,5 +130,18 @@ public class AllReportsPresenter implements MainContracts.AllReportsPresenter {
     @Override
     public void showReport(Report report) {
         view.showReportDialog(report);
+    }
+
+    @Override
+    public void starsButtonClicked(Report report) {
+        if (report.isStarred())
+            FirestoreHelper.unstarReport(report, FirebaseAuthHelper.getUserId(), this);
+        else
+            FirestoreHelper.starReport(report, FirebaseAuthHelper.getUserId(), this);
+    }
+
+    @Override
+    public void onStarOperationComplete() {
+        loadReports();
     }
 }

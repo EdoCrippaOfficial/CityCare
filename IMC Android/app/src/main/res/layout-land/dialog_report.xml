@@ -2,73 +2,131 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:padding="10dp"
-    android:baselineAligned="false">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingBottom="10dp"
+    android:fillViewport="true">
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="4">
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="2dp"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/white" />
 
-        <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/iv_report_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
 
-        <ProgressBar
-            android:id="@+id/pb_image"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:visibility="gone"
-            android:layout_centerInParent="true"
-            android:theme="@style/ProgressBar" />
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="10dp"
+        android:baselineAligned="false">
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4">
 
-    <ScrollView
-        android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:layout_weight="6"
-        android:fillViewport="true">
+            <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/iv_report_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
+            <ProgressBar
+                android:id="@+id/pb_image"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:theme="@style/ProgressBar" />
+
+        </RelativeLayout>
+
+        <ScrollView
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp">
+            android:layout_width="0dp"
+            android:layout_weight="6">
 
-            <TextView
-                android:id="@+id/tv_title"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:padding="10dp">
 
-            <TextView
-                android:id="@+id/tv_desc"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="@color/black"/>
+                <TextView
+                    android:id="@+id/tv_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textColor="@color/black"/>
 
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center"
-                android:textStyle="italic"
-                android:textColor="@color/grey"
-                android:textAppearance="?android:textAppearanceMedium"/>
+                <LinearLayout
+                    android:id="@+id/container_reply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/light_grey"
+                    android:visibility="gone"
+                    android:padding="5dp">
 
-        </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="@string/report_reply"/>
 
-    </ScrollView>
+                    <TextView
+                        android:id="@+id/tv_reply"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/report_delete"
+        android:visibility="gone"
+        style="@style/SecondaryButtons"/>
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textColor="@color/grey"
+        android:textAppearance="?android:textAppearanceMedium"/>
 
 </LinearLayout>

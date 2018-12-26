@@ -45,6 +45,8 @@ public class Report implements Parcelable {
     /** The report status (STATUS_ACCEPTED, STATUS_REFUSED, STATUS_COMPLETED, STATUS_WAITING) */
     private int status;
 
+    private boolean starred;
+
     /**
      * Public constructor used when new report is created
      * @param id the report id (that also refers to image in storage)
@@ -83,7 +85,7 @@ public class Report implements Parcelable {
      * @param status the report status
      */
     public Report(String id, String userId, String userName, String title, String description, String reply,
-                  String operatorId, long timestamp, int nStars, long latitude, long longitude, int status) {
+                  String operatorId, long timestamp, int nStars, long latitude, long longitude, int status, boolean starred) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
@@ -96,6 +98,7 @@ public class Report implements Parcelable {
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = status;
+        this.starred = starred;
     }
 
     /**
@@ -115,6 +118,7 @@ public class Report implements Parcelable {
         this.latitude = in.readLong();
         this.longitude = in.readLong();
         this.status = in.readInt();
+        this.starred = in.readInt() == 1;
     }
 
     /**
@@ -174,6 +178,10 @@ public class Report implements Parcelable {
         return status;
     }
 
+    public boolean isStarred() {
+        return starred;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -198,6 +206,7 @@ public class Report implements Parcelable {
         dest.writeLong(latitude);
         dest.writeLong(longitude);
         dest.writeInt(status);
+        dest.writeInt(starred ? 1 : 0);
     }
 
     /** Required by Parcelable interface */

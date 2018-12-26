@@ -23,7 +23,7 @@ public class Compressor implements Runnable {
     private static final int SCALE_THUMBNAIL = 4;
 
     /** The listener which receives data when it's ready or gets notified of an error */
-    private UtilsContracts.CompressorListener listener;
+    private CompressorListener listener;
 
     /** Context needed by Glide to load the image from Uri */
     private Context appContext;
@@ -37,7 +37,7 @@ public class Compressor implements Runnable {
      * @param appContext context needed by Glide to load the image from Uri
      * @param imageUri the image Uri
      */
-    private Compressor(UtilsContracts.CompressorListener listener, Context appContext, Uri imageUri) {
+    private Compressor(CompressorListener listener, Context appContext, Uri imageUri) {
         this.listener = listener;
         this.appContext = appContext;
         this.imageUri = imageUri;
@@ -49,7 +49,7 @@ public class Compressor implements Runnable {
      * @param appContext context needed by Glide to load the image from Uri
      * @param imageUri the image Uri
      */
-    public static void startCompressing(UtilsContracts.CompressorListener listener, Context appContext, Uri imageUri) {
+    public static void startCompressing(CompressorListener listener, Context appContext, Uri imageUri) {
         new Thread(new Compressor(listener, appContext, imageUri)).start();
     }
 
@@ -76,7 +76,7 @@ public class Compressor implements Runnable {
         } catch (ExecutionException e) {
 
             // Notify listener that error has occurred
-            listener.onErrorOccurred();
+            listener.onCompressError();
         } catch (InterruptedException ignored) {}
     }
 
@@ -91,5 +91,12 @@ public class Compressor implements Runnable {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, quality, byteStream);
         return byteStream.toByteArray();
+    }
+
+    public interface CompressorListener {
+
+        void onCompressed(byte[] fullData, byte[] thumbData);
+
+        void onCompressError();
     }
 }

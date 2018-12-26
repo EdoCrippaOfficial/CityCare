@@ -18,6 +18,7 @@ android {
     }
     testOptions {
         unitTests {
+            returnDefaultValues = true
             includeAndroidResources = true
         }
     }
@@ -30,13 +31,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
-    implementation 'com.google.firebase:firebase-firestore:17.1.4'
-    implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.google.firebase:firebase-firestore:17.1.5'
     implementation 'com.firebaseui:firebase-ui-storage:4.2.1'
 
     // Android support library (Androidx)
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'com.google.android.material:material:1.1.0-alpha01'
+    implementation 'com.google.android.material:material:1.1.0-alpha02'
 
     // Glide and PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'
@@ -52,13 +52,13 @@ dependencies {
     testImplementation "org.powermock:powermock-api-mockito:1.6.2"
 
     // Android UI test
-    androidTestImplementation "androidx.test:runner:1.1.0"
-    androidTestImplementation "androidx.test.ext:junit:1.0.0"
-    androidTestImplementation "androidx.test:rules:1.1.0"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.0"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.1.0"
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.0'
-    implementation "androidx.test.espresso:espresso-idling-resource:3.1.0"
+    androidTestImplementation "androidx.test:runner:1.1.1"
+    androidTestImplementation "androidx.test.ext:junit:1.1.0"
+    androidTestImplementation "androidx.test:rules:1.1.1"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.1"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.1.1"
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
+    implementation "androidx.test.espresso:espresso-idling-resource:3.1.1"
 }
 
 apply plugin: 'com.google.gms.google-services'

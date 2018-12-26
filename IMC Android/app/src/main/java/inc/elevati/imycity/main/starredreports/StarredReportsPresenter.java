@@ -1,4 +1,4 @@
-package inc.elevati.imycity.main.myreports;
+package inc.elevati.imycity.main.starredreports;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -6,14 +6,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.firebase.FirestoreHelper;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
-public class MyReportsPresenter implements MainContracts.ReportListPresenter {
+public class StarredReportsPresenter implements MainContracts.ReportListPresenter {
 
     /** The view instance */
     private MainContracts.ReportsView view;
@@ -58,7 +58,7 @@ public class MyReportsPresenter implements MainContracts.ReportListPresenter {
     @Override
     public void loadReports() {
         EspressoIdlingResource.increment();
-        FirestoreHelper.readMyReports(this, FirebaseAuthHelper.getUserId());
+        FirestoreHelper.readStarredReports(this, FirebaseAuthHelper.getUserId());
     }
 
     /**
@@ -93,11 +93,8 @@ public class MyReportsPresenter implements MainContracts.ReportListPresenter {
                 String position = snap.getString("position");
                 String[] positionData = position.split(",");
 
-                ArrayList<String> usersStarred = (ArrayList<String>) snap.get("users_starred");
-                boolean starred = usersStarred.contains(FirebaseAuthHelper.getUserId());
-
                 Report report = new Report(id, userId, userName, title, description, reply, operatorId, timestamp,
-                        (int) nStars, Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status, starred);
+                        (int) nStars, Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status, true);
 
                 reports.add(report);
             }

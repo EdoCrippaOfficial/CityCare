@@ -1,13 +1,12 @@
 package inc.elevati.imycity.main;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,13 +25,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.firebase.FirestoreHelper;
 import inc.elevati.imycity.utils.GlideApp;
+import inc.elevati.imycity.utils.ProgressDialog;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
-import inc.elevati.imycity.utils.firebase.FirestoreDeleter;
+import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
 /** In this class it is defined the style of the dialog shown when user clicks on a report */
-public class ReportDialog extends DialogFragment {
+public class ReportDialog extends DialogFragment implements FirestoreHelper.onDeleteReportListener {
+
+    private ProgressDialog progressDialog;
 
     /**
      * Static method that returns an instance of ReportDialog
@@ -40,10 +42,11 @@ public class ReportDialog extends DialogFragment {
      * @param report the report to be shown
      * @return a ReportDialog instance
      */
-    public static ReportDialog newInstance(Report report) {
+    public static ReportDialog newInstance(Report report, MainContracts.ReportListPresenter presenter) {
         ReportDialog dialog = new ReportDialog();
         Bundle args = new Bundle();
         args.putParcelable("report", report);
+        args.putSerializable("presenter", presenter);
         dialog.setArguments(args);
         return dialog;
     }
@@ -72,38 +75,70 @@ public class ReportDialog extends DialogFragment {
 
         // Report retrieving from arguments
         final Report report = getArguments().getParcelable("report");
+        TextView tv_status = v.findViewById(R.id.tv_status);
         TextView tv_title = v.findViewById(R.id.tv_title);
         TextView tv_desc = v.findViewById(R.id.tv_desc);
+        TextView tv_reply = v.findViewById(R.id.tv_reply);
         TextView tv_date = v.findViewById(R.id.tv_date);
         Button bn_delete = v.findViewById(R.id.bn_delete);
-        if (report.getUserId().equals(FirebaseAuthHelper.getUserId()))
+
+        // Show report status
+        switch (report.getStatus()) {
+            case Report.STATUS_ACCEPTED:
+                tv_status.setText(R.string.report_accepted);
+                tv_status.setBackgroundColor(getContext().getResources().getColor(R.color.color_primary));
+                break;
+            case Report.STATUS_REFUSED:
+                tv_status.setText(R.string.report_refused);
+                tv_status.setBackgroundColor(getContext().getResources().getColor(R.color.red));
+                break;
+            case Report.STATUS_COMPLETED:
+                tv_status.setText(R.string.report_completed);
+                tv_status.setBackgroundColor(getContext().getResources().getColor(R.color.green));
+                break;
+            case Report.STATUS_WAITING:
+                tv_status.setText(R.string.report_waiting);
+                tv_status.setBackgroundColor(getContext().getResources().getColor(R.color.grey));
+                break;
+        }
+
+        // Show delete button if current user is the creator of a waiting report
+        if (report.getUserId().equals(FirebaseAuthHelper.getUserId()) && report.getStatus() == Report.STATUS_WAITING)
             bn_delete.setVisibility(View.VISIBLE);
+
         bn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Cancellazione");
-                builder.setMessage("Sei sicuro?");
-                builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        FirestoreDeleter.deleteReport(report.getId(), ReportDialog.this);
-                        dialog.dismiss();
-                    }
-                });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                final Dialog dialog = new Dialog(getContext());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_confirm);
+                dialog.findViewById(R.id.bn_delete_no).setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(View v) {
                         dialog.dismiss();
                     }
                 });
-                AlertDialog alert = builder.create();
-                alert.show();
+                dialog.findViewById(R.id.bn_delete_yes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        showProgressDialog();
+                        FirestoreHelper.deleteReport(report.getId(), ReportDialog.this);
+                    }
+                });
+                dialog.show();
             }
         });
         final ImageView iv_image = v.findViewById(R.id.iv_report_image);
         final ProgressBar pb_loading = v.findViewById(R.id.pb_image);
         tv_title.setText(report.getTitle());
         tv_desc.setText(report.getDescription());
+
+        String reply = report.getReply();
+        if (reply != null && !reply.equals("")) {
+            v.findViewById(R.id.container_reply).setVisibility(View.VISIBLE);
+            tv_reply.setText(reply);
+        }
 
         // Time formatting: Created on: date, hour
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
@@ -134,8 +169,28 @@ public class ReportDialog extends DialogFragment {
         return v;
     }
 
-    public void onReportDeleted(){
-        this.dismiss();
-        Toast.makeText(getContext(), "Segnalazione cancellata!, ricarica la pagina", Toast.LENGTH_LONG).show();
+    /** Method called to show a non-cancelable progress dialog during database operations */
+    private void showProgressDialog() {
+        progressDialog = ProgressDialog.newInstance(R.string.report_deleting);
+        progressDialog.show(getFragmentManager(), "progress");
+    }
+
+    /** Dismisses the progress dialog after a report deleting */
+    private void dismissProgressDialog() {
+        if (progressDialog != null) progressDialog.dismiss();
+    }
+
+    @Override
+    public void onReportDeleted() {
+        dismissProgressDialog();
+        dismiss();
+        MainContracts.ReportListPresenter presenter = (MainContracts.ReportListPresenter) getArguments().getSerializable("presenter");
+        presenter.loadReports();
+    }
+
+    @Override
+    public void onReportDeleteFailed() {
+        dismissProgressDialog();
+        Toast.makeText(getContext(), R.string.report_deleting_fail, Toast.LENGTH_SHORT).show();
     }
 }

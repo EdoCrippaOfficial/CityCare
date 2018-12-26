@@ -24,19 +24,19 @@ export const getReportsID = functions.https.onRequest((request, response) => {
 
 });
 
-export const unaStellaGratis = functions.firestore.document('reports/{reportId}')
-    .onCreate((snap, context) => {
-        
+export const updateStars = functions.firestore.document('reports/{reportId}')
+    .onUpdate((change, context) => {
+
         // Get an object representing the document
-        const newValue = snap.data();
-  
+        const report = change.after.data();
+
         // access a particular field as you would any JS property
-        const stars_count = newValue.n_stars;
-  
+        const stars_list = report.users_starred;
+
         // Then return a promise of a set operation to update the stars count
-        return snap.ref.set({
-            n_stars: stars_count + 1
-          }, {merge: true});
+        return change.after.ref.set({
+            n_stars: stars_list.length
+        }, {merge: true});
     });
 
 export const deleteImages = functions.firestore.document('reports/{reportId}').onDelete((snap, context) => {

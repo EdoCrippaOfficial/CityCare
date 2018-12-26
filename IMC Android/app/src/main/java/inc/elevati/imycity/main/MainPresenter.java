@@ -5,22 +5,25 @@ import inc.elevati.imycity.main.allreports.AllReportsPresenter;
 import inc.elevati.imycity.main.completedreports.CompletedReportsPresenter;
 import inc.elevati.imycity.main.myreports.MyReportsPresenter;
 import inc.elevati.imycity.main.newreport.NewReportPresenter;
+import inc.elevati.imycity.main.starredreports.StarredReportsPresenter;
 import inc.elevati.imycity.utils.MvpContracts;
-import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
+import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
 public class MainPresenter implements MainContracts.MainPresenter {
 
     private MainContracts.MainView view;
 
     private MainContracts.NewReportPresenter newReportPresenter;
-    private MainContracts.AllReportsPresenter allReportsPresenter;
-    private MainContracts.MyReportsPresenter myReportsPresenter;
-    private MainContracts.CompletedReportsPresenter completedReportsPresenter;
+    private MainContracts.ReportListPresenter allReportsPresenter;
+    private MainContracts.ReportListPresenter myReportsPresenter;
+    private MainContracts.ReportListPresenter completedReportsPresenter;
+    private MainContracts.ReportListPresenter starredReportsPresenter;
 
     public MainPresenter() {
         this.allReportsPresenter = new AllReportsPresenter();
         this.newReportPresenter = new NewReportPresenter();
         this.myReportsPresenter = new MyReportsPresenter();
+        this.starredReportsPresenter = new StarredReportsPresenter();
         this.completedReportsPresenter = new CompletedReportsPresenter();
     }
 
@@ -38,16 +41,21 @@ public class MainPresenter implements MainContracts.MainPresenter {
         return newReportPresenter;
     }
 
-    public MainContracts.AllReportsPresenter getAllReportsPresenter() {
+    public MainContracts.ReportListPresenter getAllReportsPresenter() {
         return allReportsPresenter;
     }
 
-    public MainContracts.CompletedReportsPresenter getCompletedReportsPresenter() {
+    public MainContracts.ReportListPresenter getCompletedReportsPresenter() {
         return completedReportsPresenter;
     }
 
-    public MainContracts.MyReportsPresenter getMyReportsPresenter() {
+    public MainContracts.ReportListPresenter getMyReportsPresenter() {
         return myReportsPresenter;
+    }
+
+    @Override
+    public MainContracts.ReportListPresenter getStarredReportsPresenter() {
+        return starredReportsPresenter;
     }
 
     @Override
@@ -62,8 +70,11 @@ public class MainPresenter implements MainContracts.MainPresenter {
             case R.id.menu_my:
                 view.scrollToPage(MainContracts.PAGE_MY);
                 break;
+            case R.id.menu_starred:
+                view.scrollToPage(MainContracts.PAGE_STARRED);
+                break;
             case R.id.menu_completed:
-                view.scrollToPage(MainContracts.PAGE_COMPL);
+                view.scrollToPage(MainContracts.PAGE_COMPLETED);
                 break;
             case R.id.menu_logout:
                 FirebaseAuthHelper.signOut();
@@ -84,7 +95,10 @@ public class MainPresenter implements MainContracts.MainPresenter {
             case MainContracts.PAGE_MY:
                 view.setCheckedMenuItem(R.id.menu_my);
                 break;
-            case MainContracts.PAGE_COMPL:
+            case MainContracts.PAGE_STARRED:
+                view.setCheckedMenuItem(R.id.menu_starred);
+                break;
+            case MainContracts.PAGE_COMPLETED:
                 view.setCheckedMenuItem(R.id.menu_completed);
                 break;
         }

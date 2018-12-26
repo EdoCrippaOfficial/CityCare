@@ -38,7 +38,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/sort_report_most"
-            android:enabled="false"
             android:textAppearance="?android:textAppearanceMedium"/>
 
         <RadioButton
@@ -47,7 +46,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/sort_report_least"
-            android:enabled="false"
             android:textAppearance="?android:textAppearanceMedium"/>
 
     </RadioGroup>

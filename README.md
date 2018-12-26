@@ -25,16 +25,22 @@
 - [x] Photoview (prova)
 - [x] Implementare tutti i campi db
 - [x] Ruotare correttamente le foto
-- [x] TESTING E VERIFICA DEL SOFTWARE
+- [ ] TESTING E VERIFICA DEL SOFTWARE (fix)
 
 #### Iterazione 2
 
 - [x] Pagina iniziale con log-in e sign-in
-- [ ] Inserimento di user_id e user_name nell’invio di nuove segnalazioni
+- [x] Inserimento di user_id e user_name nell’invio di nuove segnalazioni
 - [x] Visualizzazione in fragment separati di segnalazioni attive e completate
 - [x] Pagina per visualizzare solo le segnalazioni dell’utente corrente
-- [ ] Possibilità di cancellare una segnalazione fatta dall’utente corrente
-- [ ] Aggiornamento del database dopo la registrazione di un utente
+- [x] Possibilità di cancellare una segnalazione fatta dall’utente corrente
+- [ ] TESTING E VERIFICA DEL SOFTWARE
+
+#### Iterazione 3
+
+- [x] Sistema stelle
+- [ ] Aggiornamento locale temporaneo all'aggiunta/rimozione di nuove stelle
+- [ ] Posizione GPS per nuove segnalazioni (?)
 - [ ] TESTING E VERIFICA DEL SOFTWARE
 ---
 ### Web

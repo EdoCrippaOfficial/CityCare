@@ -70,4 +70,32 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/bn_stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="2dp"
+        android:background="@drawable/bn_stars_background"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/iv_stars"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_star" />
+
+        <TextView
+            android:id="@+id/tv_stars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textAppearance="?android:textAppearanceMedium"/>
+
+    </LinearLayout>
+
 </LinearLayout>

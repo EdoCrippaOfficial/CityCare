@@ -2,6 +2,9 @@
 
     <string name="app_name">Improve My City</string>
 
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <string name="login_email">E-mail</string>
     <string name="login_password">Password</string>
     <string name="login_sign_in">Sign in</string>
@@ -28,6 +31,7 @@
     <string name="menu_new">New report</string>
     <string name="menu_all">All reports</string>
     <string name="menu_my">My reports</string>
+    <string name="menu_starred">Starred reports</string>
     <string name="menu_completed">Completed reports</string>
     <string name="menu_logout">Log out</string>
 
@@ -50,12 +54,23 @@
     <string name="new_report_pick_again">Error loading image. Please choose it again</string>
 
     <string name="report_date">By: %s - %s</string>
+    <string name="report_delete">Delete</string>
+    <string name="report_deleting">Deleting in progress…</string>
+    <string name="report_deleting_fail">Failed to delete report. Please check your network connection and try again</string>
+    <string name="report_reply">Reply:</string>
+    <string name="report_accepted">ACCEPTED</string>
+    <string name="report_refused">REFUSED</string>
+    <string name="report_completed">COMPLETED</string>
+    <string name="report_waiting">WAITING</string>
 
     <string name="sort_report_title">Order reports by:</string>
     <string name="sort_report_newest">Date created (newest)</string>
     <string name="sort_report_oldest">Date created (oldest)</string>
     <string name="sort_report_most">Most popular</string>
     <string name="sort_report_least">Least popular</string>
+
+    <string name="confirm_title">Deleting report</string>
+    <string name="confirm_body">Are you sure you want to delete this report?</string>
 
     <string name="content_desc_sort">Sort by…</string>
 

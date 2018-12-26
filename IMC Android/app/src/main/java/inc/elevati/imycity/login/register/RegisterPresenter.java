@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import inc.elevati.imycity.login.LoginContracts;
 import inc.elevati.imycity.utils.MvpContracts;
-import inc.elevati.imycity.utils.firebase.FirebaseAuthHelper;
+import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
 public class RegisterPresenter implements LoginContracts.RegisterPresenter {
 
