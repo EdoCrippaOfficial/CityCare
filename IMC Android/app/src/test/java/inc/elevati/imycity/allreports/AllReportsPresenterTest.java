@@ -8,18 +8,19 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import inc.elevati.imycity.firebase.FirestoreHelper;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.main.allreports.AllReportsPresenter;
 import inc.elevati.imycity.utils.Report;
-import inc.elevati.imycity.firebase.FirestoreReader;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AllReportsPresenter.class)
@@ -27,27 +28,27 @@ import static org.mockito.Mockito.verify;
 public class AllReportsPresenterTest {
 
     @Mock
-    private MainContracts.AllReportsView view;
+    private MainContracts.ReportsView view;
 
     private AllReportsPresenter presenter;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        presenter = new AllReportsPresenter(view);
+        presenter = new AllReportsPresenter();
     }
 
     @Test
-    public void loadReportsTest() throws Exception {
-        FirestoreReader firestoreReader = PowerMockito.mock(FirestoreReader.class);
-        PowerMockito.whenNew(FirestoreReader.class).withAnyArguments().thenReturn(firestoreReader);
-        presenter.loadAllReports();
-        verify(firestoreReader).readAllReports();
+    public void loadReportsTest() {
+        mockStatic(FirestoreHelper.class);
+        presenter.loadReports();
+        verifyStatic();
+        FirestoreHelper.readAllReports(presenter);
     }
 
     @Test
     public void displaySnapshotTest() {
-        presenter.onLoadAllReportsTaskComplete(any(QuerySnapshot.class));
+        presenter.onLoadReportsTaskComplete(any(QuerySnapshot.class));
         verify(view).updateReports(anyListOf(Report.class));
     }
 

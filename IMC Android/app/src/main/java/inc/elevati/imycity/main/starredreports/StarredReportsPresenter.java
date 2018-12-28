@@ -1,5 +1,6 @@
 package inc.elevati.imycity.main.starredreports;
 
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -89,12 +90,10 @@ public class StarredReportsPresenter implements MainContracts.ReportListPresente
                 long nStars = snap.getLong("n_stars");
                 String reply = snap.getString("reply");
                 long status = snap.getLong("status");
+                GeoPoint position = (GeoPoint) snap.get("position");
 
-                String position = snap.getString("position");
-                String[] positionData = position.split(",");
-
-                Report report = new Report(id, userId, userName, title, description, reply, operatorId, timestamp,
-                        (int) nStars, Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status, true);
+                Report report = new Report(id, userId, userName, title, description, reply,
+                        operatorId, timestamp, (int) nStars, position, (int) status, true);
 
                 reports.add(report);
             }

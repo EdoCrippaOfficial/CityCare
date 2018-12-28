@@ -17,6 +17,13 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -81,6 +88,7 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
         TextView tv_reply = v.findViewById(R.id.tv_reply);
         TextView tv_date = v.findViewById(R.id.tv_date);
         Button bn_delete = v.findViewById(R.id.bn_delete);
+        MapView mapView = v.findViewById(R.id.map_view);
 
         // Show report status
         switch (report.getStatus()) {
@@ -134,7 +142,7 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
         tv_title.setText(report.getTitle());
         tv_desc.setText(report.getDescription());
 
-        String reply = report.getReply();
+        final String reply = report.getReply();
         if (reply != null && !reply.equals("")) {
             v.findViewById(R.id.container_reply).setVisibility(View.VISIBLE);
             tv_reply.setText(reply);
@@ -147,6 +155,26 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
         String completeDate = dateFormat.format(date) + ", " + timeFormat.format(date);
         tv_date.setText(getString(R.string.report_date, report.getUserName(), completeDate));
         pb_loading.setVisibility(View.VISIBLE);
+
+        // Map creating
+        if (report.getPosition() != null) {
+            mapView.setVisibility(View.VISIBLE);
+            mapView.onCreate(savedInstanceState);
+            mapView.onResume();
+            try {
+                MapsInitializer.initialize(getActivity().getApplicationContext());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mapView.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap mMap) {
+                    LatLng position = new LatLng(report.getPosition().getLatitude(), report.getPosition().getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(position));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 17f));
+                }
+            });
+        }
 
         // Image loading from storage with Glide
         GlideApp.with(this)

@@ -31,6 +31,7 @@
         android:layout_height="0dp"
         android:layout_width="match_parent"
         android:layout_weight="1"
+        android:scrollbarThumbVertical="@drawable/scrollbar_vertical"
         android:padding="10dp">
 
         <LinearLayout
@@ -95,6 +96,13 @@
                     android:textColor="@color/black" />
 
             </LinearLayout>
+
+            <inc.elevati.imycity.utils.ScrollableMapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

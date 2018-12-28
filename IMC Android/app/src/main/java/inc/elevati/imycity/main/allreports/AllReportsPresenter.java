@@ -1,5 +1,6 @@
 package inc.elevati.imycity.main.allreports;
 
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -90,15 +91,13 @@ public class AllReportsPresenter implements MainContracts.ReportListPresenter {
                 long nStars = snap.getLong("n_stars");
                 String reply = snap.getString("reply");
                 long status = snap.getLong("status");
-
-                String position = snap.getString("position");
-                String[] positionData = position.split(",");
+                GeoPoint position = (GeoPoint) snap.get("position");
 
                 ArrayList<String> usersStarred = (ArrayList<String>) snap.get("users_starred");
                 boolean starred = usersStarred.contains(FirebaseAuthHelper.getUserId());
 
-                Report report = new Report(id, userId, userName, title, description, reply, operatorId, timestamp,
-                        (int) nStars, Long.valueOf(positionData[0]), Long.valueOf(positionData[1]), (int) status, starred);
+                Report report = new Report(id, userId, userName, title, description, reply,
+                        operatorId, timestamp, (int) nStars, position, (int) status, starred);
 
                 reports.add(report);
             }

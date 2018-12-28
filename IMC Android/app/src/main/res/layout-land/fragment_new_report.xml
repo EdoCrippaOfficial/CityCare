@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="15dp"
+    android:paddingTop="10dp"
     android:paddingStart="15dp"
     android:paddingEnd="15dp"
     android:focusableInTouchMode="true">
@@ -38,55 +38,85 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical"
+            android:fadeScrollbars="false"
             android:layout_weight="6">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_layout_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/new_report_title"
-                app:errorEnabled="true"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/text_input_edit_title"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/text_input_layout_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:inputType="textCapSentences"
-                    android:scrollbars="horizontal"
-                    android:scrollbarThumbHorizontal="@drawable/scrollbar_horizontal"/>
+                    android:hint="@string/new_report_title"
+                    app:errorEnabled="true"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_input_edit_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:inputType="textCapSentences"
+                        android:scrollbars="horizontal"
+                        android:scrollbarThumbHorizontal="@drawable/scrollbar_horizontal"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_layout_desc"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:hint="@string/new_report_description"
-                app:errorEnabled="true"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/text_input_edit_desc"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/text_input_layout_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:hint="@string/new_report_description"
+                    app:errorEnabled="true"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_input_edit_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textSize="16sp"
+                        android:minLines="2"
+                        android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
+                        android:scrollbars="vertical"
+                        android:scrollbarThumbVertical="@drawable/scrollbar_vertical" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textSize="16sp"
-                    android:minLines="2"
-                    android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
-                    android:scrollbars="vertical"
-                    android:scrollbarThumbVertical="@drawable/scrollbar_vertical" />
+                    android:layout_marginTop="2dp"
+                    android:text="@string/ner_report_position"
+                    android:textColor="@color/grey"
+                    android:textAppearance="?android:textAppearanceMedium"/>
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/map_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:visibility="gone"/>
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_add_position"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@color/light_grey"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_add_position"/>
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 
@@ -97,7 +127,7 @@
         android:text="@string/new_report_send"
         android:textSize="20sp"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp" />
 
 </LinearLayout>

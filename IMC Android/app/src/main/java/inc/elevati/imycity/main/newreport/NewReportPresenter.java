@@ -3,6 +3,8 @@ package inc.elevati.imycity.main.newreport;
 import android.content.Context;
 import android.net.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.UUID;
 
 import inc.elevati.imycity.firebase.FirestoreHelper;
@@ -54,7 +56,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
      * @param imageUri the Uri of the image
      */
     @Override
-    public void sendButtonClicked(String title, String description, Context appContext, Uri imageUri) {
+    public void sendButtonClicked(String title, String description, Context appContext, Uri imageUri, LatLng position) {
         if (imageUri == null) {
             view.notifyInvalidImage();
         } else if (title.equals("")) {
@@ -67,7 +69,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
             String uuid = UUID.randomUUID().toString();
             String userId = FirebaseAuthHelper.getUserId();
             String userName = FirebaseAuthHelper.getUserName();
-            Report report = new Report(uuid, title, description, System.currentTimeMillis(), userId, userName, 0, 0);
+            Report report = new Report(uuid, title, description, System.currentTimeMillis(), userId, userName, position);
 
             // Store image (normal and thumbnail) in Firebase Storage
             StorageHelper.sendImage(report, appContext, imageUri, this);

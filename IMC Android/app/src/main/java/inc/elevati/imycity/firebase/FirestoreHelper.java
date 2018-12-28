@@ -49,7 +49,7 @@ public class FirestoreHelper {
         map.put("n_stars", 0);
         map.put("reply", "");
         map.put("status", Report.STATUS_WAITING);
-        map.put("position", report.getLatitude() + "," + report.getLongitude());
+        map.put("position", report.getPosition());
         map.put("users_starred", new ArrayList<String>());
         dbRef.collection("reports").document(report.getId())
                 .set(map)

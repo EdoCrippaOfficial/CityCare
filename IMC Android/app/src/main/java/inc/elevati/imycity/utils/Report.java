@@ -3,6 +3,8 @@ package inc.elevati.imycity.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -39,8 +41,7 @@ public class Report implements Parcelable {
     /** The number of stars that this report received */
     private int nStars;
 
-    /** GPS latitude and longitude of the report */
-    private long latitude, longitude;
+    private GeoPoint position;
 
     /** The report status (STATUS_ACCEPTED, STATUS_REFUSED, STATUS_COMPLETED, STATUS_WAITING) */
     private int status;
@@ -54,18 +55,16 @@ public class Report implements Parcelable {
      * @param description the report description
      * @param timestamp the report creation time, in milliseconds from January 1 1970, 00:00 UTC
      * @param userId the id of the user who created this report
-     * @param latitude the GPS latitude of the report
-     * @param longitude the GPS longitude of the report
+     * @param position the GPS position of the report
      */
-    public Report(String id, String title, String description, long timestamp, String userId, String userName, long latitude, long longitude) {
+    public Report(String id, String title, String description, long timestamp, String userId, String userName, LatLng position) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.timestamp = timestamp;
         this.userId = userId;
         this.userName = userName;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        if (position != null) this.position = new GeoPoint(position.latitude, position.longitude);
         this.status = STATUS_WAITING;
         this.nStars = 0;
     }
@@ -80,12 +79,11 @@ public class Report implements Parcelable {
      * @param operatorId the operator id
      * @param timestamp the report creation time, in milliseconds from January 1 1970, 00:00 UTC
      * @param nStars the number of stars that this report received
-     * @param latitude the GPS latitude of the report
-     * @param longitude the GPS longitude of the report
+     * @param position the GPS position of the report
      * @param status the report status
      */
     public Report(String id, String userId, String userName, String title, String description, String reply,
-                  String operatorId, long timestamp, int nStars, long latitude, long longitude, int status, boolean starred) {
+                  String operatorId, long timestamp, int nStars, GeoPoint position, int status, boolean starred) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
@@ -95,8 +93,7 @@ public class Report implements Parcelable {
         this.operatorId = operatorId;
         this.timestamp = timestamp;
         this.nStars = nStars;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.position = position;
         this.status = status;
         this.starred = starred;
     }
@@ -115,8 +112,7 @@ public class Report implements Parcelable {
         this.reply = in.readString();
         this.operatorId = in.readString();
         this.nStars = in.readInt();
-        this.latitude = in.readLong();
-        this.longitude = in.readLong();
+        this.position = new GeoPoint(in.readDouble(), in.readDouble());
         this.status = in.readInt();
         this.starred = in.readInt() == 1;
     }
@@ -166,12 +162,8 @@ public class Report implements Parcelable {
         return nStars;
     }
 
-    public long getLatitude() {
-        return latitude;
-    }
-
-    public long getLongitude() {
-        return longitude;
+    public GeoPoint getPosition() {
+        return position;
     }
 
     public int getStatus() {
@@ -203,8 +195,8 @@ public class Report implements Parcelable {
         dest.writeString(reply);
         dest.writeString(operatorId);
         dest.writeInt(nStars);
-        dest.writeLong(latitude);
-        dest.writeLong(longitude);
+        dest.writeDouble(position.getLatitude());
+        dest.writeDouble(position.getLongitude());
         dest.writeInt(status);
         dest.writeInt(starred ? 1 : 0);
     }

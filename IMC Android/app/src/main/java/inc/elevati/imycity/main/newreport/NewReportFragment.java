@@ -11,6 +11,14 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -42,6 +50,7 @@ import java.util.Date;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.MainActivity;
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.MapsActivity;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.ProgressDialog;
 
@@ -58,6 +67,9 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
     /** Constant representing the camera intent request */
     private static final int TAKE_PHOTO_REQUEST = 45;
+
+    /** Constant representing the map intent request */
+    private static final int PICK_POSITION_REQUEST = 33;
 
     /** This view presenter, called to handle non graphics-related requests */
     public MainContracts.NewReportPresenter presenter;
@@ -83,6 +95,12 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     /** Uri referencing the image chosen or taken by the user */
     private Uri imageUri;
 
+    private MapView mapView;
+
+    private LatLng position;
+
+    private ImageView ivAddPosition;
+
     /**
      * Static method that returns an instance of this fragment,
      * should be called only by the ViewPager adapter
@@ -103,7 +121,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
      */
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_new_report, container, false);
         imageView = v.findViewById(R.id.iv_new_report);
         textInputTitle = v.findViewById(R.id.text_input_edit_title);
@@ -111,9 +129,12 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         textLayoutTitle = v.findViewById(R.id.text_input_layout_title);
         textLayoutDesc = v.findViewById(R.id.text_input_layout_desc);
         imageProgressBar = v.findViewById(R.id.pb_image);
+        mapView = v.findViewById(R.id.map_view);
+        ivAddPosition = v.findViewById(R.id.iv_add_position);
 
-        // Restore the image uri if it was set
         if (savedInstanceState != null) {
+
+            // Restore the image uri if it was set
             imageUri = savedInstanceState.getParcelable("uri");
             if (imageUri != null) {
 
@@ -147,6 +168,9 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                             }
                         }).into(imageView);
             }
+
+            // Restore the position if it was set
+            position = savedInstanceState.getParcelable("position");
         }
 
         // Clear error when users provides input in TextInputEditTexts
@@ -157,6 +181,18 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
         // Presenter retrieval
         presenter = ((MainActivity) getActivity()).getPresenter().getNewReportPresenter();
+
+        // Fixed map creation if position already set
+        if (position != null) createFixedMap(savedInstanceState);
+
+        // Map listener that opens full-screen map
+        ivAddPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MapsActivity.class);
+                startActivityForResult(intent, PICK_POSITION_REQUEST);
+            }
+        });
 
         // Click listener to pick or take a picture
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -176,7 +212,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                 textLayoutDesc.clearFocus();
                 String title = textInputTitle.getText().toString();
                 String desc = textInputDesc.getText().toString();
-                presenter.sendButtonClicked(title, desc, getActivity().getApplicationContext(), imageUri);
+                presenter.sendButtonClicked(title, desc, getActivity().getApplicationContext(), imageUri, position);
             }
         });
         return v;
@@ -205,6 +241,9 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
         // Save the image Uri
         outState.putParcelable("uri", imageUri);
+
+        // Save the position
+        outState.putParcelable("position", position);
     }
 
     /** Method called to show a non-cancelable progress dialog during database operations */
@@ -391,6 +430,15 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                     }
                 })
                 .into(imageView);
+
+        // Getting position result
+        } else if (requestCode == PICK_POSITION_REQUEST && resultCode == RESULT_OK) {
+
+            // Retrieve position
+            position = data.getParcelableExtra("position");
+
+            // Create fixed map
+            createFixedMap(null);
         }
     }
 
@@ -474,6 +522,34 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
 
             @Override
             public void afterTextChanged(Editable editable) { }
+        });
+    }
+
+    private void createFixedMap(Bundle savedInstanceState) {
+        ivAddPosition.setVisibility(View.GONE);
+        mapView.setVisibility(View.VISIBLE);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap mMap) {
+                mMap.getUiSettings().setAllGesturesEnabled(false);
+                mMap.addMarker(new MarkerOptions().position(position));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 17f));
+                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        Intent intent = new Intent(getActivity(), MapsActivity.class);
+                        intent.putExtra("position", position);
+                        startActivityForResult(intent, PICK_POSITION_REQUEST);
+                    }
+                });
+            }
         });
     }
 }

@@ -40,7 +40,9 @@
 
 - [x] Sistema stelle
 - [ ] Aggiornamento locale temporaneo all'aggiunta/rimozione di nuove stelle
-- [ ] Posizione GPS per nuove segnalazioni (?)
+- [x] Posizione GPS per nuove segnalazioni - scelta da mappa
+- [ ] Posizione GPS per nuove segnalazioni - da segnale GPS (da fare?)
+- [x] Visualizzazionr posizione GPS su report già presenti
 - [ ] TESTING E VERIFICA DEL SOFTWARE
 ---
 ### Web

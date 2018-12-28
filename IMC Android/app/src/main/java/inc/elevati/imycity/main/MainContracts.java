@@ -3,6 +3,7 @@ package inc.elevati.imycity.main;
 import android.content.Context;
 import android.net.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
@@ -64,7 +65,7 @@ public interface MainContracts {
 
     interface NewReportPresenter extends MvpContracts.MvpPresenter {
 
-        void sendButtonClicked(String title, String description, Context appContext, Uri imageUri);
+        void sendButtonClicked(String title, String description, Context appContext, Uri imageUri, LatLng position);
 
         void sendReportData(Report report);
 
