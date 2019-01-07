@@ -25,7 +25,7 @@
 - [x] Photoview (prova)
 - [x] Implementare tutti i campi db
 - [x] Ruotare correttamente le foto
-- [ ] TESTING E VERIFICA DEL SOFTWARE (fix)
+- [x] TESTING E VERIFICA DEL SOFTWARE (fix)
 
 #### Iterazione 2
 
@@ -34,16 +34,20 @@
 - [x] Visualizzazione in fragment separati di segnalazioni attive e completate
 - [x] Pagina per visualizzare solo le segnalazioni dell’utente corrente
 - [x] Possibilità di cancellare una segnalazione fatta dall’utente corrente
-- [ ] TESTING E VERIFICA DEL SOFTWARE
+- [x] TESTING E VERIFICA DEL SOFTWARE
 
 #### Iterazione 3
 
 - [x] Sistema stelle
-- [ ] Aggiornamento locale temporaneo all'aggiunta/rimozione di nuove stelle
+- [x] Aggiornamento locale temporaneo all'aggiunta/rimozione di nuove stelle
 - [x] Posizione GPS per nuove segnalazioni - scelta da mappa
-- [ ] Posizione GPS per nuove segnalazioni - da segnale GPS (da fare?)
-- [x] Visualizzazionr posizione GPS su report già presenti
-- [ ] TESTING E VERIFICA DEL SOFTWARE
+- [x] Visualizzazione posizione GPS su report già presenti
+- [x] TESTING E VERIFICA DEL SOFTWARE
+
+### Iterazione 4
+
+- [ ] Trizia
+
 ---
 ### Web
 
