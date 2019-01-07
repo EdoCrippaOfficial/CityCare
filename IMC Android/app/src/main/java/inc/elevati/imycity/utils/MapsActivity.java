@@ -36,6 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         bnSelect.setEnabled(true);
+        EspressoIdlingResource.decrement();
         if (position == null)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dummyPosition, 17f));
         else
@@ -44,6 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         bnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EspressoIdlingResource.increment();
                 position = googleMap.getCameraPosition().target;
                 Intent result = new Intent();
                 result.putExtra("position", position);

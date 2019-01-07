@@ -104,13 +104,13 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
         holder.tv_desc.setText(report.getDescription());
         holder.pb_loading.setVisibility(View.VISIBLE);
         holder.tv_stars.setText(Integer.toString(report.getnStars()));
-        int colorFilter;
+        int color;
         if (report.isStarred())
-            colorFilter = ContextCompat.getColor(context.getContext(), R.color.gold);
+            color = ContextCompat.getColor(context.getContext(), R.color.gold);
         else
-            colorFilter = ContextCompat.getColor(context.getContext(), R.color.light_grey);
+            color = ContextCompat.getColor(context.getContext(), R.color.light_grey);
 
-        holder.iv_stars.setColorFilter(colorFilter, android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.iv_stars.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
 
         // Image loading from cloud storage with Glide
         GlideApp.with(context)
@@ -137,6 +137,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 presenter.starsButtonClicked(report);
+                notifyDataSetChanged();
             }
         });
     }

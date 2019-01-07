@@ -132,7 +132,8 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
 
     @Override
     public void notifyEmailAlreadyExists() {
-        if (isAdded()) textLayoutEmail.setError(getString(R.string.register_email_already_exists));
+        if (isAdded())
+            textLayoutEmail.setError(getString(R.string.register_email_already_exists));
     }
 
     @Override

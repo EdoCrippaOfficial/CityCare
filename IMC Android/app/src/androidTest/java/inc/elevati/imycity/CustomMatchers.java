@@ -2,6 +2,7 @@ package inc.elevati.imycity;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
@@ -11,7 +12,9 @@ import android.widget.ImageView;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.matcher.BoundedMatcher;
@@ -100,6 +103,40 @@ public class CustomMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("with items");
+            }
+        };
+    }
+
+    public static Matcher<View> atPosition(final int position, @NonNull final Matcher<View> itemMatcher) {
+        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has item at position " + position + ": ");
+                itemMatcher.describeTo(description);
+            }
+
+            @Override
+            protected boolean matchesSafely(final RecyclerView view) {
+                RecyclerView.ViewHolder viewHolder = view.findViewHolderForAdapterPosition(position);
+                if (viewHolder == null) {
+                    // has no item on such position
+                    return false;
+                }
+                return itemMatcher.matches(viewHolder.itemView);
+            }
+        };
+    }
+
+    public static Matcher<View> withColorFilter(final ColorFilter colorFilter) {
+        return new BoundedMatcher<View, ImageView>(ImageView.class) {
+            @Override
+            public boolean matchesSafely(ImageView image) {
+                return colorFilter.equals(image.getColorFilter());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with color filter: ");
             }
         };
     }

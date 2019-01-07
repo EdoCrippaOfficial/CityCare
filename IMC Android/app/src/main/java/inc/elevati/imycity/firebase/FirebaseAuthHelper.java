@@ -15,6 +15,17 @@ import inc.elevati.imycity.login.LoginContracts;
 
 public class FirebaseAuthHelper {
 
+    private LoginContracts.RegisterPresenter registerPresenter;
+    private LoginContracts.SignInPresenter loginPresenter;
+
+    public FirebaseAuthHelper(LoginContracts.RegisterPresenter registerPresenter) {
+        this.registerPresenter = registerPresenter;
+    }
+
+    public FirebaseAuthHelper(LoginContracts.SignInPresenter loginPresenter) {
+        this.loginPresenter = loginPresenter;
+    }
+
     // Current user information
     private static String userName;
     private static String userEmail;
@@ -47,7 +58,7 @@ public class FirebaseAuthHelper {
         firebaseAuth.signOut();
     }
 
-    public static void register(final String name, String email, String password, final LoginContracts.RegisterPresenter presenter) {
+    public void register(final String name, String email, String password) {
 
         // Try to create account
         Task<Void> mainTask = FirebaseAuth.getInstance()
@@ -69,22 +80,22 @@ public class FirebaseAuthHelper {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    presenter.onRegisterTaskComplete(LoginContracts.REGISTER_ACCOUNT_CREATED);
+                    registerPresenter.onRegisterTaskComplete(LoginContracts.REGISTER_ACCOUNT_CREATED);
                 } else {
 
                     // Account already exists
                     if (task.getException() instanceof FirebaseAuthUserCollisionException)
-                        presenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_ALREADY_EXISTS);
+                        registerPresenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_ALREADY_EXISTS);
 
                     // Unknown error
                     else
-                        presenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_UNKNOWN);
+                        registerPresenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_UNKNOWN);
                 }
             }
         });
     }
 
-    public static void signIn(String email, String password, final LoginContracts.SignInPresenter presenter) {
+    public void signIn(String email, String password) {
         // Try to sign in
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -96,20 +107,20 @@ public class FirebaseAuthHelper {
                             userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            presenter.onLoginTaskComplete(LoginContracts.LOGIN_OK);
+                            loginPresenter.onLoginTaskComplete(LoginContracts.LOGIN_OK);
                         } else {
 
                             // Account doesn't exists
                             if (task.getException() instanceof FirebaseAuthInvalidUserException)
-                                presenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_NO_ACCOUNT);
+                                loginPresenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_NO_ACCOUNT);
 
                             // Wrong password
                             else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException)
-                                presenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_WRONG_PASSWORD);
+                                loginPresenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_WRONG_PASSWORD);
 
                             // Unknown error
                             else
-                                presenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_UNKNOWN);
+                                loginPresenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_UNKNOWN);
                         }
                     }
                 });

@@ -72,7 +72,8 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
             Report report = new Report(uuid, title, description, System.currentTimeMillis(), userId, userName, position);
 
             // Store image (normal and thumbnail) in Firebase Storage
-            StorageHelper.sendImage(report, appContext, imageUri, this);
+            StorageHelper helper = new StorageHelper(this);
+            helper.sendImage(report, appContext, imageUri);
         }
     }
 
@@ -83,7 +84,8 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
      */
     @Override
     public void sendReportData(Report report) {
-        FirestoreHelper.sendReport(report, this);
+        FirestoreHelper helper = new FirestoreHelper(this);
+        helper.sendReport(report);
     }
 
     /**

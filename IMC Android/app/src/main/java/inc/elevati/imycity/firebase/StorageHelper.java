@@ -15,16 +15,22 @@ import inc.elevati.imycity.utils.Report;
 
 public class StorageHelper {
 
+    private MainContracts.NewReportPresenter dbListener;
+
+    public StorageHelper(MainContracts.NewReportPresenter dbListener) {
+        this.dbListener = dbListener;
+    }
+
     /**
      * Method called to send the report image to storage
      * @param report     the report associated to the image
      * @param appContext context needed by Glide to load the image from Uri
      * @param imageUri   the image Uri
      */
-    public static void sendImage(final Report report, Context appContext, Uri imageUri, final MainContracts.NewReportPresenter presenter) {
+    public void sendImage(final Report report, Context appContext, Uri imageUri) {
 
-        // Compressor listener
-        Compressor.CompressorListener listener = new Compressor.CompressorListener() {
+        // Compressor dbListener
+        final Compressor.CompressorListener listener = new Compressor.CompressorListener() {
             @Override
             public void onCompressed(byte[] fullData, final byte[] thumbData) {
 
@@ -40,7 +46,7 @@ public class StorageHelper {
                                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                                                 // Proceed with data sending
-                                                presenter.sendReportData(report);
+                                                dbListener.sendReportData(report);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -49,7 +55,7 @@ public class StorageHelper {
 
                                                 // The thumbnail upload has failed, so remove the full image too
                                                 imageReference.delete();
-                                                presenter.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
+                                                dbListener.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
                                             }
                                         });
                             }
@@ -59,14 +65,14 @@ public class StorageHelper {
                             public void onFailure(@NonNull Exception e) {
 
                                 // No file has been uploaded, cancel the operation
-                                presenter.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
+                                dbListener.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
                             }
                         });
             }
 
             @Override
             public void onCompressError() {
-                presenter.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_IMAGE);
+                dbListener.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_IMAGE);
             }
         };
 

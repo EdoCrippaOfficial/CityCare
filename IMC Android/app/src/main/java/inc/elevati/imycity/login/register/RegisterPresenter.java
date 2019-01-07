@@ -3,6 +3,7 @@ package inc.elevati.imycity.login.register;
 import java.util.regex.Pattern;
 
 import inc.elevati.imycity.login.LoginContracts;
+import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
@@ -70,8 +71,10 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
         }
 
         // Everything is ok, proceed with register process
+        EspressoIdlingResource.increment();
         view.showProgressDialog();
-        FirebaseAuthHelper.register(name, email, password, this);
+        FirebaseAuthHelper helper = new FirebaseAuthHelper(this);
+        helper.register(name, email, password);
     }
 
     @Override
@@ -86,11 +89,12 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
 
         if (resultCode == LoginContracts.REGISTER_ACCOUNT_CREATED) {
             view.startMainActivity();
-        } else if (resultCode == LoginContracts.REGISTER_FAILED_ALREADY_EXISTS){
+        } else if (resultCode == LoginContracts.REGISTER_FAILED_ALREADY_EXISTS) {
             view.notifyEmailAlreadyExists();
         } else {
             view.notifyUnknownError();
         }
         view.dismissProgressDialog();
+        EspressoIdlingResource.decrement();
     }
 }

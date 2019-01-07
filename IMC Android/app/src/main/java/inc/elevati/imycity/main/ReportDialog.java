@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.firebase.FirestoreHelper;
+import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.ProgressDialog;
 import inc.elevati.imycity.utils.Report;
@@ -129,9 +130,11 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
                 dialog.findViewById(R.id.bn_delete_yes).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        EspressoIdlingResource.increment();
                         dialog.dismiss();
                         showProgressDialog();
-                        FirestoreHelper.deleteReport(report.getId(), ReportDialog.this);
+                        FirestoreHelper helper = new FirestoreHelper(ReportDialog.this);
+                        helper.deleteReport(report.getId());
                     }
                 });
                 dialog.show();
@@ -213,6 +216,7 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
         dismissProgressDialog();
         dismiss();
         MainContracts.ReportListPresenter presenter = (MainContracts.ReportListPresenter) getArguments().getSerializable("presenter");
+        EspressoIdlingResource.decrement();
         presenter.loadReports();
     }
 
@@ -220,5 +224,6 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
     public void onReportDeleteFailed() {
         dismissProgressDialog();
         Toast.makeText(getContext(), R.string.report_deleting_fail, Toast.LENGTH_SHORT).show();
+        EspressoIdlingResource.decrement();
     }
 }

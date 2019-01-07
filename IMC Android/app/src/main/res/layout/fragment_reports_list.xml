@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_all_reports"
+            android:id="@+id/recycler_reports"
             android:scrollbars="vertical"
             android:scrollbarThumbVertical="@drawable/scrollbar_vertical"
             android:layout_width="match_parent"

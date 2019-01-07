@@ -18,25 +18,43 @@ import inc.elevati.imycity.utils.Report;
 
 public class FirestoreHelper {
 
-    public static void deleteReport(String reportId, final onDeleteReportListener listener) {
+    private onDeleteReportListener deleteReportListener;
+
+    private MainContracts.ReportListPresenter reportListListener;
+
+    private MainContracts.NewReportPresenter newReportListener;
+
+    public FirestoreHelper(onDeleteReportListener deleteReportListener) {
+        this.deleteReportListener = deleteReportListener;
+    }
+
+    public FirestoreHelper(MainContracts.ReportListPresenter reportListListener) {
+        this.reportListListener = reportListListener;
+    }
+
+    public FirestoreHelper(MainContracts.NewReportPresenter newReportListener) {
+        this.newReportListener = newReportListener;
+    }
+
+    public void deleteReport(String reportId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports").document(reportId)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        listener.onReportDeleted();
+                        deleteReportListener.onReportDeleted();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        listener.onReportDeleteFailed();
+                        deleteReportListener.onReportDeleteFailed();
                     }
                 });
     }
 
-    public static void sendReport(final Report report, final MainContracts.NewReportPresenter presenter) {
+    public void sendReport(final Report report) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         Map<String, Object> map = new HashMap<>();
         map.put("id", report.getId());
@@ -56,7 +74,7 @@ public class FirestoreHelper {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        presenter.onSendTaskComplete(MainContracts.RESULT_SEND_OK);
+                        newReportListener.onSendTaskComplete(MainContracts.RESULT_SEND_OK);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -64,12 +82,12 @@ public class FirestoreHelper {
                     public void onFailure(@NonNull Exception e) {
                         // Delete the image uploaded previously on storage
                         StorageHelper.deleteImage(report);
-                        presenter.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
+                        newReportListener.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
                     }
                 });
     }
 
-    public static void starReport(final Report report, final String userId, final MainContracts.ReportListPresenter presenter) {
+    public void starReport(final Report report, final String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
                 .document(report.getId())
@@ -77,12 +95,12 @@ public class FirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        presenter.onStarOperationComplete();
+                        reportListListener.onStarOperationComplete();
                     }
         });
     }
 
-    public static void unstarReport(final Report report, final String userId, final MainContracts.ReportListPresenter presenter) {
+    public void unstarReport(final Report report, final String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
                 .document(report.getId())
@@ -90,27 +108,27 @@ public class FirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        presenter.onStarOperationComplete();
+                        reportListListener.onStarOperationComplete();
                     }
                 });
     }
 
-    public static void readAllReports(final MainContracts.ReportListPresenter presenter) {
+    public void readAllReports() {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) presenter.onLoadReportsTaskComplete(task.getResult());
+                        if (task.isSuccessful()) reportListListener.onLoadReportsTaskComplete(task.getResult());
 
                         // Hide refresh image
-                        presenter.onUpdateTaskComplete();
+                        reportListListener.onUpdateTaskComplete();
                     }
                 });
     }
 
-    public static void readMyReports(final MainContracts.ReportListPresenter presenter, String userId) {
+    public void readMyReports(String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
                 .whereEqualTo("user_id", userId)
@@ -118,15 +136,15 @@ public class FirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) presenter.onLoadReportsTaskComplete(task.getResult());
+                        if (task.isSuccessful()) reportListListener.onLoadReportsTaskComplete(task.getResult());
 
                         // Hide refresh image
-                        presenter.onUpdateTaskComplete();
+                        reportListListener.onUpdateTaskComplete();
                     }
                 });
     }
 
-    public static void readStarredReports(final MainContracts.ReportListPresenter presenter, String userId) {
+    public void readStarredReports(String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
                 .whereArrayContains("users_starred", userId)
@@ -134,15 +152,15 @@ public class FirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) presenter.onLoadReportsTaskComplete(task.getResult());
+                        if (task.isSuccessful()) reportListListener.onLoadReportsTaskComplete(task.getResult());
 
                         // Hide refresh image
-                        presenter.onUpdateTaskComplete();
+                        reportListListener.onUpdateTaskComplete();
                     }
                 });
     }
 
-    public static void readCompletedReports(final MainContracts.ReportListPresenter presenter) {
+    public void readCompletedReports() {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
                 .whereEqualTo("status", Report.STATUS_COMPLETED)
@@ -150,10 +168,10 @@ public class FirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) presenter.onLoadReportsTaskComplete(task.getResult());
+                        if (task.isSuccessful()) reportListListener.onLoadReportsTaskComplete(task.getResult());
 
                         // Hide refresh image
-                        presenter.onUpdateTaskComplete();
+                        reportListListener.onUpdateTaskComplete();
                     }
                 });
     }

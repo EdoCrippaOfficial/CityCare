@@ -12,7 +12,12 @@ public class EspressoIdlingResource {
     }
 
     public static void decrement() {
+        if (idlingResource.isIdleNow()) return;
         idlingResource.decrement();
+    }
+
+    public static void reset() {
+        idlingResource = new CountingIdlingResource("IdlingResource");
     }
 
     @VisibleForTesting

@@ -60,7 +60,7 @@ public class StarredReportsFragment extends Fragment implements MainContracts.Re
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_my_reports, container, false);
+        View v = inflater.inflate(R.layout.fragment_reports_list, container, false);
         setHasOptionsMenu(true);
 
         // Swipe refresh
@@ -79,7 +79,7 @@ public class StarredReportsFragment extends Fragment implements MainContracts.Re
         }
 
         // RecyclerView
-        RecyclerView recyclerView = v.findViewById(R.id.recycler_my_reports);
+        RecyclerView recyclerView = v.findViewById(R.id.recycler_reports);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());

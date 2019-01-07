@@ -50,6 +50,7 @@ import java.util.Date;
 import inc.elevati.imycity.R;
 import inc.elevati.imycity.main.MainActivity;
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MapsActivity;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.ProgressDialog;
@@ -189,6 +190,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         ivAddPosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EspressoIdlingResource.increment();
                 Intent intent = new Intent(getActivity(), MapsActivity.class);
                 startActivityForResult(intent, PICK_POSITION_REQUEST);
             }
@@ -538,6 +540,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
+                EspressoIdlingResource.decrement();
                 mMap.getUiSettings().setAllGesturesEnabled(false);
                 mMap.addMarker(new MarkerOptions().position(position));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 17f));

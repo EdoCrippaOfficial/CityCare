@@ -59,7 +59,8 @@ public class MyReportsPresenter implements MainContracts.ReportListPresenter {
     @Override
     public void loadReports() {
         EspressoIdlingResource.increment();
-        FirestoreHelper.readMyReports(this, FirebaseAuthHelper.getUserId());
+        FirestoreHelper helper = new FirestoreHelper(this);
+        helper.readMyReports(FirebaseAuthHelper.getUserId());
     }
 
     /**
@@ -132,10 +133,16 @@ public class MyReportsPresenter implements MainContracts.ReportListPresenter {
 
     @Override
     public void starsButtonClicked(Report report) {
-        if (report.isStarred())
-            FirestoreHelper.unstarReport(report, FirebaseAuthHelper.getUserId(), this);
-        else
-            FirestoreHelper.starReport(report, FirebaseAuthHelper.getUserId(), this);
+        FirestoreHelper helper = new FirestoreHelper(this);
+        if (report.isStarred()) {
+            report.setStarred(false);
+            report.decreaseStars();
+            helper.unstarReport(report, FirebaseAuthHelper.getUserId());
+        } else {
+            report.setStarred(true);
+            report.increaseStars();
+            helper.starReport(report, FirebaseAuthHelper.getUserId());
+        }
     }
 
     @Override

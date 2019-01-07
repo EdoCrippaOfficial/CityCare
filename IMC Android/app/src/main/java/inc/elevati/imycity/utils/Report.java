@@ -8,6 +8,8 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import androidx.annotation.VisibleForTesting;
+
 /**
  * Class that represents a report; Parcelable interface is implemented to
  * permit a report to be passed as an argument to a ReportDialog
@@ -172,6 +174,18 @@ public class Report implements Parcelable {
 
     public boolean isStarred() {
         return starred;
+    }
+
+    public void setStarred(boolean starred) {
+        this.starred = starred;
+    }
+
+    public void increaseStars() {
+        this.nStars++;
+    }
+
+    public void decreaseStars() {
+        this.nStars--;
     }
 
     @Override

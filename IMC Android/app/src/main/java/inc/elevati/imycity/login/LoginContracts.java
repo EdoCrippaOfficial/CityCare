@@ -6,7 +6,7 @@ public interface LoginContracts {
 
     int REGISTER_ACCOUNT_CREATED = 1;
     int REGISTER_FAILED_ALREADY_EXISTS = 2;
-    int REGISTER_FAILED_UNKNOWN = 4;
+    int REGISTER_FAILED_UNKNOWN = 3;
     int LOGIN_OK = 1;
     int LOGIN_FAILED_NO_ACCOUNT = 2;
     int LOGIN_FAILED_WRONG_PASSWORD = 3;

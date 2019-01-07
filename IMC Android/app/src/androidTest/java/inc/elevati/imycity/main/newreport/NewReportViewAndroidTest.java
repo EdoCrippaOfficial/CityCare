@@ -1,4 +1,4 @@
-package inc.elevati.imycity.newreport;
+package inc.elevati.imycity.main.newreport;
 
 import android.app.Activity;
 import android.app.Instrumentation.ActivityResult;
@@ -21,7 +21,7 @@ import inc.elevati.imycity.utils.EspressoIdlingResource;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.swipeLeft;
+import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
@@ -43,7 +43,15 @@ public class NewReportViewAndroidTest {
     public IntentsTestRule<MainActivity> intentsRule = new IntentsTestRule<>(MainActivity.class);
 
     @Before
-    public void prepareGalleryIntent() {
+    public void setUp() {
+
+        // Reset IdlingResource
+        EspressoIdlingResource.reset();
+
+        // Register IdlingResource
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.getIdlingResource());
+
+        // Create intent
         Intent resultData = new Intent();
 
         // Get uri from a random dummy image
@@ -59,8 +67,9 @@ public class NewReportViewAndroidTest {
 
     @Test
     public void selectImageTest() {
+
         // Go to the target fragment
-        onView(withId(R.id.view_pager)).perform(swipeLeft());
+        onView(withId(R.id.view_pager)).perform(swipeRight());
 
         // Click on the empty imageView
         onView(withId(R.id.iv_new_report)).perform(click());
@@ -74,8 +83,9 @@ public class NewReportViewAndroidTest {
 
     @Test
     public void takePhotoTest() {
+
         // Go to the target fragment
-        onView(withId(R.id.view_pager)).perform(swipeLeft());
+        onView(withId(R.id.view_pager)).perform(swipeRight());
 
         // Click on the empty imageView
         onView(withId(R.id.iv_new_report)).perform(click());
@@ -88,13 +98,26 @@ public class NewReportViewAndroidTest {
     }
 
     @Test
-    public void newReportTest() {
-
-        // Register IdlingResource
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.getIdlingResource());
+    public void selectPositionTest() {
 
         // Go to the target fragment
-        onView(withId(R.id.view_pager)).perform(swipeLeft());
+        onView(withId(R.id.view_pager)).perform(swipeRight());
+
+        // Click on the empty imageView
+        onView(withId(R.id.iv_add_position)).perform(click());
+
+        // Click on the select position button
+        onView(withId(R.id.bn_position)).perform(click());
+
+        // Check that the map is displayed
+        onView(withId(R.id.map_view)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void newReportTest() {
+
+        // Go to the target fragment
+        onView(withId(R.id.view_pager)).perform(swipeRight());
 
         // Click on sendReport button
         onView(withId(R.id.bn_new_report_send)).perform(click());

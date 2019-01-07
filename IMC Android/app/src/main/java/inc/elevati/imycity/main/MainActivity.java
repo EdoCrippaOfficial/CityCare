@@ -30,6 +30,7 @@ import inc.elevati.imycity.main.completedreports.CompletedReportsFragment;
 import inc.elevati.imycity.main.myreports.MyReportsFragment;
 import inc.elevati.imycity.main.newreport.NewReportFragment;
 import inc.elevati.imycity.main.starredreports.StarredReportsFragment;
+import inc.elevati.imycity.utils.EspressoIdlingResource;
 
 import static inc.elevati.imycity.main.MainContracts.PAGE_ALL;
 import static inc.elevati.imycity.main.MainContracts.PAGE_COMPLETED;
