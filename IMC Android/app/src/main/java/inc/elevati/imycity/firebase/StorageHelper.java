@@ -13,7 +13,7 @@ import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.Compressor;
 import inc.elevati.imycity.utils.Report;
 
-public class StorageHelper {
+public class StorageHelper implements FirebaseContracts.StorageWriter {
 
     private MainContracts.NewReportPresenter dbListener;
 

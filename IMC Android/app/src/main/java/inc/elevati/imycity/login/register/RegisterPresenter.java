@@ -2,6 +2,7 @@ package inc.elevati.imycity.login.register;
 
 import java.util.regex.Pattern;
 
+import inc.elevati.imycity.firebase.FirebaseContracts;
 import inc.elevati.imycity.login.LoginContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
@@ -73,7 +74,7 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
         // Everything is ok, proceed with register process
         EspressoIdlingResource.increment();
         view.showProgressDialog();
-        FirebaseAuthHelper helper = new FirebaseAuthHelper(this);
+        FirebaseContracts.AuthHelper helper = new FirebaseAuthHelper(this);
         helper.register(name, email, password);
     }
 

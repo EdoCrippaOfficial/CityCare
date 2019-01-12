@@ -1,5 +1,6 @@
 package inc.elevati.imycity.login.signin;
 
+import inc.elevati.imycity.firebase.FirebaseContracts;
 import inc.elevati.imycity.login.LoginContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
@@ -52,7 +53,7 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
         EspressoIdlingResource.increment();
         view.showProgressDialog();
 
-        FirebaseAuthHelper helper = new FirebaseAuthHelper(this);
+        FirebaseContracts.AuthHelper helper = new FirebaseAuthHelper(this);
         helper.signIn(email, password);
     }
 

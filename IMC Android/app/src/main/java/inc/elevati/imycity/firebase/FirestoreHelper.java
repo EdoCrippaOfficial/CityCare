@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.Report;
 
-public class FirestoreHelper {
+public class FirestoreHelper implements FirebaseContracts.DatabaseReader, FirebaseContracts.DatabaseWriter {
 
     private onDeleteReportListener deleteReportListener;
 
@@ -87,6 +87,7 @@ public class FirestoreHelper {
                 });
     }
 
+    @Override
     public void starReport(final Report report, final String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
@@ -100,6 +101,7 @@ public class FirestoreHelper {
         });
     }
 
+    @Override
     public void unstarReport(final Report report, final String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
@@ -113,6 +115,7 @@ public class FirestoreHelper {
                 });
     }
 
+    @Override
     public void readAllReports() {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
@@ -128,6 +131,7 @@ public class FirestoreHelper {
                 });
     }
 
+    @Override
     public void readMyReports(String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
@@ -144,6 +148,7 @@ public class FirestoreHelper {
                 });
     }
 
+    @Override
     public void readStarredReports(String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
@@ -160,6 +165,7 @@ public class FirestoreHelper {
                 });
     }
 
+    @Override
     public void readCompletedReports() {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
@@ -174,12 +180,5 @@ public class FirestoreHelper {
                         reportListListener.onUpdateTaskComplete();
                     }
                 });
-    }
-
-    public interface onDeleteReportListener {
-
-        void onReportDeleted();
-
-        void onReportDeleteFailed();
     }
 }

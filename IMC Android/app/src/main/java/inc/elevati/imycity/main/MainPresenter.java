@@ -19,7 +19,7 @@ public class MainPresenter implements MainContracts.MainPresenter {
     private MainContracts.ReportListPresenter completedReportsPresenter;
     private MainContracts.ReportListPresenter starredReportsPresenter;
 
-    public MainPresenter() {
+    MainPresenter() {
         this.allReportsPresenter = new AllReportsPresenter();
         this.newReportPresenter = new NewReportPresenter();
         this.myReportsPresenter = new MyReportsPresenter();

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
+import inc.elevati.imycity.firebase.FirebaseContracts;
 import inc.elevati.imycity.firebase.FirestoreHelper;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
@@ -59,8 +60,8 @@ public class CompletedReportsPresenter implements MainContracts.ReportListPresen
     @Override
     public void loadReports() {
         EspressoIdlingResource.increment();
-        FirestoreHelper helper = new FirestoreHelper(this);
-        helper.readCompletedReports();
+        FirebaseContracts.DatabaseReader reader = new FirestoreHelper(this);
+        reader.readCompletedReports();
     }
 
     /**
@@ -90,14 +91,14 @@ public class CompletedReportsPresenter implements MainContracts.ReportListPresen
                 String operatorId = snap.getString("operator_id");
                 long nStars = snap.getLong("n_stars");
                 String reply = snap.getString("reply");
-                long status = snap.getLong("status");
+                String status = snap.getString("status");
                 GeoPoint position = (GeoPoint) snap.get("position");
 
                 ArrayList<String> usersStarred = (ArrayList<String>) snap.get("users_starred");
                 boolean starred = usersStarred.contains(FirebaseAuthHelper.getUserId());
 
                 Report report = new Report(id, userId, userName, title, description, reply,
-                        operatorId, timestamp, (int) nStars, position, (int) status, starred);
+                        operatorId, timestamp, (int) nStars, position, status, starred);
 
                 reports.add(report);
             }
@@ -133,15 +134,15 @@ public class CompletedReportsPresenter implements MainContracts.ReportListPresen
 
     @Override
     public void starsButtonClicked(Report report) {
-        FirestoreHelper helper = new FirestoreHelper(this);
+        FirebaseContracts.DatabaseWriter writer = new FirestoreHelper(this);
         if (report.isStarred()) {
             report.setStarred(false);
             report.decreaseStars();
-            helper.unstarReport(report, FirebaseAuthHelper.getUserId());
+            writer.unstarReport(report, FirebaseAuthHelper.getUserId());
         } else {
             report.setStarred(true);
             report.increaseStars();
-            helper.starReport(report, FirebaseAuthHelper.getUserId());
+            writer.starReport(report, FirebaseAuthHelper.getUserId());
         }
     }
 

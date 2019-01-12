@@ -8,8 +8,6 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import androidx.annotation.VisibleForTesting;
-
 /**
  * Class that represents a report; Parcelable interface is implemented to
  * permit a report to be passed as an argument to a ReportDialog
@@ -23,19 +21,19 @@ public class Report implements Parcelable {
     public static final String IMAGE_THUMBNAIL = "_thumb";
 
     /** Constant representing an accepted report */
-    public static final int STATUS_ACCEPTED = 1;
+    public static final String STATUS_ACCEPTED = "1";
 
     /** Constant representing a refused report */
-    public static final int STATUS_REFUSED = 2;
+    public static final String STATUS_REFUSED = "2";
 
     /** Constant representing a completed report */
-    public static final int STATUS_COMPLETED = 3;
+    public static final String STATUS_COMPLETED = "3";
 
     /** Constant representing a waiting report */
-    public static final int STATUS_WAITING = 4;
+    public static final String STATUS_WAITING = "4";
 
     /** Report fields, self-descriptive */
-    private String id, userId, userName, title, description, reply, operatorId;
+    private String id, userId, userName, title, description, reply, operatorId, status;
 
     /** The report creation time, in milliseconds from January 1 1970, 00:00 UTC */
     private long timestamp;
@@ -44,9 +42,6 @@ public class Report implements Parcelable {
     private int nStars;
 
     private GeoPoint position;
-
-    /** The report status (STATUS_ACCEPTED, STATUS_REFUSED, STATUS_COMPLETED, STATUS_WAITING) */
-    private int status;
 
     private boolean starred;
 
@@ -85,7 +80,7 @@ public class Report implements Parcelable {
      * @param status the report status
      */
     public Report(String id, String userId, String userName, String title, String description, String reply,
-                  String operatorId, long timestamp, int nStars, GeoPoint position, int status, boolean starred) {
+                  String operatorId, long timestamp, int nStars, GeoPoint position, String status, boolean starred) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
@@ -115,7 +110,7 @@ public class Report implements Parcelable {
         this.operatorId = in.readString();
         this.nStars = in.readInt();
         this.position = new GeoPoint(in.readDouble(), in.readDouble());
-        this.status = in.readInt();
+        this.status = in.readString();
         this.starred = in.readInt() == 1;
     }
 
@@ -168,7 +163,7 @@ public class Report implements Parcelable {
         return position;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -211,7 +206,7 @@ public class Report implements Parcelable {
         dest.writeInt(nStars);
         dest.writeDouble(position.getLatitude());
         dest.writeDouble(position.getLongitude());
-        dest.writeInt(status);
+        dest.writeString(status);
         dest.writeInt(starred ? 1 : 0);
     }
 

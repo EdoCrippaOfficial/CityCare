@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.UUID;
 
+import inc.elevati.imycity.firebase.FirebaseContracts;
 import inc.elevati.imycity.firebase.FirestoreHelper;
 import inc.elevati.imycity.firebase.StorageHelper;
 import inc.elevati.imycity.main.MainContracts;
@@ -72,8 +73,8 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
             Report report = new Report(uuid, title, description, System.currentTimeMillis(), userId, userName, position);
 
             // Store image (normal and thumbnail) in Firebase Storage
-            StorageHelper helper = new StorageHelper(this);
-            helper.sendImage(report, appContext, imageUri);
+            FirebaseContracts.StorageWriter writer = new StorageHelper(this);
+            writer.sendImage(report, appContext, imageUri);
         }
     }
 
@@ -84,8 +85,8 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
      */
     @Override
     public void sendReportData(Report report) {
-        FirestoreHelper helper = new FirestoreHelper(this);
-        helper.sendReport(report);
+        FirebaseContracts.DatabaseWriter writer = new FirestoreHelper(this);
+        writer.sendReport(report);
     }
 
     /**

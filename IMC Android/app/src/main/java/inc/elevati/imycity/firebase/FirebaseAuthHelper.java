@@ -13,7 +13,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import androidx.annotation.NonNull;
 import inc.elevati.imycity.login.LoginContracts;
 
-public class FirebaseAuthHelper {
+public class FirebaseAuthHelper implements FirebaseContracts.AuthHelper {
 
     private LoginContracts.RegisterPresenter registerPresenter;
     private LoginContracts.SignInPresenter loginPresenter;
@@ -58,6 +58,7 @@ public class FirebaseAuthHelper {
         firebaseAuth.signOut();
     }
 
+    @Override
     public void register(final String name, String email, String password) {
 
         // Try to create account
@@ -95,6 +96,7 @@ public class FirebaseAuthHelper {
         });
     }
 
+    @Override
     public void signIn(String email, String password) {
         // Try to sign in
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)

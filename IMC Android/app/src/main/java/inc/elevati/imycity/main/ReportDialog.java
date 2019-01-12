@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import inc.elevati.imycity.R;
+import inc.elevati.imycity.firebase.FirebaseContracts;
 import inc.elevati.imycity.firebase.FirestoreHelper;
 import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.GlideApp;
@@ -40,7 +41,7 @@ import inc.elevati.imycity.utils.Report;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
 /** In this class it is defined the style of the dialog shown when user clicks on a report */
-public class ReportDialog extends DialogFragment implements FirestoreHelper.onDeleteReportListener {
+public class ReportDialog extends DialogFragment implements FirebaseContracts.DatabaseWriter.onDeleteReportListener {
 
     private ProgressDialog progressDialog;
 
@@ -112,7 +113,7 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
         }
 
         // Show delete button if current user is the creator of a waiting report
-        if (report.getUserId().equals(FirebaseAuthHelper.getUserId()) && report.getStatus() == Report.STATUS_WAITING)
+        if (report.getUserId().equals(FirebaseAuthHelper.getUserId()))
             bn_delete.setVisibility(View.VISIBLE);
 
         bn_delete.setOnClickListener(new View.OnClickListener() {
@@ -133,8 +134,8 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
                         EspressoIdlingResource.increment();
                         dialog.dismiss();
                         showProgressDialog();
-                        FirestoreHelper helper = new FirestoreHelper(ReportDialog.this);
-                        helper.deleteReport(report.getId());
+                        FirebaseContracts.DatabaseWriter writer = new FirestoreHelper(ReportDialog.this);
+                        writer.deleteReport(report.getId());
                     }
                 });
                 dialog.show();
