@@ -70,3 +70,5 @@
 - [x] Abbellimento
 - [x] Sistema a stelle
 - [x] Ordinamento data & stelle
+- [x] Aggiunta categorie
+- [x] Pannello per filtraggio e ordinamento
