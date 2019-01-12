@@ -25,7 +25,7 @@ const routes: Routes = [
     component: MainLayoutComponent,
     children: [
       { path: 'reports', component: ReportComponent, resolve: { data: UserResolver}},
-      { path: 'reports/:status', component: ReportComponent, resolve: { data: UserResolver}},
+      { path: 'reports/:status/:category', component: ReportComponent, resolve: { data: UserResolver}},
       { path: 'report/:id', component: ReportDetailComponent, resolve: { data: UserResolver}},
       { path: 'about', component: AboutComponent, resolve: { data: UserResolver}},
       { path: 'home', redirectTo: '/reports'}

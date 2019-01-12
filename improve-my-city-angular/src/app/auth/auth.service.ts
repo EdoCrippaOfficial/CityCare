@@ -18,7 +18,7 @@ export class AuthService {
           firebase.auth().signOut().then(() => {
             console.log('out');
           })
-        }, 3600)
+        }, 1000 * 3600)
       }, err => reject(err))
     })
   }

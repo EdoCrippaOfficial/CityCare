@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { Report } from '../report';
 import { ReportService } from '../report.service';
 import { Status } from '../status';
+import { Category } from '../category';
 
 @Component({
   selector: 'app-report-detail',
@@ -23,6 +24,17 @@ export class ReportDetailComponent implements OnInit {
     this.completato,
     this.attesa
   ];
+
+  a = Category.A;
+  b = Category.B;
+  c = Category.C;
+  d = Category.D;
+  categoryList = [
+    this.a,
+    this.b,
+    this.c,
+    this.d
+  ]
 
   report: Report;
 
@@ -57,8 +69,16 @@ export class ReportDetailComponent implements OnInit {
     return Status[report.status];
   }
 
+  getCategory(report: Report): string {
+    return Category[report.category];
+  }
+
   getStatusText(status: number): string {
     return Status[status];
+  }
+
+  getCategoryText(category: number): string {
+    return Category[category];
   }
 
   onSubmit() {

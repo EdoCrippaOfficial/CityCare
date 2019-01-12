@@ -1,6 +1,7 @@
 //Class that represents reports
 import { Observable } from 'rxjs';
 import { Status } from './status';
+import { Category } from './category';
 
 export class Report {
   description: string;
@@ -10,6 +11,7 @@ export class Report {
   position: number;
   reply: string;
   status: Status;
+  category: Category;
   timestamp: Date;
   title: string;
   user_id: string;
@@ -23,6 +25,7 @@ export class Report {
     this.position = report.position;
     this.reply = report.reply;
     this.status = report.status;
+    this.category = report.category;
     this.timestamp = report.timestamp;
     this.title = report.title;
     this.user_id = report.user_id;

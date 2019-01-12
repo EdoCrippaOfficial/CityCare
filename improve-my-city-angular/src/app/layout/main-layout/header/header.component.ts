@@ -5,6 +5,7 @@ import * as firebase from 'firebase/app';
 import { AuthService } from '../../../auth/auth.service';
 
 import { Status } from '../../../status';
+import { Category } from '../../../category';
 
 @Component({
   selector: 'app-header',
@@ -20,6 +21,11 @@ export class HeaderComponent implements OnInit {
   rifiutato = Status.RIFIUTATO;
   completato = Status.COMPLETATO;
   attesa = Status.ATTESA;
+
+  a = Category.A;
+  b = Category.B;
+  c = Category.C;
+  d = Category.D;
 
   constructor(
     public afAuth: AngularFireAuth,

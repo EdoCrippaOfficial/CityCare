@@ -15,12 +15,20 @@
       <!--by {{ report.user_id }}-->
     </p>
     <div class="text-center">
-      <button type="button" class="btn"
+      <button type="button" class="btn m-1 no-click"
               [class.btn-primary]="report.status == accettato"
               [class.btn-danger]="report.status == rifiutato"
               [class.btn-success]="report.status == completato"
               [class.btn-secondary]="report.status == attesa">
           {{ getStatus(report) }}
+      </button>
+      <span> </span>
+      <button type="button" class="btn m-1 no-click"
+              [class.btn-primary]="report.category == a"
+              [class.btn-danger]="report.category == b"
+              [class.btn-success]="report.category == c"
+              [class.btn-warning]="report.category == d">
+          {{ getCategory(report) || "Altro" }}
       </button>
     </div>
   </div>
@@ -44,7 +52,19 @@
           </option>
         </select>
       </div>
-      <button [disabled]="!reply.dirty && !selectedStatus.dirty" type="submit" class="btn btn-primary">Invia</button>
+      <div class="form-group">
+        <label for="category" class="col-1">Stato:</label>
+        <select class="form-control custom-select mr-sm-1 col-2" id="category"
+                [(ngModel)]="report.category" name="selectedCategory"
+                #selectedStatus="ngModel">
+          <option *ngFor="let category of categoryList" [value]="category">
+                  {{ getCategoryText(category) }}
+          </option>
+        </select>
+      </div>
+      <button
+        [disabled]="!reply.dirty && !selectedStatus.dirty && !selectedCategory.dirty"
+        type="submit" class="btn btn-primary">Invia</button>
     </form>
   </div>
 </div>

@@ -1,7 +1,33 @@
 <h2>REPORTS</h2>
 <div class="container">
   <div class="jumbotron text-left p-4">
-    <form (ngSubmit)=onSubmit(reports) #form="ngForm">
+    <form (ngSubmit)=onSubmit() #form="ngForm">
+      <div class="form-group row">
+        <label for="formStatus" class="col-sm-1 col-form-label">Status:</label>
+        <select class="form-control col-sm-2" id="formStatus"
+                [(ngModel)]="formStatus" name="selectedStatus"
+                #selectedStatus="ngModel">
+          <option value="0">
+            TUTTI
+          </option>
+          <option *ngFor="let status of statusList" [value]="status">
+            {{ getStatusText(status) }}
+            </option>
+        </select>
+      </div>
+      <div class="form-group row">
+        <label for="formCategory" class="col-sm-1 col-form-label">Categoria:</label>
+        <select class="form-control col-sm-2" id="formCategory"
+                [(ngModel)]="formCategory" name="selectedCategory"
+                #selectedCategory="ngModel">
+          <option value="0">
+            TUTTE
+          </option>
+          <option *ngFor="let category of categoryList" [value]="category">
+            {{ getCategoryText(category) }}
+            </option>
+        </select>
+      </div>
       <div class="form-group row">
         <label for="ordina" class="col-sm-1 col-form-label">Ordina:</label>
         <select class="form-control col-sm-1" id="ordinaTipo"
@@ -17,7 +43,9 @@
           <option value="desc">Dec.</option>
         </select>
       </div>
-      <button [disabled]="!selectedTipo.dirty && !selectedVerso.dirty" type="submit" class="btn btn-primary">Invia</button>
+      <button
+        [disabled]="!selectedStatus.dirty && !selectedCategory.dirty && !selectedTipo.dirty && !selectedVerso.dirty"
+        type="submit" class="btn btn-primary">Invia</button>
     </form>
   </div>
   <div class="row">
@@ -39,12 +67,19 @@
             <!--by {{ report.user_id }}-->
           </p>
           <div class="text-center">
-            <button type="button" class="btn"
+            <button type="button" class="btn m-1 no-click"
                     [class.btn-primary]="report.status == accettato"
                     [class.btn-danger]="report.status == rifiutato"
                     [class.btn-success]="report.status == completato"
                     [class.btn-secondary]="report.status == attesa">
                 {{ getStatus(report) }}
+            </button>
+            <button type="button" class="btn m-1 no-click"
+                    [class.btn-primary]="report.category == a"
+                    [class.btn-danger]="report.category == b"
+                    [class.btn-success]="report.category == c"
+                    [class.btn-warning]="report.category == d">
+                {{ getCategory(report) || "Altro" }}
             </button>
           </div>
         </div>
