@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 import { ReportService } from '../report.service';
 import { Report } from '../report';
@@ -49,8 +50,10 @@ export class ReportComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private reportService: ReportService
-  ) { }
+    private reportService: ReportService,
+    private titleService: Title) {
+      this.titleService.setTitle("City care - Reports");
+    }
 
   ngOnInit() {
     this.reportService.getReports()

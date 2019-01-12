@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 //Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -52,7 +52,7 @@ import { FooterComponent } from './layout/main-layout/footer/footer.component';
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features,
     AngularFireStorageModule // imports firebase/storage only needed for storage features
   ],
-  providers: [AuthService, UserService, UserResolver, AuthGuard],
+  providers: [Title, AuthService, UserService, UserResolver, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

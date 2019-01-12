@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 import { AuthService } from '../auth/auth.service'
 import { Router } from '@angular/router';
@@ -14,8 +15,10 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private titleService: Title) {
+      this.titleService.setTitle("City care - Login");
+    }
 
   ngOnInit() {
   }

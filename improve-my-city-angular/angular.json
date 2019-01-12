@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "improve-my-city-angular": {
+    "city-care-angular": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/improve-my-city-angular",
+            "outputPath": "dist/city-care-angular",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -57,18 +57,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "improve-my-city-angular:build"
+            "browserTarget": "city-care-angular:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "improve-my-city-angular:build:production"
+              "browserTarget": "city-care-angular:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "improve-my-city-angular:build"
+            "browserTarget": "city-care-angular:build"
           }
         },
         "test": {
@@ -102,7 +102,7 @@
         }
       }
     },
-    "improve-my-city-angular-e2e": {
+    "city-care-angular-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -111,11 +111,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "improve-my-city-angular:serve"
+            "devServerTarget": "city-care-angular:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "improve-my-city-angular:serve:production"
+              "devServerTarget": "city-care-angular:serve:production"
             }
           }
         },
@@ -131,5 +131,5 @@
       }
     }
   },
-  "defaultProject": "improve-my-city-angular"
+  "defaultProject": "city-care-angular"
 }
