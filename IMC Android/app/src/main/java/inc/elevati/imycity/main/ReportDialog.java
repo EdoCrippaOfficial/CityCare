@@ -226,4 +226,10 @@ public class ReportDialog extends DialogFragment implements FirestoreHelper.onDe
         Toast.makeText(getContext(), R.string.report_deleting_fail, Toast.LENGTH_SHORT).show();
         EspressoIdlingResource.decrement();
     }
+
+    @Override
+    public void onPause() {
+        this.dismiss();
+        super.onPause();
+    }
 }
