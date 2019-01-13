@@ -118,6 +118,7 @@ public class AllReportsViewAndroidTest {
 
     @Test
     public void starReportTest() {
+        onView(allOf(isDisplayed(), withId(R.id.refresher))).perform(swipeDown());
 
         // Get before state
         RecyclerView recyclerView = intentsRule.getActivity().findViewById(R.id.recycler_reports);

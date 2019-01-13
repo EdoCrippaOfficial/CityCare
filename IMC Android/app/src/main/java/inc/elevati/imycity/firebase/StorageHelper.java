@@ -13,24 +13,28 @@ import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.Compressor;
 import inc.elevati.imycity.utils.Report;
 
+import static inc.elevati.imycity.main.MainContracts.SendTaskResult.RESULT_SEND_ERROR_DB;
+import static inc.elevati.imycity.main.MainContracts.SendTaskResult.RESULT_SEND_ERROR_IMAGE;
+
+/** This class is an helper that handles with Firebase Storage related tasks */
 public class StorageHelper implements FirebaseContracts.StorageWriter {
 
-    private MainContracts.NewReportPresenter dbListener;
-
-    public StorageHelper(MainContracts.NewReportPresenter dbListener) {
-        this.dbListener = dbListener;
-    }
+    /** The listener that gets notified about storage related tasks */
+    private MainContracts.NewReportPresenter listener;
 
     /**
-     * Method called to send the report image to storage
-     * @param report     the report associated to the image
-     * @param appContext context needed by Glide to load the image from Uri
-     * @param imageUri   the image Uri
+     * @param listener the listener that is requesting services
      */
+    public StorageHelper(MainContracts.NewReportPresenter listener) {
+        this.listener = listener;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void sendImage(final Report report, Context appContext, Uri imageUri) {
 
-        // Compressor dbListener
-        final Compressor.CompressorListener listener = new Compressor.CompressorListener() {
+        // Compressor listener
+        final Compressor.CompressorListener compressorListener = new Compressor.CompressorListener() {
             @Override
             public void onCompressed(byte[] fullData, final byte[] thumbData) {
 
@@ -46,7 +50,7 @@ public class StorageHelper implements FirebaseContracts.StorageWriter {
                                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                                                 // Proceed with data sending
-                                                dbListener.sendReportData(report);
+                                                listener.sendReportData(report);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -55,7 +59,7 @@ public class StorageHelper implements FirebaseContracts.StorageWriter {
 
                                                 // The thumbnail upload has failed, so remove the full image too
                                                 imageReference.delete();
-                                                dbListener.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
+                                                listener.onSendTaskComplete(RESULT_SEND_ERROR_DB);
                                             }
                                         });
                             }
@@ -65,24 +69,24 @@ public class StorageHelper implements FirebaseContracts.StorageWriter {
                             public void onFailure(@NonNull Exception e) {
 
                                 // No file has been uploaded, cancel the operation
-                                dbListener.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
+                                listener.onSendTaskComplete(RESULT_SEND_ERROR_DB);
                             }
                         });
             }
 
             @Override
             public void onCompressError() {
-                dbListener.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_IMAGE);
+                listener.onSendTaskComplete(RESULT_SEND_ERROR_IMAGE);
             }
         };
 
         // Image compressing, normal and thumbnail
-        Compressor.startCompressing(listener, appContext, imageUri);
+        Compressor.startCompressing(compressorListener, appContext, imageUri);
     }
 
     /**
      * Called when sending report data to database has failed
-     * @param report the report image to be removed from the storage
+     * @param report the report image to remove from the storage
      */
     static void deleteImage(Report report) {
         report.getImageReference(Report.IMAGE_FULL).delete();

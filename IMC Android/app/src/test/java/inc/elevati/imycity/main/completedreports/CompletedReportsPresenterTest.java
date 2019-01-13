@@ -12,10 +12,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.firebase.FirestoreHelper;
 import inc.elevati.imycity.main.MainContracts;
+import inc.elevati.imycity.main.ReportDialog;
 import inc.elevati.imycity.utils.Report;
 
+import static inc.elevati.imycity.main.MainContracts.DeleteReportTaskResult.RESULT_FAILED;
+import static inc.elevati.imycity.main.MainContracts.DeleteReportTaskResult.RESULT_OK;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -64,7 +68,7 @@ public class CompletedReportsPresenterTest {
     @Test
     public void showReportTest(){
         Report report = mock(Report.class);
-        presenter.showReport(report);
+        presenter.onReportClicked(report);
         verify(view).showReportDialog(report);
     }
 
@@ -79,12 +83,12 @@ public class CompletedReportsPresenterTest {
         // Not mocked because we want to test the true and false cases of "starred" field
         Report report = new Report(null, null, null, 0, null, null, null);
         report.setStarred(true);
-        presenter.starsButtonClicked(report);
+        presenter.onStarsButtonClicked(report);
 
         // Check if unstarReport method is called, as report was starred
         verify(firestoreHelper).unstarReport(report, uid);
         report.setStarred(false);
-        presenter.starsButtonClicked(report);
+        presenter.onStarsButtonClicked(report);
 
         // Check if starReport method is called, as report was not starred
         verify(firestoreHelper).starReport(report, uid);
@@ -94,5 +98,40 @@ public class CompletedReportsPresenterTest {
     public void onStarOperationCompleteTest() {
         presenter.onStarOperationComplete();
         verify(firestoreHelper).readCompletedReports();
+    }
+
+    @Test
+    public void onDeleteReportButtonClickedTest() {
+
+        // Create a mock ReportDialogView
+        MainContracts.ReportDialogView dialogView = mock(ReportDialog.class);
+        presenter.attachReportDialogView(dialogView);
+        Report report = mock(Report.class);
+        presenter.onDeleteReportButtonClicked(report);
+
+        // Verify methods call
+        verify(dialogView).showProgressDialog();
+        verify(firestoreHelper).deleteReport(report.getId());
+    }
+
+    @Test
+    public void onDeleteReportTaskCompleteTest() {
+
+        // Create a mock ReportDialogView
+        MainContracts.ReportDialogView dialogView = mock(ReportDialog.class);
+        presenter.attachReportDialogView(dialogView);
+
+        // Set result to RESULT_OK
+        presenter.onDeleteReportTaskComplete(RESULT_OK);
+
+        // Verify methods calls
+        verify(dialogView).dismissDialog();
+
+        // Set result to RESULT_FAILED
+        presenter.onDeleteReportTaskComplete(RESULT_FAILED);
+
+        // Verify methods calls
+        verify(dialogView, times(2)).dismissProgressDialog();
+        verify(dialogView).notifyDeleteReportError();
     }
 }

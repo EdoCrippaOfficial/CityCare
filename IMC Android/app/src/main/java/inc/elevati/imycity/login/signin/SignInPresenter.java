@@ -6,13 +6,22 @@ import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_NO_ACCOUNT;
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
+
+/** Presenter associated to {@link SignInFragment} */
 public class SignInPresenter implements LoginContracts.SignInPresenter {
 
+    /** The view associated to this presenter */
     private LoginContracts.SignInView view;
 
+    /** This flag is set when a task had to be executed when no view was attached to this presenter */
     private boolean pendingTask;
-    private int resultCode;
 
+    /** Used only if pendingTask flag is set, if not null indicates that onLoginTaskComplete has to be executed */
+    private LoginContracts.LoginTaskResult result;
+
+    /** {@inheritDoc} */
     @Override
     public void attachView(MvpContracts.MvpView view) {
         this.view = (LoginContracts.SignInView) view;
@@ -20,26 +29,29 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
         // If there were pending tasks, execute them now
         if (pendingTask) {
 
-            // If resultCode is not 0, then onLoginTaskComplete has to be executed
-            if (resultCode != 0) {
-                onLoginTaskComplete(resultCode);
-                resultCode = 0;
+            // If result is not null, then onLoginTaskComplete has to be executed
+            if (result != null) {
+                onLoginTaskComplete(result);
+                result = null;
             }
             pendingTask = false;
         }
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public void detachView() {
         this.view = null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void registerButtonClicked() {
         view.switchToRegisterView();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void signInButtonClicked(String email, String password) {
         if (email.equals("")) {
@@ -57,21 +69,22 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
         helper.signIn(email, password);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void onLoginTaskComplete(int resultCode) {
+    public void onLoginTaskComplete(LoginContracts.LoginTaskResult result) {
 
         // If view is detached, set the pendingTask flag
         if (view == null) {
             pendingTask = true;
-            this.resultCode = resultCode;
+            this.result = result;
             return;
         }
 
-        if (resultCode == LoginContracts.LOGIN_OK) {
+        if (result.equals(LoginContracts.LoginTaskResult.LOGIN_OK)) {
             view.startMainActivity();
-        } else if (resultCode == LoginContracts.LOGIN_FAILED_NO_ACCOUNT) {
+        } else if (result.equals(LOGIN_FAILED_NO_ACCOUNT)) {
             view.notifyAccountNotExists();
-        } else if (resultCode == LoginContracts.LOGIN_FAILED_WRONG_PASSWORD) {
+        } else if (result.equals(LOGIN_FAILED_WRONG_PASSWORD)) {
             view.notifyWrongPassword();
         } else {
             view.notifyUnknownError();

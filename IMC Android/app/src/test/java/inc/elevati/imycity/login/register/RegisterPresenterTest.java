@@ -10,6 +10,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.login.LoginContracts;
 
+import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_ACCOUNT_CREATED;
+import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_FAILED_ALREADY_EXISTS;
+import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_FAILED_UNKNOWN;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -76,15 +79,15 @@ public class RegisterPresenterTest {
     public void onRegisterTaskCompleteTest() {
 
         // Call the function with REGISTER_ACCOUNT_CREATED as parameter
-        presenter.onRegisterTaskComplete(LoginContracts.REGISTER_ACCOUNT_CREATED);
+        presenter.onRegisterTaskComplete(REGISTER_ACCOUNT_CREATED);
         verify(view).startMainActivity();
 
         // Call the function with REGISTER_FAILED_ALREADY_EXISTS as parameter
-        presenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_ALREADY_EXISTS);
+        presenter.onRegisterTaskComplete(REGISTER_FAILED_ALREADY_EXISTS);
         verify(view).notifyEmailAlreadyExists();
 
         // Call the function with REGISTER_FAILED_UNKNOWN as parameter
-        presenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_UNKNOWN);
+        presenter.onRegisterTaskComplete(REGISTER_FAILED_UNKNOWN);
         verify(view).notifyUnknownError();
 
         verify(view, times(3)).dismissProgressDialog();

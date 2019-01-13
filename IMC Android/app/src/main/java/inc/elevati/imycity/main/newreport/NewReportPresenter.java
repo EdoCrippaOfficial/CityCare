@@ -16,18 +16,19 @@ import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.utils.Report;
 
-/** Presenter class used by NewReportFragment to interact with the app kernel */
+/** Presenter associated to {@link NewReportFragment} */
 public class NewReportPresenter implements MainContracts.NewReportPresenter {
 
-    /** The view instance */
+    /** The view associated to this presenter */
     private MainContracts.NewReportView view;
 
-    /** Indicates that a task is completed while View was detached */
+    /** This flag is set when a task had to be executed when no view was attached to this presenter */
     private boolean pendingTask;
 
-    /** Variable set when onSendTaskComplete is called while View was detached */
-    private int resultCode;
+    /** Used only if pendingTask flag is set, if not null indicates that onSendTaskComplete has to be executed */
+    private MainContracts.SendTaskResult result;
 
+    /**{@inheritDoc}*/
     @Override
     public void attachView(MvpContracts.MvpView view) {
         this.view = (MainContracts.NewReportView) view;
@@ -36,26 +37,21 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
         if (pendingTask) {
 
             // If resultCode is not 0, then onSendTaskComplete has to be executed
-            if (resultCode != 0) {
-                onSendTaskComplete(resultCode);
-                resultCode = 0;
+            if (result != null) {
+                onSendTaskComplete(result);
+                result = null;
             }
             pendingTask = false;
         }
     }
 
+    /**{@inheritDoc}*/
     @Override
     public void detachView() {
         this.view = null;
     }
 
-    /**
-     * Method called to handle the report sending logic
-     * @param title the report title
-     * @param description the report description
-     * @param appContext the context needed by Glide to load image from Uri
-     * @param imageUri the Uri of the image
-     */
+    /**{@inheritDoc}*/
     @Override
     public void sendButtonClicked(String title, String description, Context appContext, Uri imageUri, LatLng position) {
         if (imageUri == null) {
@@ -78,34 +74,25 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
         }
     }
 
-    /**
-     * Called by the app kernel to notify that cloud storage sending completed
-     * successfully, here we proceed with database sending
-     * @param report the report to be sent
-     */
+    /**{@inheritDoc}*/
     @Override
     public void sendReportData(Report report) {
         FirebaseContracts.DatabaseWriter writer = new FirestoreHelper(this);
         writer.sendReport(report);
     }
 
-    /**
-     * Called by the app kernel to notify that report sending has completed
-     * If called when View is detached, resultCode is saved and the method
-     * is called again when view is re-attached
-     * @param resultCode integer representing the operation result
-     */
+    /**{@inheritDoc}*/
     @Override
-    public void onSendTaskComplete(int resultCode) {
+    public void onSendTaskComplete(MainContracts.SendTaskResult result) {
 
         // If view is detached, set the pendingTask flag
         if (view == null) {
             pendingTask = true;
-            this.resultCode = resultCode;
+            this.result = result;
             return;
         }
         EspressoIdlingResource.decrement();
         view.dismissProgressDialog();
-        view.notifySendTaskCompleted(resultCode);
+        view.notifySendTaskCompleted(result);
     }
 }

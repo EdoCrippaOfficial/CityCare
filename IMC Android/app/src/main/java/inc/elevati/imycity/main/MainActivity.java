@@ -30,7 +30,6 @@ import inc.elevati.imycity.main.completedreports.CompletedReportsFragment;
 import inc.elevati.imycity.main.myreports.MyReportsFragment;
 import inc.elevati.imycity.main.newreport.NewReportFragment;
 import inc.elevati.imycity.main.starredreports.StarredReportsFragment;
-import inc.elevati.imycity.utils.EspressoIdlingResource;
 
 import static inc.elevati.imycity.main.MainContracts.PAGE_ALL;
 import static inc.elevati.imycity.main.MainContracts.PAGE_COMPLETED;
@@ -44,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
     /** Total number of fragments */
     private final static int NUM_FRAGMENTS = 5;
 
+    /** The presenter associated to this view */
     private MainPresenter presenter;
 
     /** The object that organizes fragments in pages */
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
     /** Main menu navigator */
     private NavigationView menuNavigator;
 
+    /** The last page selected */
     private int previousPage;
 
     /**
@@ -128,28 +129,29 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
         tabLayout.setupWithViewPager(pager);
     }
 
+    /**
+     * Called at orientation changes or activity re-creations, it retains the presenter
+     * @return the presenter associated to the view
+     */
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return presenter;
     }
 
+    /**
+     * @return the presenter associated to this view
+     */
     public MainContracts.MainPresenter getPresenter() {
         return presenter;
     }
 
-    /**
-     * Method called to update the checked item in left menu
-     * @param itemId the checked item id
-     */
+    /** {@inheritDoc} */
     @Override
     public void setCheckedMenuItem(int itemId) {
         menuNavigator.setCheckedItem(itemId);
     }
 
-    /**
-     * Called when a menu item is clicked, changes the current visible fragment
-     * @param page the fragment to switch to
-     */
+    /** {@inheritDoc} */
     @Override
     public void scrollToPage(int page) {
         pager.setCurrentItem(page, true);
@@ -172,11 +174,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
         else scrollToPage(PAGE_ALL);
     }
 
-    /**
-     * Called when a menu item is clicked
-     * @param item the item clicked
-     * @return true if the click has been processed, false otherwise
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -223,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void startLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);

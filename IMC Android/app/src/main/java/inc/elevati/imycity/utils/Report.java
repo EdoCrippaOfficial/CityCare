@@ -8,11 +8,30 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import static inc.elevati.imycity.utils.Report.Status.STATUS_ACCEPTED;
+import static inc.elevati.imycity.utils.Report.Status.STATUS_COMPLETED;
+import static inc.elevati.imycity.utils.Report.Status.STATUS_REFUSED;
+import static inc.elevati.imycity.utils.Report.Status.STATUS_WAITING;
+
 /**
  * Class that represents a report; Parcelable interface is implemented to
  * permit a report to be passed as an argument to a ReportDialog
  */
 public class Report implements Parcelable {
+
+    /** The possible statuses of a report */
+    public enum Status {
+        STATUS_ACCEPTED("1"),
+        STATUS_REFUSED("2"),
+        STATUS_COMPLETED("3"),
+        STATUS_WAITING("4");
+
+        public String value;
+
+        Status(String value) {
+            this.value = value;
+        }
+    }
 
     /** String representing the name appendix to retrieve full image from cloud storage */
     public static final String IMAGE_FULL = "_img";
@@ -20,20 +39,11 @@ public class Report implements Parcelable {
     /** String representing the name appendix to retrieve thumbnail from cloud storage */
     public static final String IMAGE_THUMBNAIL = "_thumb";
 
-    /** Constant representing an accepted report */
-    public static final String STATUS_ACCEPTED = "1";
-
-    /** Constant representing a refused report */
-    public static final String STATUS_REFUSED = "2";
-
-    /** Constant representing a completed report */
-    public static final String STATUS_COMPLETED = "3";
-
-    /** Constant representing a waiting report */
-    public static final String STATUS_WAITING = "4";
-
     /** Report fields, self-descriptive */
-    private String id, userId, userName, title, description, reply, operatorId, status;
+    private String id, userId, userName, title, description, reply, operatorId;
+
+    /** The report status */
+    private Status status;
 
     /** The report creation time, in milliseconds from January 1 1970, 00:00 UTC */
     private long timestamp;
@@ -41,8 +51,10 @@ public class Report implements Parcelable {
     /** The number of stars that this report received */
     private int nStars;
 
+    /** The report position */
     private GeoPoint position;
 
+    /** This field is true if the current user has starred this report */
     private boolean starred;
 
     /**
@@ -80,7 +92,7 @@ public class Report implements Parcelable {
      * @param status the report status
      */
     public Report(String id, String userId, String userName, String title, String description, String reply,
-                  String operatorId, long timestamp, int nStars, GeoPoint position, String status, boolean starred) {
+                  String operatorId, long timestamp, int nStars, GeoPoint position, Status status, boolean starred) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
@@ -110,7 +122,20 @@ public class Report implements Parcelable {
         this.operatorId = in.readString();
         this.nStars = in.readInt();
         this.position = new GeoPoint(in.readDouble(), in.readDouble());
-        this.status = in.readString();
+        switch (in.readString()) {
+            case "1":
+                this.status = STATUS_ACCEPTED;
+                break;
+            case "2":
+                this.status = STATUS_REFUSED;
+                break;
+            case "3":
+                this.status = STATUS_COMPLETED;
+                break;
+            case "4":
+                this.status = STATUS_WAITING;
+                break;
+        }
         this.starred = in.readInt() == 1;
     }
 
@@ -163,7 +188,7 @@ public class Report implements Parcelable {
         return position;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -206,7 +231,7 @@ public class Report implements Parcelable {
         dest.writeInt(nStars);
         dest.writeDouble(position.getLatitude());
         dest.writeDouble(position.getLongitude());
-        dest.writeString(status);
+        dest.writeString(status.value);
         dest.writeInt(starred ? 1 : 0);
     }
 

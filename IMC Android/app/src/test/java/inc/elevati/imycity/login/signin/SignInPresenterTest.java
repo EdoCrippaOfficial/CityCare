@@ -10,6 +10,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.login.LoginContracts;
 
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_NO_ACCOUNT;
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_UNKNOWN;
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_OK;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -63,19 +67,19 @@ public class SignInPresenterTest {
     public void onLoginTaskComplete() {
 
         // Call the function with LOGIN_OK as parameter
-        presenter.onLoginTaskComplete(LoginContracts.LOGIN_OK);
+        presenter.onLoginTaskComplete(LOGIN_OK);
         verify(view).startMainActivity();
 
         // Call the function with LOGIN_FAILED_NO_ACCOUNT as parameter
-        presenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_NO_ACCOUNT);
+        presenter.onLoginTaskComplete(LOGIN_FAILED_NO_ACCOUNT);
         verify(view).notifyAccountNotExists();
 
         // Call the function with LOGIN_FAILED_WRONG_PASSWORD as parameter
-        presenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_WRONG_PASSWORD);
+        presenter.onLoginTaskComplete(LOGIN_FAILED_WRONG_PASSWORD);
         verify(view).notifyWrongPassword();
 
         // Call the function with LOGIN_FAILED_UNKNOWN as parameter
-        presenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_UNKNOWN);
+        presenter.onLoginTaskComplete(LOGIN_FAILED_UNKNOWN);
         verify(view).notifyUnknownError();
 
         verify(view, times(4)).dismissProgressDialog();

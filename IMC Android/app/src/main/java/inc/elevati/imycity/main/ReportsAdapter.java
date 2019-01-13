@@ -86,7 +86,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.showReport(reports.get(viewHolder.getAdapterPosition()));
+                presenter.onReportClicked(reports.get(viewHolder.getAdapterPosition()));
             }
         });
         return viewHolder;
@@ -136,7 +136,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
         holder.bn_stars.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.starsButtonClicked(report);
+                presenter.onStarsButtonClicked(report);
                 notifyDataSetChanged();
             }
         });

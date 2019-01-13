@@ -13,51 +13,89 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import androidx.annotation.NonNull;
 import inc.elevati.imycity.login.LoginContracts;
 
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_NO_ACCOUNT;
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_UNKNOWN;
+import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
+import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_ACCOUNT_CREATED;
+import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_FAILED_ALREADY_EXISTS;
+import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_FAILED_UNKNOWN;
+
+/** This class is an helper that handles with Firebase Auth related tasks */
 public class FirebaseAuthHelper implements FirebaseContracts.AuthHelper {
 
-    private LoginContracts.RegisterPresenter registerPresenter;
-    private LoginContracts.SignInPresenter loginPresenter;
+    /** The listener that gets notified about register-related tasks */
+    private LoginContracts.RegisterPresenter registerListener;
 
-    public FirebaseAuthHelper(LoginContracts.RegisterPresenter registerPresenter) {
-        this.registerPresenter = registerPresenter;
+    /** The listener that gets notified about login-related tasks */
+    private LoginContracts.SignInPresenter loginListener;
+
+    /**
+     * Constructor used when register-related tasks are needed
+     * @param registerListener the presenter that is requesting services
+     */
+    public FirebaseAuthHelper(LoginContracts.RegisterPresenter registerListener) {
+        this.registerListener = registerListener;
     }
 
-    public FirebaseAuthHelper(LoginContracts.SignInPresenter loginPresenter) {
-        this.loginPresenter = loginPresenter;
+    /**
+     * Constructor used when login-related tasks are needed
+     * @param loginListener the presenter that is requesting services
+     */
+    public FirebaseAuthHelper(LoginContracts.SignInPresenter loginListener) {
+        this.loginListener = loginListener;
     }
 
-    // Current user information
+    /** Current user displayed name */
     private static String userName;
+
+    /** Current user email */
     private static String userEmail;
+
+    /** Current user id */
     private static String userId;
 
+    /**
+     * @return the current user displayed name
+     */
     public static String getUserName() {
         if (userName == null)
             userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         return userName;
     }
 
+    /**
+     * @return the current user email
+     */
     public static String getUserEmail() {
         if (userEmail == null)
             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         return userEmail;
     }
 
+    /**
+     * @return the current user id
+     */
     public static String getUserId() {
         if (userId == null)
             userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         return userId;
     }
 
+    /**
+     * @return if an user is currently authenticated
+     */
     public static boolean isAuthenticated() {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
+    /**
+     * Executes the sign out task for the current user
+     */
     public static void signOut() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.signOut();
+        FirebaseAuth.getInstance().signOut();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void register(final String name, String email, String password) {
 
@@ -81,21 +119,22 @@ public class FirebaseAuthHelper implements FirebaseContracts.AuthHelper {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    registerPresenter.onRegisterTaskComplete(LoginContracts.REGISTER_ACCOUNT_CREATED);
+                    registerListener.onRegisterTaskComplete(REGISTER_ACCOUNT_CREATED);
                 } else {
 
                     // Account already exists
                     if (task.getException() instanceof FirebaseAuthUserCollisionException)
-                        registerPresenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_ALREADY_EXISTS);
+                        registerListener.onRegisterTaskComplete(REGISTER_FAILED_ALREADY_EXISTS);
 
                     // Unknown error
                     else
-                        registerPresenter.onRegisterTaskComplete(LoginContracts.REGISTER_FAILED_UNKNOWN);
+                        registerListener.onRegisterTaskComplete(REGISTER_FAILED_UNKNOWN);
                 }
             }
         });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void signIn(String email, String password) {
         // Try to sign in
@@ -109,20 +148,20 @@ public class FirebaseAuthHelper implements FirebaseContracts.AuthHelper {
                             userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            loginPresenter.onLoginTaskComplete(LoginContracts.LOGIN_OK);
+                            loginListener.onLoginTaskComplete(LoginContracts.LoginTaskResult.LOGIN_OK);
                         } else {
 
                             // Account doesn't exists
                             if (task.getException() instanceof FirebaseAuthInvalidUserException)
-                                loginPresenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_NO_ACCOUNT);
+                                loginListener.onLoginTaskComplete(LOGIN_FAILED_NO_ACCOUNT);
 
                             // Wrong password
                             else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException)
-                                loginPresenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_WRONG_PASSWORD);
+                                loginListener.onLoginTaskComplete(LOGIN_FAILED_WRONG_PASSWORD);
 
                             // Unknown error
                             else
-                                loginPresenter.onLoginTaskComplete(LoginContracts.LOGIN_FAILED_UNKNOWN);
+                                loginListener.onLoginTaskComplete(LOGIN_FAILED_UNKNOWN);
                         }
                     }
                 });

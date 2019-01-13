@@ -36,7 +36,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
@@ -57,10 +56,7 @@ import inc.elevati.imycity.utils.ProgressDialog;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * This fragment contains the report creating form; it also handles
- * the database sending delegating it to its presenter
- */
+/** This fragment contains the report creating form */
 public class NewReportFragment extends Fragment implements MainContracts.NewReportView {
 
     /** Constant representing the image pick intent request */
@@ -72,8 +68,8 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     /** Constant representing the map intent request */
     private static final int PICK_POSITION_REQUEST = 33;
 
-    /** This view presenter, called to handle non graphics-related requests */
-    public MainContracts.NewReportPresenter presenter;
+    /** The presenter associated to this view */
+    private MainContracts.NewReportPresenter presenter;
 
     /** Dialog displayed during database and storage sending */
     private ProgressDialog progressDialog;
@@ -84,10 +80,10 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     /** ImageView for the new report image */
     private ImageView imageView;
 
-    /** TextInputEditTexts for title and description */
+    /** {@link TextInputEditText}s for report data */
     private TextInputEditText textInputTitle, textInputDesc;
 
-    /** TextInputLayouts for title and description */
+    /** {@link TextInputLayout}s for report data */
     private TextInputLayout textLayoutTitle, textLayoutDesc;
 
     /** ProgressBar shown during image loading */
@@ -96,10 +92,13 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
     /** Uri referencing the image chosen or taken by the user */
     private Uri imageUri;
 
+    /** The view containing Google map */
     private MapView mapView;
 
+    /** The chosen position */
     private LatLng position;
 
+    /** Image that acts as a button to add position */
     private ImageView ivAddPosition;
 
     /**
@@ -248,20 +247,20 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         outState.putParcelable("position", position);
     }
 
-    /** Method called to show a non-cancelable progress dialog during database operations */
+    /**{@inheritDoc}*/
     @Override
     public void showProgressDialog() {
         progressDialog = ProgressDialog.newInstance(R.string.new_report_uploading);
         progressDialog.show(getFragmentManager(), "progress");
     }
 
-    /** Dismisses the progress dialog after a report sending */
+    /**{@inheritDoc}*/
     @Override
     public void dismissProgressDialog() {
         if (progressDialog != null) progressDialog.dismiss();
     }
 
-    /** Method called by presenter that notifies an invalid image (null Uri) */
+    /**{@inheritDoc}*/
     @Override
     public void notifyInvalidImage() {
         if (toast != null) toast.cancel();
@@ -275,40 +274,37 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         imageView.startAnimation(animation);
     }
 
-    /** Method called by presenter that notifies an invalid title (empty string) */
+    /**{@inheritDoc}*/
     @Override
     public void notifyInvalidTitle() {
         textLayoutTitle.setError(getString(R.string.new_report_no_title));
     }
 
-    /** Method called by presenter that notifies an invalid description (empty string) */
+    /**{@inheritDoc}*/
     @Override
     public void notifyInvalidDescription() {
         textLayoutDesc.setError(getString(R.string.new_report_no_description));
     }
 
-    /**
-     * Updates UI according to sending task result
-     * @param resultCode integer representing the operation result
-     */
+    /**{@inheritDoc}*/
     @Override
-    public void notifySendTaskCompleted(final int resultCode) {
+    public void notifySendTaskCompleted(final MainContracts.SendTaskResult result) {
         if (getActivity() == null) return;
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                switch (resultCode) {
-                    case MainContracts.RESULT_SEND_OK:
+                switch (result) {
+                    case RESULT_SEND_OK:
                         Toast.makeText(getContext(), R.string.new_report_ok, Toast.LENGTH_LONG).show();
                         imageView.setImageResource(R.drawable.ic_add_image);
                         imageUri = null;
                         textInputDesc.setText(null);
                         textInputTitle.setText(null);
                         break;
-                    case MainContracts.RESULT_SEND_ERROR_DB:
+                    case RESULT_SEND_ERROR_DB:
                         Toast.makeText(getContext(), R.string.new_report_error_db, Toast.LENGTH_LONG).show();
                         break;
-                    case MainContracts.RESULT_SEND_ERROR_IMAGE:
+                    case RESULT_SEND_ERROR_IMAGE:
                         Toast.makeText(getContext(), R.string.new_report_error_image, Toast.LENGTH_LONG).show();
                         imageUri = null;
                         imageView.setBackgroundResource(R.drawable.ic_add_image);
@@ -500,6 +496,9 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         return image;
     }
 
+    /**
+     * Method called to hide error when user provides new text in {@link TextInputEditText}s
+     */
     private void clearEditTextErrorOnInput() {
         textInputTitle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -527,6 +526,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
         });
     }
 
+    /** Loads a map with selected position into MapView */
     private void createFixedMap(Bundle savedInstanceState) {
         ivAddPosition.setVisibility(View.GONE);
         mapView.setVisibility(View.VISIBLE);

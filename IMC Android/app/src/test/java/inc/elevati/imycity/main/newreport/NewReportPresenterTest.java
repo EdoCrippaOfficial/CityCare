@@ -17,6 +17,7 @@ import inc.elevati.imycity.firebase.StorageHelper;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.Report;
 
+import static inc.elevati.imycity.main.MainContracts.SendTaskResult.RESULT_SEND_OK;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -81,7 +82,7 @@ public class NewReportPresenterTest {
 
     @Test
     public void onSendTaskCompleteTest() {
-        int resultCode = MainContracts.RESULT_SEND_OK;
+        MainContracts.SendTaskResult resultCode = RESULT_SEND_OK;
         presenter.onSendTaskComplete(resultCode);
         verify(view).dismissProgressDialog();
         verify(view).notifySendTaskCompleted(resultCode);

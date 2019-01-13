@@ -11,8 +11,10 @@ import inc.elevati.imycity.R;
 import inc.elevati.imycity.login.signin.SignInFragment;
 import inc.elevati.imycity.main.MainActivity;
 
+/** Activity displayed at app launch, here the user can sign-up or sign-in the system */
 public class LoginActivity extends FragmentActivity implements LoginContracts.LoginView {
 
+    /** The presenter associated to this view */
     private LoginContracts.LoginPresenter presenter;
 
     @Override
@@ -34,11 +36,18 @@ public class LoginActivity extends FragmentActivity implements LoginContracts.Lo
         }
     }
 
+    /**
+     * Called at orientation changes or activity re-creations, it retains the presenter
+     * @return the presenter associated to the view
+     */
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return presenter;
     }
 
+    /**
+     * @return the presenter associated to this view
+     */
     public LoginContracts.LoginPresenter getPresenter() {
         return presenter;
     }
@@ -49,6 +58,7 @@ public class LoginActivity extends FragmentActivity implements LoginContracts.Lo
         presenter.checkIfAlreadySignedIn();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);

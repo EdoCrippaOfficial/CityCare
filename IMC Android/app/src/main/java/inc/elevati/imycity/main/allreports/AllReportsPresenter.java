@@ -15,20 +15,31 @@ import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.utils.Report;
 
+import static inc.elevati.imycity.main.MainContracts.DeleteReportTaskResult.RESULT_OK;
+import static inc.elevati.imycity.utils.Report.Status.STATUS_ACCEPTED;
+import static inc.elevati.imycity.utils.Report.Status.STATUS_COMPLETED;
+import static inc.elevati.imycity.utils.Report.Status.STATUS_REFUSED;
+import static inc.elevati.imycity.utils.Report.Status.STATUS_WAITING;
+
+/** Presenter associated to {@link AllReportsFragment} */
 public class AllReportsPresenter implements MainContracts.ReportListPresenter {
 
-    /** The view instance */
+    /** The view associated to this presenter */
     private MainContracts.ReportsView view;
 
-    /** Indicates that a task is completed while View was detached */
+    /** The reportDialogView that may be associated to this presenter */
+    private MainContracts.ReportDialogView reportDialogView;
+
+    /** This flag is set when a task had to be executed when no view was attached to this presenter */
     private boolean pendingTask;
 
-    /** Variable set when onLoadAllReportsTaskComplete is called while View was detached */
+    /** Used only if pendingTask flag is set, if not null indicates that onLoadReportsTaskComplete has to be executed */
     private QuerySnapshot results;
 
-    /** Variable set when onUpdateTaskComplete is called while View was detached */
+    /** This flag is set when onUpdateTaskComplete is called while View was detached */
     private boolean update;
 
+    /** {@inheritDoc} */
     @Override
     public void attachView(MvpContracts.MvpView view) {
         this.view = (MainContracts.ReportsView) view;
@@ -51,12 +62,25 @@ public class AllReportsPresenter implements MainContracts.ReportListPresenter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void detachView() {
         this.view = null;
     }
 
-    /** Method called to retrieve all reports from database */
+    /** {@inheritDoc} */
+    @Override
+    public void attachReportDialogView(MainContracts.ReportDialogView view) {
+        this.reportDialogView = view;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void detachReportDialogView() {
+        this.reportDialogView = null;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void loadReports() {
         EspressoIdlingResource.increment();
@@ -64,12 +88,7 @@ public class AllReportsPresenter implements MainContracts.ReportListPresenter {
         reader.readAllReports();
     }
 
-    /**
-     * Method called to forward data retrieved from database to View
-     * If called when View is detached, results is saved and the method
-     * is called again when view is re-attached
-     * @param results the data retrieved
-     */
+    /** {@inheritDoc} */
     @Override
     public void onLoadReportsTaskComplete(QuerySnapshot results) {
 
@@ -91,7 +110,21 @@ public class AllReportsPresenter implements MainContracts.ReportListPresenter {
                 String operatorId = snap.getString("operator_id");
                 long nStars = snap.getLong("n_stars");
                 String reply = snap.getString("reply");
-                String status = snap.getString("status");
+                Report.Status status = STATUS_WAITING;
+                switch (snap.getString("status")) {
+                    case "1":
+                        status = STATUS_ACCEPTED;
+                        break;
+                    case "2":
+                        status = STATUS_REFUSED;
+                        break;
+                    case "3":
+                        status = STATUS_COMPLETED;
+                        break;
+                    case "4":
+                        status = STATUS_WAITING;
+                        break;
+                }
                 GeoPoint position = (GeoPoint) snap.get("position");
 
                 ArrayList<String> usersStarred = (ArrayList<String>) snap.get("users_starred");
@@ -106,11 +139,7 @@ public class AllReportsPresenter implements MainContracts.ReportListPresenter {
         view.updateReports(reports);
     }
 
-    /**
-     * Method called by app kernel that tells View to hide the refreshing View
-     * If called when View is detached, a flag is set and the method
-     * is called again when view is re-attached
-     */
+    /** {@inheritDoc} */
     public void onUpdateTaskComplete() {
 
         // If view is detached, set the pendingTask flag
@@ -123,17 +152,15 @@ public class AllReportsPresenter implements MainContracts.ReportListPresenter {
         view.resetRefreshing();
     }
 
-    /**
-     * Method called by ReportsAdapter when user clicks on a report in the RecyclerView
-     * @param report the report to be shown
-     */
+    /** {@inheritDoc} */
     @Override
-    public void showReport(Report report) {
+    public void onReportClicked(Report report) {
         view.showReportDialog(report);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void starsButtonClicked(Report report) {
+    public void onStarsButtonClicked(Report report) {
         FirebaseContracts.DatabaseWriter writer = new FirestoreHelper(this);
         if (report.isStarred()) {
             report.setStarred(false);
@@ -146,8 +173,33 @@ public class AllReportsPresenter implements MainContracts.ReportListPresenter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onStarOperationComplete() {
         loadReports();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDeleteReportButtonClicked(Report report) {
+        EspressoIdlingResource.increment();
+        reportDialogView.showProgressDialog();
+        FirebaseContracts.DatabaseWriter writer = new FirestoreHelper(this);
+        writer.deleteReport(report.getId());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDeleteReportTaskComplete(MainContracts.DeleteReportTaskResult result) {
+        if (reportDialogView == null) return;
+
+        reportDialogView.dismissProgressDialog();
+        if (result.equals(RESULT_OK)) {
+            reportDialogView.dismissDialog();
+            EspressoIdlingResource.decrement();
+            loadReports();
+        } else {
+            reportDialogView.notifyDeleteReportError();
+        }
     }
 }

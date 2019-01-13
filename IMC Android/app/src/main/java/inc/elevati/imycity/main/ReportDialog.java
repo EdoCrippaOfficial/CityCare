@@ -32,18 +32,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import inc.elevati.imycity.R;
-import inc.elevati.imycity.firebase.FirebaseContracts;
-import inc.elevati.imycity.firebase.FirestoreHelper;
-import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.GlideApp;
 import inc.elevati.imycity.utils.ProgressDialog;
 import inc.elevati.imycity.utils.Report;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
-/** In this class it is defined the style of the dialog shown when user clicks on a report */
-public class ReportDialog extends DialogFragment implements FirebaseContracts.DatabaseWriter.onDeleteReportListener {
+/**
+ * In this class it is defined the style of the dialog shown when user clicks on a report,
+ * it uses the presenter related to the view from where the report is clicked
+ */
+public class ReportDialog extends DialogFragment implements MainContracts.ReportDialogView {
 
+    /** Dialog displayed during database and storage sending */
     private ProgressDialog progressDialog;
+
+    /** The presenter associated to this parent view */
+    private MainContracts.ReportListPresenter presenter;
 
     /**
      * Static method that returns an instance of ReportDialog
@@ -51,11 +55,11 @@ public class ReportDialog extends DialogFragment implements FirebaseContracts.Da
      * @param report the report to be shown
      * @return a ReportDialog instance
      */
-    public static ReportDialog newInstance(Report report, MainContracts.ReportListPresenter presenter) {
+    public static ReportDialog newInstance(Report report, int parentPage) {
         ReportDialog dialog = new ReportDialog();
         Bundle args = new Bundle();
         args.putParcelable("report", report);
-        args.putSerializable("presenter", presenter);
+        args.putInt("parent", parentPage);
         dialog.setArguments(args);
         return dialog;
     }
@@ -84,6 +88,23 @@ public class ReportDialog extends DialogFragment implements FirebaseContracts.Da
 
         // Report retrieving from arguments
         final Report report = getArguments().getParcelable("report");
+
+        // Presenter retrieving
+        int parentPage = getArguments().getInt("parent");
+        switch (parentPage) {
+            case MainContracts.PAGE_ALL:
+                presenter = ((MainActivity) getActivity()).getPresenter().getAllReportsPresenter();
+                break;
+            case MainContracts.PAGE_MY:
+                presenter = ((MainActivity) getActivity()).getPresenter().getMyReportsPresenter();
+                break;
+            case MainContracts.PAGE_STARRED:
+                presenter = ((MainActivity) getActivity()).getPresenter().getStarredReportsPresenter();
+                break;
+            case MainContracts.PAGE_COMPLETED:
+                presenter = ((MainActivity) getActivity()).getPresenter().getCompletedReportsPresenter();
+                break;
+        }
         TextView tv_status = v.findViewById(R.id.tv_status);
         TextView tv_title = v.findViewById(R.id.tv_title);
         TextView tv_desc = v.findViewById(R.id.tv_desc);
@@ -94,19 +115,19 @@ public class ReportDialog extends DialogFragment implements FirebaseContracts.Da
 
         // Show report status
         switch (report.getStatus()) {
-            case Report.STATUS_ACCEPTED:
+            case STATUS_ACCEPTED:
                 tv_status.setText(R.string.report_accepted);
                 tv_status.setBackgroundColor(getContext().getResources().getColor(R.color.color_primary));
                 break;
-            case Report.STATUS_REFUSED:
+            case STATUS_REFUSED:
                 tv_status.setText(R.string.report_refused);
                 tv_status.setBackgroundColor(getContext().getResources().getColor(R.color.red));
                 break;
-            case Report.STATUS_COMPLETED:
+            case STATUS_COMPLETED:
                 tv_status.setText(R.string.report_completed);
                 tv_status.setBackgroundColor(getContext().getResources().getColor(R.color.green));
                 break;
-            case Report.STATUS_WAITING:
+            case STATUS_WAITING:
                 tv_status.setText(R.string.report_waiting);
                 tv_status.setBackgroundColor(getContext().getResources().getColor(R.color.grey));
                 break;
@@ -119,26 +140,23 @@ public class ReportDialog extends DialogFragment implements FirebaseContracts.Da
         bn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = new Dialog(getContext());
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.dialog_confirm);
-                dialog.findViewById(R.id.bn_delete_no).setOnClickListener(new View.OnClickListener() {
+                final Dialog confirmDialog = new Dialog(getContext());
+                confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                confirmDialog.setContentView(R.layout.dialog_confirm);
+                confirmDialog.findViewById(R.id.bn_delete_no).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        confirmDialog.dismiss();
                     }
                 });
-                dialog.findViewById(R.id.bn_delete_yes).setOnClickListener(new View.OnClickListener() {
+                confirmDialog.findViewById(R.id.bn_delete_yes).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        EspressoIdlingResource.increment();
-                        dialog.dismiss();
-                        showProgressDialog();
-                        FirebaseContracts.DatabaseWriter writer = new FirestoreHelper(ReportDialog.this);
-                        writer.deleteReport(report.getId());
+                        confirmDialog.dismiss();
+                        presenter.onDeleteReportButtonClicked(report);
                     }
                 });
-                dialog.show();
+                confirmDialog.show();
             }
         });
         final ImageView iv_image = v.findViewById(R.id.iv_report_image);
@@ -201,36 +219,40 @@ public class ReportDialog extends DialogFragment implements FirebaseContracts.Da
         return v;
     }
 
-    /** Method called to show a non-cancelable progress dialog during database operations */
-    private void showProgressDialog() {
+    /** {@inheritDoc} */
+    @Override
+    public void showProgressDialog() {
         progressDialog = ProgressDialog.newInstance(R.string.report_deleting);
         progressDialog.show(getFragmentManager(), "progress");
     }
 
-    /** Dismisses the progress dialog after a report deleting */
-    private void dismissProgressDialog() {
+    /** {@inheritDoc} */
+    @Override
+    public void dismissProgressDialog() {
         if (progressDialog != null) progressDialog.dismiss();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void onReportDeleted() {
-        dismissProgressDialog();
-        dismiss();
-        MainContracts.ReportListPresenter presenter = (MainContracts.ReportListPresenter) getArguments().getSerializable("presenter");
-        EspressoIdlingResource.decrement();
-        presenter.loadReports();
-    }
-
-    @Override
-    public void onReportDeleteFailed() {
-        dismissProgressDialog();
-        Toast.makeText(getContext(), R.string.report_deleting_fail, Toast.LENGTH_SHORT).show();
-        EspressoIdlingResource.decrement();
-    }
-
-    @Override
-    public void onPause() {
+    public void dismissDialog() {
         this.dismiss();
-        super.onPause();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void notifyDeleteReportError() {
+        Toast.makeText(getContext(), R.string.report_deleting_fail, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.attachReportDialogView(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachReportDialogView();
     }
 }

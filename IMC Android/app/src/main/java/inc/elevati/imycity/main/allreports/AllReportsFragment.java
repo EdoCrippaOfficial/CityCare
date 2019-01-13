@@ -28,6 +28,7 @@ import inc.elevati.imycity.main.ReportDialog;
 import inc.elevati.imycity.main.ReportsAdapter;
 import inc.elevati.imycity.utils.Report;
 
+import static inc.elevati.imycity.main.MainContracts.PAGE_ALL;
 import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_DATE_NEWEST;
 import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_DATE_OLDEST;
 import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_STARS_LESS;
@@ -42,7 +43,7 @@ public class AllReportsFragment extends Fragment implements MainContracts.Report
     /** The RecyclerView adapter */
     private ReportsAdapter reportsAdapter;
 
-    /** Presenter that handles non graphics-related requests */
+    /** The presenter associated to this view */
     private MainContracts.ReportListPresenter presenter;
 
     /** Object used to refresh the report list */
@@ -113,33 +114,26 @@ public class AllReportsFragment extends Fragment implements MainContracts.Report
         return new AllReportsFragment();
     }
 
-    /**
-     * Method called to update the report list displayed in RecyclerView
-     * @param reports the list of reports to be displayed
-     */
+    /** {@inheritDoc} */
     @Override
     public void updateReports(List<Report> reports) {
         reportsAdapter.updateReports(reports, sort_criteria);
     }
 
-    /**
-     * Called when user clicks on a report in the list, it opens a
-     * fullscreen dialog containing all the report information
-     * @param report the clicked report
-     */
+    /** {@inheritDoc} */
     @Override
     public void showReportDialog(Report report) {
-        ReportDialog dialog = ReportDialog.newInstance(report, presenter);
+        ReportDialog dialog = ReportDialog.newInstance(report, PAGE_ALL);
         dialog.show(getFragmentManager(), null);
     }
 
-    /** Method called to hide the View shown when refreshing */
+    /** {@inheritDoc} */
     @Override
     public void resetRefreshing() {
         refresher.setRefreshing(false);
     }
 
-    /** Called when user swipes down on screen to refresh list */
+    /** {@inheritDoc} */
     @Override
     public void onRefresh() {
         presenter.loadReports();

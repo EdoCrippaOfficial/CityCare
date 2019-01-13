@@ -56,8 +56,7 @@
 
         <activity
             android:name=".utils.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
-        <activity android:name=".maps.FixedMap" />
+            android:label="@string/title_activity_maps"/>
     </application>
 
 </manifest>

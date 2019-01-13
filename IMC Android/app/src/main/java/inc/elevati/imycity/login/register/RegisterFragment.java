@@ -3,7 +3,6 @@ package inc.elevati.imycity.login.register;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -24,20 +23,38 @@ import inc.elevati.imycity.login.LoginContracts;
 import inc.elevati.imycity.main.MainActivity;
 import inc.elevati.imycity.utils.ProgressDialog;
 
+/** Fragment displayed when the user wants to sign-up */
 public class RegisterFragment extends Fragment implements LoginContracts.RegisterView {
 
+    /** {@link TextInputEditText}s for user data */
     private TextInputEditText textInputName, textInputSSN, textInputEmail, textInputPassword;
+
+    /** {@link TextInputLayout}s for user data */
     private TextInputLayout textLayoutName, textLayoutSSN, textLayoutEmail, textLayoutPassword;
 
+    /** The presenter associated to this view */
     private LoginContracts.RegisterPresenter presenter;
 
-    /** Dialog displayed during firebase communications */
+    /** Dialog displayed during tasks execution */
     private ProgressDialog progressDialog;
 
+    /**
+     * Method that has to be used to get a RegisterFragment instance instead of constructor
+     * @return a new RegisterFragment instance
+     */
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
     }
 
+    /**
+     * Method called when the View associated to this fragment is created (the first time this
+     * fragment is shown, at orientation changes, at activity re-creations...); here the layout
+     * is inflated and all Views owned by this fragment are initialized.
+     * @param inflater the layout inflater
+     * @param container this fragment parent view
+     * @param savedInstanceState a Bundle containing saved data to be restored
+     * @return the View initialized and inflated
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,37 +107,27 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
         return v;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        presenter.attachView(this);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        presenter.detachView();
-    }
-
+    /** {@inheritDoc} */
     @Override
     public void switchToSignInView() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.popBackStack();
     }
 
-    /** Method called to show a non-cancelable progress dialog */
+    /** {@inheritDoc} */
     @Override
     public void showProgressDialog() {
         progressDialog = ProgressDialog.newInstance(R.string.register_loading);
         progressDialog.show(getFragmentManager(), "progress");
     }
 
-    /** Dismisses the progress dialog */
+    /** {@inheritDoc} */
     @Override
     public void dismissProgressDialog() {
         if (progressDialog != null) progressDialog.dismiss();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void startMainActivity() {
         Activity activity = getActivity();
@@ -130,38 +137,47 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
         activity.finish();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifyEmailAlreadyExists() {
         if (isAdded())
             textLayoutEmail.setError(getString(R.string.register_email_already_exists));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifyUnknownError() {
         if (isAdded())
             Toast.makeText(getContext(), R.string.register_unknown_error, Toast.LENGTH_SHORT).show();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifyInvalidName() {
         textLayoutName.setError(getString(R.string.register_no_name));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifyInvalidEmail() {
         textLayoutEmail.setError(getString(R.string.register_no_email));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifyInvalidSSN() {
         textLayoutSSN.setError(getString(R.string.register_no_ssn));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifyInvalidPassword() {
         textLayoutPassword.setError(getString(R.string.register_no_password));
     }
 
+    /**
+     * Method called to hide error when user provides new text in {@link TextInputEditText}s
+     */
     private void clearEditTextErrorOnInput() {
         textInputName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -203,5 +219,17 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
             @Override
             public void afterTextChanged(Editable editable) { }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.attachView(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 }

@@ -16,26 +16,38 @@ import androidx.annotation.NonNull;
 import inc.elevati.imycity.main.MainContracts;
 import inc.elevati.imycity.utils.Report;
 
+import static inc.elevati.imycity.main.MainContracts.DeleteReportTaskResult.RESULT_FAILED;
+import static inc.elevati.imycity.main.MainContracts.DeleteReportTaskResult.RESULT_OK;
+import static inc.elevati.imycity.main.MainContracts.SendTaskResult.RESULT_SEND_ERROR_DB;
+import static inc.elevati.imycity.main.MainContracts.SendTaskResult.RESULT_SEND_OK;
+
+/** This class is an helper that handles with Firebase Firestore related tasks */
 public class FirestoreHelper implements FirebaseContracts.DatabaseReader, FirebaseContracts.DatabaseWriter {
 
-    private onDeleteReportListener deleteReportListener;
-
+    /** The listener that gets notified about report handling tasks */
     private MainContracts.ReportListPresenter reportListListener;
 
+    /** The listener that gets notified about report creating tasks */
     private MainContracts.NewReportPresenter newReportListener;
 
-    public FirestoreHelper(onDeleteReportListener deleteReportListener) {
-        this.deleteReportListener = deleteReportListener;
-    }
-
+    /**
+     * Constructor used when report handling tasks are needed
+     * @param reportListListener the presenter that is requesting services
+     */
     public FirestoreHelper(MainContracts.ReportListPresenter reportListListener) {
         this.reportListListener = reportListListener;
     }
 
+    /**
+     * Constructor used when report creating tasks are needed
+     * @param newReportListener the presenter that is requesting services
+     */
     public FirestoreHelper(MainContracts.NewReportPresenter newReportListener) {
         this.newReportListener = newReportListener;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public void deleteReport(String reportId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports").document(reportId)
@@ -43,17 +55,19 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        deleteReportListener.onReportDeleted();
+                        reportListListener.onDeleteReportTaskComplete(RESULT_OK);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        deleteReportListener.onReportDeleteFailed();
+                        reportListListener.onDeleteReportTaskComplete(RESULT_FAILED);
                     }
                 });
     }
 
+    /** {@inheritDoc} */
+    @Override
     public void sendReport(final Report report) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         Map<String, Object> map = new HashMap<>();
@@ -66,7 +80,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
         map.put("operator_id", "");
         map.put("n_stars", 0);
         map.put("reply", "");
-        map.put("status", Report.STATUS_WAITING);
+        map.put("status", Report.Status.STATUS_WAITING.value);
         map.put("position", report.getPosition());
         map.put("users_starred", new ArrayList<String>());
         dbRef.collection("reports").document(report.getId())
@@ -74,7 +88,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        newReportListener.onSendTaskComplete(MainContracts.RESULT_SEND_OK);
+                        newReportListener.onSendTaskComplete(RESULT_SEND_OK);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -82,11 +96,12 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                     public void onFailure(@NonNull Exception e) {
                         // Delete the image uploaded previously on storage
                         StorageHelper.deleteImage(report);
-                        newReportListener.onSendTaskComplete(MainContracts.RESULT_SEND_ERROR_DB);
+                        newReportListener.onSendTaskComplete(RESULT_SEND_ERROR_DB);
                     }
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void starReport(final Report report, final String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
@@ -101,6 +116,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
         });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void unstarReport(final Report report, final String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
@@ -115,6 +131,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void readAllReports() {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
@@ -131,6 +148,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void readMyReports(String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
@@ -148,6 +166,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void readStarredReports(String userId) {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
@@ -165,11 +184,12 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                 });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void readCompletedReports() {
         FirebaseFirestore dbRef = FirebaseFirestore.getInstance();
         dbRef.collection("reports")
-                .whereEqualTo("status", Report.STATUS_COMPLETED)
+                .whereEqualTo("status", Report.Status.STATUS_COMPLETED.value)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

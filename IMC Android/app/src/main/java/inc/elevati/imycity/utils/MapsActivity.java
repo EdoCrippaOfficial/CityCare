@@ -14,12 +14,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
+/** Activity launched when user selects position during new report creation */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    /** The starting position */
     private static final LatLng dummyPosition = new LatLng(45.646457, 9.607563);
+
+    /** The button to select position */
     private Button bnSelect;
+
+    /** The chosen position */
     private LatLng position;
 
     @Override
@@ -33,6 +38,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         bnSelect.setEnabled(false);
     }
 
+    /**
+     * Tells that the loaded map is ready
+     * @param googleMap the loaded map
+     */
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         bnSelect.setEnabled(true);
