@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
+/**
+ * Componente dell'app Angular
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

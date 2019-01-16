@@ -30,6 +30,9 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { HeaderComponent } from './layout/main-layout/header/header.component';
 import { FooterComponent } from './layout/main-layout/footer/footer.component';
 
+/**
+ * Modulo base dell'app Angular
+ */
 @NgModule({
   declarations: [
     AppComponent,

@@ -1,4 +1,6 @@
-//Enumerative for report's status
+/**
+ * Enumerativo per lo status dei report
+ */
 export enum Status {
   ACCETTATO = 1,
   RIFIUTATO,

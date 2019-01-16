@@ -70,14 +70,14 @@
                     [class.btn-danger]="report.status == rifiutato"
                     [class.btn-success]="report.status == completato"
                     [class.btn-secondary]="report.status == attesa">
-                {{ getStatus(report) }}
+                {{ getStatusText(report.status) }}
             </button>
             <button type="button" class="btn m-1 no-click"
-                    [class.btn-primary]="report.category == a"
-                    [class.btn-danger]="report.category == b"
-                    [class.btn-success]="report.category == c"
-                    [class.btn-warning]="report.category == d">
-                {{ getCategory(report) || "Altro" }}
+                    [class.btn-primary]="report.category == strada"
+                    [class.btn-danger]="report.category == elettrica"
+                    [class.btn-success]="report.category == giardinaggio"
+                    [class.btn-warning]="report.category == polizia">
+                {{ getCategoryText(report.category) || "Altro" }}
             </button>
           </div>
         </div>

@@ -17,3 +17,4 @@
   </div>
   <button [disabled]="!emailValue.dirty && !passwordValue.dirty" type="submit" class="btn btn-primary">Login</button>
 </form>
+<div class="container m-1 text-center"><span [hidden]="!loginWrong" style="color: red">L'email o la password inserite sono errate!</span></div>

@@ -1,3 +1,6 @@
+/**
+ * Costante che rappresenta l'environment Angular di produzione e contiene la configurazione per la connessione al database
+ */
 export const environment = {
   production: true,
   firebase: {

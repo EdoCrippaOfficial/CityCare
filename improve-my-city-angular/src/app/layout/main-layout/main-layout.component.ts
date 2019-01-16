@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+/**
+ * Componente centrale della pagina di amministrazione
+ */
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',

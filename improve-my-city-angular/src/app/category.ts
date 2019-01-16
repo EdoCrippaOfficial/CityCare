@@ -1,7 +1,9 @@
-//Enumerative for report's status
+/**
+ * Enumerativo per la categoria dei report
+ */
 export enum Category {
-  A = 1,
-  B,
-  C,
-  D
+  MANUTENZIONESTRADALE = 1,
+  MANUTENZIONEELETTRICA,
+  GIARDINAGGIO,
+  POLIZIALOCALE
 }

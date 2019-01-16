@@ -34,6 +34,9 @@ const routes: Routes = [
   { path: '**', redirectTo: '/login'}
 ];
 
+/**
+ * Modulo per il routing dell'app Angular
+ */
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

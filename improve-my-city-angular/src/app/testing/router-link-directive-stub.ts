@@ -1,5 +1,8 @@
 import { Directive, Input } from '@angular/core';
 
+/**
+ * Classe stub per la rilevazione di componenti html con RouterLink tra gli attributi
+ */
 @Directive({
   selector: '[routerLink]',
   host: { '(click)': 'onClick()' }

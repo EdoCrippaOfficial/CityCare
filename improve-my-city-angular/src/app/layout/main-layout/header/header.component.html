@@ -1,7 +1,7 @@
 <header>
   <nav class="navbar navbar-default navbar-light navbar-expand-md bg-light fixed-top" role="navigation">
     <div class="navbar-header">
-      <a class="navbar-brand text-primary" routerLink="/home">City Care</a>
+      <a class="navbar-brand text-primary" routerLink="/home"><img src="/assets/img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo"> City Care</a>
       <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" (click)="isCollapsed=!isCollapsed" [attr.aria-expanded]="!isCollapsed">
         <span> </span>
         <span> </span>
@@ -17,23 +17,25 @@
         <li class="nav-item dropdown" [routerLinkActive]="['active']">
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" routerLink="/reports">Stato reports</a>
           <div class="dropdown-menu" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;">
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0/0">Tutti</a>
+            <li><a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0/0">Tutti</a></li>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ accettato }}/0">Accettati</a>
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ rifiutato }}/0">Rifiutati</a>
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ completato }}/0">Completati</a>
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ attesa }}">In attesa</a>
+            <li *ngFor="let status of statusList">
+              <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/{{ status }}/0">
+                {{ getStatusText(status) }}
+              </a>
+            </li>
           </div>
         </li>
         <li class="nav-item dropdown" [routerLinkActive]="['active']">
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" routerLink="/reports">Categoria reports</a>
           <div class="dropdown-menu" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;">
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0">Tutti</a>
+            <li><a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0/0">Tutti</a></li>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0/{{ a }}">A</a>
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0/{{ b }}">B</a>
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0/{{ c }}">C</a>
-            <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0/{{ d }}">D</a>
+            <li *ngFor="let category of categoryList">
+              <a class="dropdown-item" [routerLinkActive]="['active']" routerLink="/reports/0/{{ category }}">
+                {{ getCategoryText(category) }}
+              </a>
+            </li>
           </div>
         </li>
         <li class="nav-item" [routerLinkActive]="['active']">

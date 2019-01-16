@@ -22,9 +22,10 @@ describe('FooterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should redirect properly', () => {
-    let href = fixture.debugElement.query(By.css('a')).nativeElement
-              .getAttribute('href');
-    expect(href).toEqual('/settings/testing/edit/1');
-  })
+  it('can get RouterLinks from template', () => {
+    expect(routerLinks.length).toBe(3, 'should have 3 routerLinks');
+    expect(routerLinks[0].linkParams).toBe('/home');
+    expect(routerLinks[1].linkParams).toBe('/reports');
+    expect(routerLinks[2].linkParams).toBe('/about');
+  });
 });
