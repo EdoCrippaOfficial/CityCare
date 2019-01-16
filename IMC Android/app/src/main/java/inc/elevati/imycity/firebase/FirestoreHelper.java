@@ -83,6 +83,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
         map.put("status", Report.Status.STATUS_WAITING.value);
         map.put("position", report.getPosition());
         map.put("users_starred", new ArrayList<String>());
+        map.put("category", "0");
         dbRef.collection("reports").document(report.getId())
                 .set(map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -111,7 +112,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        reportListListener.onStarOperationComplete();
+                        reportListListener.onStarTaskComplete();
                     }
         });
     }
@@ -126,7 +127,7 @@ public class FirestoreHelper implements FirebaseContracts.DatabaseReader, Fireba
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        reportListListener.onStarOperationComplete();
+                        reportListListener.onStarTaskComplete();
                     }
                 });
     }

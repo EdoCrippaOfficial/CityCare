@@ -79,13 +79,13 @@ public interface MainContracts {
          * Notifies this presenter that a menu item was clicked
          * @param itemId the id of the clicked item
          */
-        void menuItemClicked(int itemId);
+        void onMenuItemClicked(int itemId);
 
         /**
          * Notifies this presenter that a scroll action has occurred
          * @param page the page to scroll to
          */
-        void pageScrolled(int page);
+        void onPageScrolled(int page);
 
         /**
          * @return the current user email
@@ -134,7 +134,7 @@ public interface MainContracts {
          * @param imageUri the imageUri provided
          * @param position the position provided
          */
-        void sendButtonClicked(String title, String description, Context appContext, Uri imageUri, LatLng position);
+        void onSendButtonClicked(String title, String description, Context appContext, Uri imageUri, LatLng position);
 
         /**
          * Continues the report sending task after the image was sent to storage,
@@ -195,7 +195,7 @@ public interface MainContracts {
         /**
          * Notifies this presenter that a star task has completed
          */
-        void onStarOperationComplete();
+        void onStarTaskComplete();
 
         /**
          * Notifies this presenter that the delete button of a report

@@ -34,14 +34,14 @@ public class MainPresenterTest {
     public void menuItemClickedTest() {
 
         // Test with "menu_my" as argument (same behaviour for "menu_new", "menu_all", "menu_completed", "menu_starred"
-        presenter.menuItemClicked(R.id.menu_my);
+        presenter.onMenuItemClicked(R.id.menu_my);
         verify(view).scrollToPage(MainContracts.PAGE_MY);
 
         // Mock static method called in code under test
         mockStatic(FirebaseAuthHelper.class);
 
         // Test with "menu_logout" as argument
-        presenter.menuItemClicked(R.id.menu_logout);
+        presenter.onMenuItemClicked(R.id.menu_logout);
         verify(view).startLoginActivity();
     }
 
@@ -49,7 +49,7 @@ public class MainPresenterTest {
     public void pageScrolledTest() {
 
         // Test with "PAGE_NEW" as argument (same behaviour for "PAGE_ALL", "PAGE_MY", "PAGE_STARRED", "PAGE_COMPLETED"
-        presenter.pageScrolled(MainContracts.PAGE_NEW);
+        presenter.onPageScrolled(MainContracts.PAGE_NEW);
         verify(view).setCheckedMenuItem(R.id.menu_new);
     }
 }

@@ -18,7 +18,8 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
     /** This flag is set when a task had to be executed when no view was attached to this presenter */
     private boolean pendingTask;
 
-    /** Used only if pendingTask flag is set, if not null indicates that onLoginTaskComplete has to be executed */
+    /** Used only if pendingTask flag is set, if not null indicates that
+     * {@link SignInPresenter#onSignInTaskComplete(LoginContracts.LoginTaskResult)} has to be executed */
     private LoginContracts.LoginTaskResult result;
 
     /** {@inheritDoc} */
@@ -29,9 +30,9 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
         // If there were pending tasks, execute them now
         if (pendingTask) {
 
-            // If result is not null, then onLoginTaskComplete has to be executed
+            // If result is not null, then onSignInTaskComplete has to be executed
             if (result != null) {
-                onLoginTaskComplete(result);
+                onSignInTaskComplete(result);
                 result = null;
             }
             pendingTask = false;
@@ -47,13 +48,13 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
 
     /** {@inheritDoc} */
     @Override
-    public void registerButtonClicked() {
+    public void onRegisterButtonClicked() {
         view.switchToRegisterView();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void signInButtonClicked(String email, String password) {
+    public void onSignInButtonClicked(String email, String password) {
         if (email.equals("")) {
             view.notifyInvalidEmail();
             return;
@@ -71,7 +72,7 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
 
     /** {@inheritDoc} */
     @Override
-    public void onLoginTaskComplete(LoginContracts.LoginTaskResult result) {
+    public void onSignInTaskComplete(LoginContracts.LoginTaskResult result) {
 
         // If view is detached, set the pendingTask flag
         if (view == null) {

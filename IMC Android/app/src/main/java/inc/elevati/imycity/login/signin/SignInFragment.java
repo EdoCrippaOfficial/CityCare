@@ -79,7 +79,7 @@ public class SignInFragment extends Fragment implements LoginContracts.SignInVie
         v.findViewById(R.id.tv_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               presenter.registerButtonClicked();
+               presenter.onRegisterButtonClicked();
             }
         });
 
@@ -93,7 +93,7 @@ public class SignInFragment extends Fragment implements LoginContracts.SignInVie
                 textLayoutPassword.setError(null);
                 String email = textInputEmail.getText().toString();
                 String password = textInputPassword.getText().toString();
-                presenter.signInButtonClicked(email, password);
+                presenter.onSignInButtonClicked(email, password);
             }
         });
         return v;

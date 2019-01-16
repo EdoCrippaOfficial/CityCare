@@ -148,20 +148,20 @@ public class FirebaseAuthHelper implements FirebaseContracts.AuthHelper {
                             userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            loginListener.onLoginTaskComplete(LoginContracts.LoginTaskResult.LOGIN_OK);
+                            loginListener.onSignInTaskComplete(LoginContracts.LoginTaskResult.LOGIN_OK);
                         } else {
 
                             // Account doesn't exists
                             if (task.getException() instanceof FirebaseAuthInvalidUserException)
-                                loginListener.onLoginTaskComplete(LOGIN_FAILED_NO_ACCOUNT);
+                                loginListener.onSignInTaskComplete(LOGIN_FAILED_NO_ACCOUNT);
 
                             // Wrong password
                             else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException)
-                                loginListener.onLoginTaskComplete(LOGIN_FAILED_WRONG_PASSWORD);
+                                loginListener.onSignInTaskComplete(LOGIN_FAILED_WRONG_PASSWORD);
 
                             // Unknown error
                             else
-                                loginListener.onLoginTaskComplete(LOGIN_FAILED_UNKNOWN);
+                                loginListener.onSignInTaskComplete(LOGIN_FAILED_UNKNOWN);
                         }
                     }
                 });

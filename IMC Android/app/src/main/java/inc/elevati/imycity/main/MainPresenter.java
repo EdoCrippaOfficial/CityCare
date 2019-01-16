@@ -90,7 +90,7 @@ public class MainPresenter implements MainContracts.MainPresenter {
 
     /** {@inheritDoc} */
     @Override
-    public void menuItemClicked(int itemId) {
+    public void onMenuItemClicked(int itemId) {
         switch (itemId) {
             case R.id.menu_new:
                 view.scrollToPage(MainContracts.PAGE_NEW);
@@ -116,7 +116,7 @@ public class MainPresenter implements MainContracts.MainPresenter {
 
     /** {@inheritDoc} */
     @Override
-    public void pageScrolled(int page) {
+    public void onPageScrolled(int page) {
         switch (page) {
             case MainContracts.PAGE_NEW:
                 view.setCheckedMenuItem(R.id.menu_new);

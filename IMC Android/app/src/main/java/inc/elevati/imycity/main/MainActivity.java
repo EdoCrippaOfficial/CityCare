@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 menuNavigator.setCheckedItem(menuItem);
                 menuDrawer.closeDrawers();
-                presenter.menuItemClicked(menuItem.getItemId());
+                presenter.onMenuItemClicked(menuItem.getItemId());
                 return true;
             }
         });
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
             @Override
             public void onPageSelected(int i) {
                 if (i == PAGE_NEW) invalidateOptionsMenu();
-                presenter.pageScrolled(i);
+                presenter.onPageScrolled(i);
             }
             @Override
             public void onPageScrollStateChanged(int i) {}
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements MainContracts.Mai
 
         // Set starting page
         pager.setCurrentItem(PAGE_ALL);
-        presenter.pageScrolled(PAGE_ALL);
+        presenter.onPageScrolled(PAGE_ALL);
         previousPage = PAGE_ALL;
 
         // Tab layout showing pages below menu bar

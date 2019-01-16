@@ -67,27 +67,27 @@ public interface LoginContracts {
     interface SignInPresenter extends MvpContracts.MvpPresenter {
 
         /** Notifies this presenter that register button was clicked */
-        void registerButtonClicked();
+        void onRegisterButtonClicked();
 
         /**
          * Notifies this presenter that sign-in button was clicked
          * @param email the email provided
          * @param password the password provided
          */
-        void signInButtonClicked(String email, String password);
+        void onSignInButtonClicked(String email, String password);
 
         /**
          * Notifies this presenter that a login task has completed
          * @param result the task result
          */
-        void onLoginTaskComplete(LoginTaskResult result);
+        void onSignInTaskComplete(LoginTaskResult result);
     }
 
     /** Implemented by the class that handles register presenter */
     interface RegisterPresenter extends MvpContracts.MvpPresenter {
 
         /** Notifies this presenter that sign-in button was clicked */
-        void signInButtonClicked();
+        void onSignInButtonClicked();
 
         /**
          * Notifies this presenter that register button was clicked
@@ -96,7 +96,7 @@ public interface LoginContracts {
          * @param email the email provided
          * @param password the password provided
          */
-        void registerButtonClicked(String name, String ssn, String email, String password);
+        void onRegisterButtonClicked(String name, String ssn, String email, String password);
 
         /**
          * Notifies this presenter that a register task has completed

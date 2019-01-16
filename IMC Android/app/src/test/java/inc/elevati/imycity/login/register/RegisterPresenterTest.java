@@ -36,7 +36,7 @@ public class RegisterPresenterTest {
 
     @Test
     public void signInButtonClickedTest() {
-        presenter.signInButtonClicked();
+        presenter.onSignInButtonClicked();
         verify(view).switchToSignInView();
     }
 
@@ -54,23 +54,23 @@ public class RegisterPresenterTest {
         String correctPassword = "passw0rd";
 
         // Call the function to test with no name
-        presenter.registerButtonClicked("", null, null, null);
+        presenter.onRegisterButtonClicked("", null, null, null);
         verify(view).notifyInvalidName();
 
         // Call the function with invalid SSN
-        presenter.registerButtonClicked(name, invalidSSN, null, null);
+        presenter.onRegisterButtonClicked(name, invalidSSN, null, null);
         verify(view).notifyInvalidSSN();
 
         // Call the function with invalid email
-        presenter.registerButtonClicked(name, correctSSN, invalidEmail, null);
-        verify(view).notifyInvalidSSN();
+        presenter.onRegisterButtonClicked(name, correctSSN, invalidEmail, null);
+        verify(view).notifyInvalidEmail();
 
         // Call the function with invalid password
-        presenter.registerButtonClicked(name, correctSSN, correctEmail, invalidPassword);
-        verify(view).notifyInvalidSSN();
+        presenter.onRegisterButtonClicked(name, correctSSN, correctEmail, invalidPassword);
+        verify(view).notifyInvalidPassword();
 
         // Call the function with correct parameters
-        presenter.registerButtonClicked(name, correctSSN, correctEmail, correctPassword);
+        presenter.onRegisterButtonClicked(name, correctSSN, correctEmail, correctPassword);
         verify(view).showProgressDialog();
         verify(helper).register(name, correctEmail, correctPassword);
     }

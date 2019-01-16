@@ -37,7 +37,7 @@ public class SignInPresenterTest {
 
     @Test
     public void registerButtonClickedTest() {
-        presenter.registerButtonClicked();
+        presenter.onRegisterButtonClicked();
         verify(view).switchToRegisterView();
     }
 
@@ -50,15 +50,15 @@ public class SignInPresenterTest {
         String password = "passw0rd";
 
         // Call the function with empty email
-        presenter.signInButtonClicked("", null);
+        presenter.onSignInButtonClicked("", null);
         verify(view).notifyInvalidEmail();
 
         // Call the function with empty password
-        presenter.signInButtonClicked(email, "");
+        presenter.onSignInButtonClicked(email, "");
         verify(view).notifyInvalidPassword();
 
         // Call the function correctly
-        presenter.signInButtonClicked(email, password);
+        presenter.onSignInButtonClicked(email, password);
         verify(view).showProgressDialog();
         verify(helper).signIn(email, password);
     }
@@ -67,19 +67,19 @@ public class SignInPresenterTest {
     public void onLoginTaskComplete() {
 
         // Call the function with LOGIN_OK as parameter
-        presenter.onLoginTaskComplete(LOGIN_OK);
+        presenter.onSignInTaskComplete(LOGIN_OK);
         verify(view).startMainActivity();
 
         // Call the function with LOGIN_FAILED_NO_ACCOUNT as parameter
-        presenter.onLoginTaskComplete(LOGIN_FAILED_NO_ACCOUNT);
+        presenter.onSignInTaskComplete(LOGIN_FAILED_NO_ACCOUNT);
         verify(view).notifyAccountNotExists();
 
         // Call the function with LOGIN_FAILED_WRONG_PASSWORD as parameter
-        presenter.onLoginTaskComplete(LOGIN_FAILED_WRONG_PASSWORD);
+        presenter.onSignInTaskComplete(LOGIN_FAILED_WRONG_PASSWORD);
         verify(view).notifyWrongPassword();
 
         // Call the function with LOGIN_FAILED_UNKNOWN as parameter
-        presenter.onLoginTaskComplete(LOGIN_FAILED_UNKNOWN);
+        presenter.onSignInTaskComplete(LOGIN_FAILED_UNKNOWN);
         verify(view).notifyUnknownError();
 
         verify(view, times(4)).dismissProgressDialog();

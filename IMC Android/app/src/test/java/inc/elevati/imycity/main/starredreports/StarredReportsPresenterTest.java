@@ -98,7 +98,7 @@ public class StarredReportsPresenterTest {
 
     @Test
     public void onStarOperationCompleteTest() {
-        presenter.onStarOperationComplete();
+        presenter.onStarTaskComplete();
         verify(firestoreHelper).readStarredReports(uid);
     }
 

@@ -53,7 +53,7 @@ public class NewReportPresenter implements MainContracts.NewReportPresenter {
 
     /**{@inheritDoc}*/
     @Override
-    public void sendButtonClicked(String title, String description, Context appContext, Uri imageUri, LatLng position) {
+    public void onSendButtonClicked(String title, String description, Context appContext, Uri imageUri, LatLng position) {
         if (imageUri == null) {
             view.notifyInvalidImage();
         } else if (title.equals("")) {

@@ -213,7 +213,7 @@ public class NewReportFragment extends Fragment implements MainContracts.NewRepo
                 textLayoutDesc.clearFocus();
                 String title = textInputTitle.getText().toString();
                 String desc = textInputDesc.getText().toString();
-                presenter.sendButtonClicked(title, desc, getActivity().getApplicationContext(), imageUri, position);
+                presenter.onSendButtonClicked(title, desc, getActivity().getApplicationContext(), imageUri, position);
             }
         });
         return v;

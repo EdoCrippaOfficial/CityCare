@@ -96,7 +96,7 @@ public class CompletedReportsPresenterTest {
 
     @Test
     public void onStarOperationCompleteTest() {
-        presenter.onStarOperationComplete();
+        presenter.onStarTaskComplete();
         verify(firestoreHelper).readCompletedReports();
     }
 

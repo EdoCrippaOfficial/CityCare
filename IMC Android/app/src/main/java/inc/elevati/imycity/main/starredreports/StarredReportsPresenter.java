@@ -33,10 +33,12 @@ public class StarredReportsPresenter implements MainContracts.ReportListPresente
     /** This flag is set when a task had to be executed when no view was attached to this presenter */
     private boolean pendingTask;
 
-    /** Used only if pendingTask flag is set, if not null indicates that onLoadReportsTaskComplete has to be executed */
+    /** Used only if pendingTask flag is set, if not null indicates that
+     * {@link StarredReportsPresenter#onLoadReportsTaskComplete(QuerySnapshot)} has to be executed */
     private QuerySnapshot results;
 
-    /** This flag is set when onUpdateTaskComplete is called while View was detached */
+    /** This flag is set when {@link StarredReportsPresenter#onUpdateTaskComplete()}
+     * is called while View is detached */
     private boolean update;
 
     /** {@inheritDoc} */
@@ -172,7 +174,7 @@ public class StarredReportsPresenter implements MainContracts.ReportListPresente
 
     /** {@inheritDoc} */
     @Override
-    public void onStarOperationComplete() {
+    public void onStarTaskComplete() {
         loadReports();
     }
 

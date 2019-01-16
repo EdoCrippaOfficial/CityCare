@@ -54,19 +54,19 @@ public class NewReportPresenterTest {
         when(FirebaseAuthHelper.getUserName()).thenReturn(null);
 
         // Call the function to test with no image
-        presenter.sendButtonClicked("", "", appContext, null, null);
+        presenter.onSendButtonClicked("", "", appContext, null, null);
         verify(view).notifyInvalidImage();
 
         // Call the function with image and no title
-        presenter.sendButtonClicked("", "", appContext, imageUri, null);
+        presenter.onSendButtonClicked("", "", appContext, imageUri, null);
         verify(view).notifyInvalidTitle();
 
         // Call the function with image, title and no description
-        presenter.sendButtonClicked("Title", "", appContext, imageUri, null);
+        presenter.onSendButtonClicked("Title", "", appContext, imageUri, null);
         verify(view).notifyInvalidDescription();
 
         // Call the function correctly (note that position is optional)
-        presenter.sendButtonClicked("Title", "Description", appContext, imageUri, null);
+        presenter.onSendButtonClicked("Title", "Description", appContext, imageUri, null);
         verify(view).showProgressDialog();
         verify(helper).sendImage(report, appContext, imageUri);
     }

@@ -19,7 +19,6 @@ import static inc.elevati.imycity.main.MainContracts.DeleteReportTaskResult.RESU
 import static inc.elevati.imycity.main.MainContracts.DeleteReportTaskResult.RESULT_OK;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -97,7 +96,7 @@ public class AllReportsPresenterTest {
 
     @Test
     public void onStarOperationCompleteTest() {
-        presenter.onStarOperationComplete();
+        presenter.onStarTaskComplete();
         verify(firestoreHelper).readAllReports();
     }
 

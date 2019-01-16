@@ -29,7 +29,8 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
     /** This flag is set when a task had to be executed when no view was attached to this presenter */
     private boolean pendingTask;
 
-    /** Used only if pendingTask flag is set, if not null indicates that onRegisterTaskComplete has to be executed */
+    /** Used only if pendingTask flag is set, if not null indicates that
+     * {@link RegisterPresenter#onRegisterTaskComplete(LoginContracts.RegisterTaskResult)} has to be executed */
     private LoginContracts.RegisterTaskResult result;
 
     /** {@inheritDoc} */
@@ -57,13 +58,13 @@ public class RegisterPresenter implements LoginContracts.RegisterPresenter {
 
     /** {@inheritDoc} */
     @Override
-    public void signInButtonClicked() {
+    public void onSignInButtonClicked() {
         view.switchToSignInView();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void registerButtonClicked(String name, String ssn, String email, String password) {
+    public void onRegisterButtonClicked(String name, String ssn, String email, String password) {
 
         // Name check
         if (name.equals("")) {

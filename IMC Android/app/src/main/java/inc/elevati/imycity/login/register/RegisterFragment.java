@@ -81,7 +81,7 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
         v.findViewById(R.id.tv_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.signInButtonClicked();
+                presenter.onSignInButtonClicked();
             }
         });
 
@@ -101,7 +101,7 @@ public class RegisterFragment extends Fragment implements LoginContracts.Registe
                 String ssn = textInputSSN.getText().toString();
                 String email = textInputEmail.getText().toString();
                 String password = textInputPassword.getText().toString();
-                presenter.registerButtonClicked(name, ssn, email, password);
+                presenter.onRegisterButtonClicked(name, ssn, email, password);
             }
         });
         return v;
