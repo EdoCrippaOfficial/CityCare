@@ -46,7 +46,7 @@
 
 ### Iterazione 4
 
-- [ ] Trizia
+- [x] Trizia
 
 ---
 ### Web
@@ -72,3 +72,4 @@
 - [x] Ordinamento data & stelle
 - [x] Aggiunta categorie
 - [x] Pannello per filtraggio e ordinamento
+- [x] Testing

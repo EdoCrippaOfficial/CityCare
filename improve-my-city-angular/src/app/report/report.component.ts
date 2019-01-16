@@ -59,6 +59,7 @@ export class ReportComponent implements OnInit {
     this.reportService.getReports()
         .subscribe(reports => {
           this.reports = reports;
+          reports.sort((a,b) => (this.getPriority(a) < this.getPriority(b)) ? 1 : -1);
           this.reports.forEach(report => {
             report.image = this.getImage(report);
           })
@@ -68,6 +69,11 @@ export class ReportComponent implements OnInit {
       this.currentStatus = val.status;
       this.currentCategory = val.category;
     })
+  }
+
+  getPriority(report: Report): number {
+    if (report.status == this.completato) return 0;
+    return (report.n_stars * 5 + Math.ceil((Date.now() - new Date(report.timestamp).getTime())/(1000 * 3600 * 24)))/6;
   }
 
   getImage(report: Report): Observable<string | null> {
@@ -123,7 +129,6 @@ export class ReportComponent implements OnInit {
       let status = this.formStatus == null ? 0 : this.formStatus.toString();
       let category = this.formCategory == null ? 0 : this.formCategory.toString();
       let path = 'reports/' + status + '/' + category;
-      console.log(this.filteredReports);
       this.router.navigate([path]);
     }
   }

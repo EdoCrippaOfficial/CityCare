@@ -12,7 +12,7 @@
           </option>
           <option *ngFor="let status of statusList" [value]="status">
             {{ getStatusText(status) }}
-            </option>
+          </option>
         </select>
       </div>
       <div class="form-group row">
@@ -25,7 +25,7 @@
           </option>
           <option *ngFor="let category of categoryList" [value]="category">
             {{ getCategoryText(category) }}
-            </option>
+          </option>
         </select>
       </div>
       <div class="form-group row">
@@ -60,11 +60,9 @@
         </h5>
         <img class="card-img-top img-responsive img-thumbnail text-center" [src]="report.image | async" alt="Image">
         <div class="card-body">
-          <!--ID: {{ report.id }}<br />-->
           Data: {{ report.timestamp | date : "dd/MM/yyyy" }}
           <p class="card-text not-full-text">
             {{ (report.description.length > 30) ? (report.description | slice:0:30)+'...' : (report.description) }}<br />
-            <!--by {{ report.user_id }}-->
           </p>
           <div class="text-center">
             <button type="button" class="btn m-1 no-click"
