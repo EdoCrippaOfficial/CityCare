@@ -44,9 +44,6 @@
 - [x] Visualizzazione posizione GPS su report già presenti
 - [x] TESTING E VERIFICA DEL SOFTWARE
 
-### Iterazione 4
-
-- [x] Trizia
 
 ---
 ### Web
@@ -70,6 +67,8 @@
 - [x] Abbellimento
 - [x] Sistema a stelle
 - [x] Ordinamento data & stelle
+
+#### Iterazione 4
 - [x] Aggiunta categorie
 - [x] Pannello per filtraggio e ordinamento
 - [x] Testing

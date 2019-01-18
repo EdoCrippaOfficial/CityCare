@@ -6,12 +6,12 @@ import { AngularFireStorage } from '@angular/fire/storage';
 
 import { Report } from './report';
 
-@Injectable({
-  providedIn: 'root'
-})
 /**
  * Classe che rappresenta il servizio di gestione dei report interfacciandosi con il database
  */
+@Injectable({
+  providedIn: 'root'
+})
 export class ReportService {
   /**
    * Path dei report sul database
