@@ -246,7 +246,7 @@ public interface MainContracts {
     }
 
     /** Implemented by classes that handle reports list (fragments) */
-    interface ReportsView extends MvpContracts.MvpView {
+    interface ReportListView extends MvpContracts.MvpView {
 
         /**
          * Updates the report list shown

@@ -19,8 +19,8 @@ public interface LoginContracts {
         REGISTER_FAILED_UNKNOWN
     }
 
-    /** Possible results for login task */
-    enum LoginTaskResult {
+    /** Possible results for sign in task */
+    enum SignInTaskResult {
 
         /** Login task completed correctly */
         LOGIN_OK,
@@ -80,7 +80,7 @@ public interface LoginContracts {
          * Notifies this presenter that a login task has completed
          * @param result the task result
          */
-        void onSignInTaskComplete(LoginTaskResult result);
+        void onSignInTaskComplete(SignInTaskResult result);
     }
 
     /** Implemented by the class that handles register presenter */

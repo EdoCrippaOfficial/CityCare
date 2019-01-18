@@ -35,7 +35,7 @@ import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_STARS_LESS;
 import static inc.elevati.imycity.main.MainContracts.REPORT_SORT_STARS_MORE;
 
 /** This fragment shows all reports retrieved from the database */
-public class AllReportsFragment extends Fragment implements MainContracts.ReportsView, SwipeRefreshLayout.OnRefreshListener {
+public class AllReportsFragment extends Fragment implements MainContracts.ReportListView, SwipeRefreshLayout.OnRefreshListener {
 
     /** The sorting criteria chosen */
     private static int sort_criteria;

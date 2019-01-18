@@ -13,9 +13,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import androidx.annotation.NonNull;
 import inc.elevati.imycity.login.LoginContracts;
 
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_NO_ACCOUNT;
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_UNKNOWN;
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_FAILED_NO_ACCOUNT;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_FAILED_UNKNOWN;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
 import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_ACCOUNT_CREATED;
 import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_FAILED_ALREADY_EXISTS;
 import static inc.elevati.imycity.login.LoginContracts.RegisterTaskResult.REGISTER_FAILED_UNKNOWN;
@@ -148,7 +148,7 @@ public class FirebaseAuthHelper implements FirebaseContracts.AuthHelper {
                             userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            loginListener.onSignInTaskComplete(LoginContracts.LoginTaskResult.LOGIN_OK);
+                            loginListener.onSignInTaskComplete(LoginContracts.SignInTaskResult.LOGIN_OK);
                         } else {
 
                             // Account doesn't exists

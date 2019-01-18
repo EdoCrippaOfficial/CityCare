@@ -6,8 +6,8 @@ import inc.elevati.imycity.utils.EspressoIdlingResource;
 import inc.elevati.imycity.utils.MvpContracts;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_NO_ACCOUNT;
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_FAILED_NO_ACCOUNT;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
 
 /** Presenter associated to {@link SignInFragment} */
 public class SignInPresenter implements LoginContracts.SignInPresenter {
@@ -19,8 +19,8 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
     private boolean pendingTask;
 
     /** Used only if pendingTask flag is set, if not null indicates that
-     * {@link SignInPresenter#onSignInTaskComplete(LoginContracts.LoginTaskResult)} has to be executed */
-    private LoginContracts.LoginTaskResult result;
+     * {@link SignInPresenter#onSignInTaskComplete(LoginContracts.SignInTaskResult)} has to be executed */
+    private LoginContracts.SignInTaskResult result;
 
     /** {@inheritDoc} */
     @Override
@@ -72,7 +72,7 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
 
     /** {@inheritDoc} */
     @Override
-    public void onSignInTaskComplete(LoginContracts.LoginTaskResult result) {
+    public void onSignInTaskComplete(LoginContracts.SignInTaskResult result) {
 
         // If view is detached, set the pendingTask flag
         if (view == null) {
@@ -81,7 +81,7 @@ public class SignInPresenter implements LoginContracts.SignInPresenter {
             return;
         }
 
-        if (result.equals(LoginContracts.LoginTaskResult.LOGIN_OK)) {
+        if (result.equals(LoginContracts.SignInTaskResult.LOGIN_OK)) {
             view.startMainActivity();
         } else if (result.equals(LOGIN_FAILED_NO_ACCOUNT)) {
             view.notifyAccountNotExists();

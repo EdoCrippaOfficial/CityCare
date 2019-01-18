@@ -25,7 +25,7 @@ import static inc.elevati.imycity.utils.Report.Status.STATUS_WAITING;
 public class MyReportsPresenter implements MainContracts.ReportListPresenter {
 
     /** The view associated to this presenter */
-    private MainContracts.ReportsView view;
+    private MainContracts.ReportListView view;
 
     /** The reportDialogView that may be associated to this presenter */
     private MainContracts.ReportDialogView reportDialogView;
@@ -44,7 +44,7 @@ public class MyReportsPresenter implements MainContracts.ReportListPresenter {
     /** {@inheritDoc} */
     @Override
     public void attachView(MvpContracts.MvpView view) {
-        this.view = (MainContracts.ReportsView) view;
+        this.view = (MainContracts.ReportListView) view;
 
         // If there were pending tasks, execute them now
         if (pendingTask) {
@@ -109,7 +109,6 @@ public class MyReportsPresenter implements MainContracts.ReportListPresenter {
                 long timestamp = snap.getLong("timestamp");
                 String userId = snap.getString("user_id");
                 String userName = snap.getString("user_name");
-                String operatorId = snap.getString("operator_id");
                 long nStars = snap.getLong("n_stars");
                 String reply = snap.getString("reply");
                 Report.Status status = STATUS_WAITING;
@@ -133,7 +132,7 @@ public class MyReportsPresenter implements MainContracts.ReportListPresenter {
                 boolean starred = usersStarred.contains(FirebaseAuthHelper.getUserId());
 
                 Report report = new Report(id, userId, userName, title, description, reply,
-                        operatorId, timestamp, (int) nStars, position, status, starred);
+                        timestamp, (int) nStars, position, status, starred);
 
                 reports.add(report);
             }

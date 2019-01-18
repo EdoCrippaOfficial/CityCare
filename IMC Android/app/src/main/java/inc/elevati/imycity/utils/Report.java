@@ -40,7 +40,7 @@ public class Report implements Parcelable {
     public static final String IMAGE_THUMBNAIL = "_thumb";
 
     /** Report fields, self-descriptive */
-    private String id, userId, userName, title, description, reply, operatorId;
+    private String id, userId, userName, title, description, reply;
 
     /** The report status */
     private Status status;
@@ -85,21 +85,19 @@ public class Report implements Parcelable {
      * @param title the report title
      * @param description the report description
      * @param reply the reply from operator
-     * @param operatorId the operator id
      * @param timestamp the report creation time, in milliseconds from January 1 1970, 00:00 UTC
      * @param nStars the number of stars that this report received
      * @param position the GPS position of the report
      * @param status the report status
      */
     public Report(String id, String userId, String userName, String title, String description, String reply,
-                  String operatorId, long timestamp, int nStars, GeoPoint position, Status status, boolean starred) {
+                  long timestamp, int nStars, GeoPoint position, Status status, boolean starred) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
         this.title = title;
         this.description = description;
         this.reply = reply;
-        this.operatorId = operatorId;
         this.timestamp = timestamp;
         this.nStars = nStars;
         this.position = position;
@@ -119,9 +117,9 @@ public class Report implements Parcelable {
         this.userId = in.readString();
         this.userName = in.readString();
         this.reply = in.readString();
-        this.operatorId = in.readString();
         this.nStars = in.readInt();
-        this.position = new GeoPoint(in.readDouble(), in.readDouble());
+        boolean pos = in.readInt() == 1;
+        if (pos) this.position = new GeoPoint(in.readDouble(), in.readDouble());
         switch (in.readString()) {
             case "1":
                 this.status = STATUS_ACCEPTED;
@@ -176,10 +174,6 @@ public class Report implements Parcelable {
         return reply;
     }
 
-    public String getOperatorId() {
-        return operatorId;
-    }
-
     public int getnStars() {
         return nStars;
     }
@@ -227,10 +221,12 @@ public class Report implements Parcelable {
         dest.writeString(userId);
         dest.writeString(userName);
         dest.writeString(reply);
-        dest.writeString(operatorId);
         dest.writeInt(nStars);
-        dest.writeDouble(position.getLatitude());
-        dest.writeDouble(position.getLongitude());
+        dest.writeInt(position != null ? 1 : 0);
+        if (position != null) {
+            dest.writeDouble(position.getLatitude());
+            dest.writeDouble(position.getLongitude());
+        }
         dest.writeString(status.value);
         dest.writeInt(starred ? 1 : 0);
     }

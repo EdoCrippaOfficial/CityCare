@@ -10,10 +10,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import inc.elevati.imycity.firebase.FirebaseAuthHelper;
 import inc.elevati.imycity.login.LoginContracts;
 
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_NO_ACCOUNT;
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_UNKNOWN;
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
-import static inc.elevati.imycity.login.LoginContracts.LoginTaskResult.LOGIN_OK;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_FAILED_NO_ACCOUNT;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_FAILED_UNKNOWN;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_FAILED_WRONG_PASSWORD;
+import static inc.elevati.imycity.login.LoginContracts.SignInTaskResult.LOGIN_OK;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;

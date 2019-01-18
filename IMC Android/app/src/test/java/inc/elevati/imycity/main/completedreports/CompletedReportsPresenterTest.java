@@ -31,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class CompletedReportsPresenterTest {
 
     @Mock
-    private MainContracts.ReportsView view;
+    private MainContracts.ReportListView view;
 
     @Mock
     private FirestoreHelper firestoreHelper;
